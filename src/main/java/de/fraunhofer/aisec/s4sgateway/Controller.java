@@ -1,0 +1,206 @@
+package de.fraunhofer.aisec.s4sgateway;
+
+import jakarta.servlet.http.HttpServletRequest;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpTimeoutException;
+import java.time.Duration;
+import java.util.*;
+
+@Component
+@RestController
+public class Controller {
+	private static final Logger logger = LoggerFactory.getLogger(Controller.class);
+
+	@Value("${gatewayDomainRC}")
+	private String gatewayDomainRC;
+	@Value("${gatewayPortRC}")
+	private String gatewayPortRC;
+	@Value("${gatewayDomainSD}")
+	private String gatewayDomainSD;
+	@Value("${gatewayPortSD}")
+	private String gatewayPortSD;
+
+	@Value("${kafkaDomainLocal}")
+	private String kafkaDomainLocal;
+	@Value("${kafkaPortLocal}")
+	private String kafkaPortLocal;
+
+	@Value("${isaConfigFilePath}")
+	private Resource isaConfigFilePath;
+	@Value("${isaConfig}")
+	private String isaConfig;
+	JSONObject isa;
+	enum GatewayRole {
+		SENDER,
+		RECEIVER
+	}
+	@Value("${gatewayRole}")
+	GatewayRole gatewayRole;
+	@Value("#{${relevantHeaders}}")
+	private List<String> relevantHeaders;
+
+	@Bean
+	public ApplicationRunner initiationAfterLaunch() {
+		return args -> {
+			logger.info("Loading Information Sharing Agreement settings ...");
+			try {
+				isa = new JSONObject(isaConfig);
+			}catch (JSONException err){
+				logger.error("Error: {}", err.toString());
+			}
+			logger.info("Loaded this ISA:{}",isa);
+
+			/* Checking given configuration  */
+			logger.info("Checking given configuration for role={} ...",gatewayRole);
+			if(gatewayRole.toString().isEmpty()){logger.error("GatewayRole is not configured!");}
+			switch (gatewayRole){
+				case SENDER:
+					if(gatewayDomainSD.isEmpty()){logger.error("GatewayDomainSD is not configured!");}
+					if(gatewayPortSD.isEmpty()){logger.error("GatewayPortSD is not configured!");}
+					if(gatewayDomainRC.isEmpty()){logger.error("GatewayDomainRC is not configured!");}
+					if(gatewayPortRC.isEmpty()){logger.error("GatewayPortRC is not configured!");}
+					break;
+				case RECEIVER:
+					if(kafkaDomainLocal.isEmpty()){logger.error("KafkaDomainLocal is not configured!");}
+					if(kafkaPortLocal.isEmpty()){logger.error("KafkaPortLocal is not configured!");}
+					if(gatewayDomainRC.isEmpty()){logger.error("GatewayDomainRC is not configured!");}
+					if(gatewayPortRC.isEmpty()){logger.error("GatewayPortRC is not configured!");}
+					break;
+			}
+
+			if(logger.isInfoEnabled()){
+				switch (gatewayRole){
+					case SENDER:
+						logger.info("Config gatewaySD={}:{}",gatewayDomainSD,gatewayPortSD);
+						logger.info("Config gatewayRC={}:{}",gatewayDomainRC,gatewayPortRC);
+						break;
+					case RECEIVER:
+						logger.info("Config gatewayRC={}:{}",gatewayDomainRC,gatewayPortRC);
+						logger.info("Config kafkaLocal={}:{}",kafkaDomainLocal,kafkaPortLocal);
+						break;
+				}
+				logger.info("Config relevantHeaders={}",relevantHeaders.toString());
+			}
+		};
+	}
+
+	@RequestMapping(value = "/**", method = {RequestMethod.GET, RequestMethod.POST})
+	public ResponseEntity<String> listAllHeaders(@RequestHeader Map<String, String> headers,
+												 @RequestBody String body,
+												 HttpServletRequest incomingRequest) {
+
+		if (logger.isDebugEnabled()) {
+			headers.forEach((key, value) -> logger.debug("Header:{} Key:{}", key, value));
+            logger.debug("RequestURI {}", incomingRequest.getRequestURI());
+            logger.debug("RemotePort {}", incomingRequest.getRemotePort());
+            logger.debug("LocalPort  {}", incomingRequest.getLocalPort());
+            logger.debug("ServerPort {}", incomingRequest.getServerPort());
+            logger.debug("ServerName {}", incomingRequest.getServerName());
+			logger.debug("Body       {}", body);
+		}
+
+		//TODO activate https
+		HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
+		switch (gatewayRole){
+			case SENDER:
+				requestBuilder.uri(URI.create("http://" +
+						gatewayDomainRC + ":" +
+						gatewayPortRC +
+						incomingRequest.getRequestURI()));
+				break;
+			case RECEIVER:
+				requestBuilder.uri(URI.create("http://" +
+					kafkaDomainLocal + ":" +
+					kafkaPortLocal +
+					incomingRequest.getRequestURI()));
+				break;
+		}
+
+		switch (incomingRequest.getMethod()) {
+			case "GET":
+				requestBuilder.GET();
+				break;
+			case "POST":
+				requestBuilder.POST(HttpRequest.BodyPublishers.ofString(body));
+				break;
+		}
+
+		logger.debug("Printing headers for forward request");
+		for (String headerName : relevantHeaders) {
+			if (headers.containsKey(headerName)){
+				logger.debug(headers.get(headerName));
+				requestBuilder.setHeader(headerName, incomingRequest.getHeader(headerName));
+			}
+        }
+
+		switch (gatewayRole){
+			case SENDER:
+				requestBuilder.setHeader("safe4soc-sender-hostname",gatewayDomainSD);
+				requestBuilder.setHeader("safe4soc-sender-port",gatewayPortSD);
+				break;
+			case RECEIVER:
+				requestBuilder.setHeader("safe4soc-receiver-hostname",gatewayDomainRC);
+				requestBuilder.setHeader("safe4soc-receiver-port",gatewayPortRC);
+				break;
+		}
+
+		HttpRequest request = requestBuilder.build();
+
+		if (logger.isDebugEnabled()) {
+            logger.debug("Printing forwarded request info: {}", request.toString());
+            logger.debug("Printing forwarded body: {}", body);
+		}
+
+		// Create an HttpClient
+		HttpClient client = HttpClient.newBuilder()
+				.connectTimeout(Duration.ofSeconds(10))
+				.build();
+
+		try {
+			// Send the request and receive the response
+			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            logger.debug("Response status code: {}", response.statusCode());
+            logger.debug("Response body: {}", response.body());
+			return new ResponseEntity<>(response.body(), HttpStatusCode.valueOf(response.statusCode()));
+		} catch (HttpTimeoutException e) {
+            logger.error("Request timed out: {}", e.getMessage());
+		} catch (IOException | InterruptedException e) {
+            logger.error("An error occurred: {}", e.getMessage());
+		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		//return new ResponseEntity<>(String.format("Listed %d headers", headers.size()), HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/status", method = {RequestMethod.GET})
+	public ResponseEntity status() {
+		return new ResponseEntity<>(String.format("Gateway online."), HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/isacheck", method = {RequestMethod.POST})
+	public ResponseEntity isaCheck(@RequestBody String isaReceived) {
+		if (Utils.isaComparison(new JSONObject(isaReceived), this.isa)){
+			return new ResponseEntity<>(String.format("ISA compatible."), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(String.format("ISA incompatible."), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+}

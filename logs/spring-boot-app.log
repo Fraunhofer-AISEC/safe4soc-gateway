@@ -1,0 +1,190 @@
+2025-02-12T09:06:58.858+01:00  INFO 6012 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Starting Application using Java 17.0.9 with PID 6012 (C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway\build\classes\java\main started by hen34416 in C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway)
+2025-02-12T09:06:58.874+01:00 DEBUG 6012 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Running with Spring Boot v3.3.5, Spring v6.1.14
+2025-02-12T09:06:58.874+01:00  INFO 6012 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : No active profile set, falling back to 1 default profile: "default"
+2025-02-12T09:07:03.185+01:00  INFO 23096 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Starting Application using Java 17.0.9 with PID 23096 (C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway\build\classes\java\main started by hen34416 in C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway)
+2025-02-12T09:07:03.185+01:00 DEBUG 23096 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Running with Spring Boot v3.3.5, Spring v6.1.14
+2025-02-12T09:07:03.185+01:00  INFO 23096 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : No active profile set, falling back to 1 default profile: "default"
+2025-02-12T09:07:04.559+01:00  INFO 23096 --- [s4s-gateway] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-02-12T09:07:04.582+01:00  INFO 23096 --- [s4s-gateway] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-12T09:07:04.591+01:00  INFO 23096 --- [s4s-gateway] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2025-02-12T09:07:04.764+01:00  INFO 23096 --- [s4s-gateway] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-02-12T09:07:04.764+01:00  INFO 23096 --- [s4s-gateway] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1444 ms
+2025-02-12T09:07:05.351+01:00  INFO 23096 --- [s4s-gateway] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-02-12T09:07:05.371+01:00  INFO 23096 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Started Application in 2.77 seconds (process running for 3.192)
+2025-02-12T09:07:05.371+01:00  INFO 23096 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Loading Information Sharing Agreement settings ...
+2025-02-12T09:07:05.371+01:00  INFO 23096 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Loaded this ISA:{"number":123,"boolean":true,"color":"gold","null":null,"string":"Hello World","array":[1,2,3],"object":{"a":"b","c":"d"}}
+2025-02-12T09:07:05.371+01:00  INFO 23096 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Checking given configuration for role=SENDER ...
+2025-02-12T09:07:05.371+01:00  INFO 23096 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewaySD=localhost:8080
+2025-02-12T09:07:05.371+01:00  INFO 23096 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewayRC=localhost:8081
+2025-02-12T09:07:05.371+01:00  INFO 23096 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewayRC=localhost:8081
+2025-02-12T09:07:05.371+01:00  INFO 23096 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config kafkaLocal=kafkalocal:8082
+2025-02-12T09:07:05.371+01:00  INFO 23096 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config relevantHeaders=[content-type, accept, user-Agent, accept-Encoding, safe4soc-receiver-hostname, safe4soc-receiver-port]
+2025-02-12T09:09:13.824+01:00  INFO 23096 --- [s4s-gateway] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-02-12T09:09:13.827+01:00  INFO 23096 --- [s4s-gateway] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-02-12T09:09:13.827+01:00  INFO 23096 --- [s4s-gateway] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-02-12T09:16:25.701+01:00  INFO 24792 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Starting Application using Java 17.0.9 with PID 24792 (C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway\build\classes\java\main started by hen34416 in C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway)
+2025-02-12T09:16:25.703+01:00 DEBUG 24792 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Running with Spring Boot v3.3.5, Spring v6.1.14
+2025-02-12T09:16:25.703+01:00  INFO 24792 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : No active profile set, falling back to 1 default profile: "default"
+2025-02-12T09:16:28.721+01:00  INFO 30012 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Starting Application using Java 17.0.9 with PID 30012 (C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway\build\classes\java\main started by hen34416 in C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway)
+2025-02-12T09:16:28.721+01:00 DEBUG 30012 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Running with Spring Boot v3.3.5, Spring v6.1.14
+2025-02-12T09:16:28.721+01:00  INFO 30012 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : No active profile set, falling back to 1 default profile: "default"
+2025-02-12T09:16:29.839+01:00  INFO 30012 --- [s4s-gateway] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-02-12T09:16:29.854+01:00  INFO 30012 --- [s4s-gateway] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-12T09:16:29.854+01:00  INFO 30012 --- [s4s-gateway] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2025-02-12T09:16:29.949+01:00  INFO 30012 --- [s4s-gateway] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-02-12T09:16:29.949+01:00  INFO 30012 --- [s4s-gateway] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1165 ms
+2025-02-12T09:16:30.323+01:00  INFO 30012 --- [s4s-gateway] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-02-12T09:16:30.344+01:00  INFO 30012 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Started Application in 2.121 seconds (process running for 2.53)
+2025-02-12T09:16:30.347+01:00  INFO 30012 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Loading Information Sharing Agreement settings ...
+2025-02-12T09:16:30.347+01:00  INFO 30012 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Loaded this ISA:{"data_usage_policies":{"use_until":"2024-12-12","use_after":"2024-09-12","share_further":"false"},"data_sender_SIEM_version":"Version 0.1","intended_use":"alert_gathering","IDMEFv2_attributes":{"attributes_to_anonymize":[],"attributes_to_neglect":[],"attributes_to_pseudonemize":[],"attributes_to_transmit":[]},"sending_mode":"realtime","encryption_requirements":[],"authentication_requirements":[],"data_sender_SIEM_brand":"Example Company A","connection_requirements":[],"provider_reason":"compliance"}
+2025-02-12T09:16:30.347+01:00  INFO 30012 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Checking given configuration for role=SENDER ...
+2025-02-12T09:16:30.347+01:00  INFO 30012 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewaySD=localhost:8080
+2025-02-12T09:16:30.347+01:00  INFO 30012 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewayRC=localhost:8081
+2025-02-12T09:16:30.347+01:00  INFO 30012 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewayRC=localhost:8081
+2025-02-12T09:16:30.347+01:00  INFO 30012 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config kafkaLocal=kafkalocal:8082
+2025-02-12T09:16:30.347+01:00  INFO 30012 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config relevantHeaders=[content-type, accept, user-Agent, accept-Encoding, safe4soc-receiver-hostname, safe4soc-receiver-port]
+2025-02-12T09:37:21.854+01:00  INFO 26364 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Starting Application using Java 17.0.9 with PID 26364 (C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway\build\classes\java\main started by hen34416 in C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway)
+2025-02-12T09:37:21.854+01:00 DEBUG 26364 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Running with Spring Boot v3.3.5, Spring v6.1.14
+2025-02-12T09:37:21.869+01:00  INFO 26364 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : No active profile set, falling back to 1 default profile: "default"
+2025-02-12T09:37:25.378+01:00  INFO 15796 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Starting Application using Java 17.0.9 with PID 15796 (C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway\build\classes\java\main started by hen34416 in C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway)
+2025-02-12T09:37:25.378+01:00 DEBUG 15796 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Running with Spring Boot v3.3.5, Spring v6.1.14
+2025-02-12T09:37:25.378+01:00  INFO 15796 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : No active profile set, falling back to 1 default profile: "default"
+2025-02-12T09:37:26.340+01:00  INFO 15796 --- [s4s-gateway] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-02-12T09:37:26.359+01:00  INFO 15796 --- [s4s-gateway] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-12T09:37:26.359+01:00  INFO 15796 --- [s4s-gateway] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2025-02-12T09:37:26.434+01:00  INFO 15796 --- [s4s-gateway] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-02-12T09:37:26.434+01:00  INFO 15796 --- [s4s-gateway] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 976 ms
+2025-02-12T09:37:26.860+01:00  INFO 15796 --- [s4s-gateway] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-02-12T09:37:26.876+01:00  INFO 15796 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Started Application in 2.018 seconds (process running for 2.393)
+2025-02-12T09:37:26.876+01:00  INFO 15796 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Loading Information Sharing Agreement settings ...
+2025-02-12T09:37:26.876+01:00  INFO 15796 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Loaded this ISA:{"data_usage_policies":{"use_until":"2024-12-12","use_after":"2024-09-12","share_further":"false"},"data_sender_SIEM_version":"Version 0.1","intended_use":"alert_gathering","IDMEFv2_attributes":{"attributes_to_anonymize":[],"attributes_to_neglect":[],"attributes_to_pseudonemize":[],"attributes_to_transmit":[]},"sending_mode":"realtime","encryption_requirements":[],"authentication_requirements":[],"data_sender_SIEM_brand":"Example Company A","connection_requirements":[],"provider_reason":"compliance"}
+2025-02-12T09:37:26.876+01:00  INFO 15796 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Checking given configuration for role=SENDER ...
+2025-02-12T09:37:26.891+01:00  INFO 15796 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewaySD=localhost:8080
+2025-02-12T09:37:26.891+01:00  INFO 15796 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewayRC=localhost:8081
+2025-02-12T09:37:26.891+01:00  INFO 15796 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewayRC=localhost:8081
+2025-02-12T09:37:26.891+01:00  INFO 15796 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config kafkaLocal=kafkalocal:8082
+2025-02-12T09:37:26.891+01:00  INFO 15796 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config relevantHeaders=[content-type, accept, user-Agent, accept-Encoding, safe4soc-receiver-hostname, safe4soc-receiver-port]
+2025-02-12T09:38:45.479+01:00  INFO 15796 --- [s4s-gateway] [http-nio-8080-exec-4] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-02-12T09:38:45.486+01:00  INFO 15796 --- [s4s-gateway] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-02-12T09:38:45.487+01:00  INFO 15796 --- [s4s-gateway] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-02-12T09:39:26.571+01:00  INFO 8612 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Starting Application using Java 17.0.9 with PID 8612 (C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway\build\classes\java\main started by hen34416 in C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway)
+2025-02-12T09:39:26.571+01:00 DEBUG 8612 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Running with Spring Boot v3.3.5, Spring v6.1.14
+2025-02-12T09:39:26.575+01:00  INFO 8612 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : No active profile set, falling back to 1 default profile: "default"
+2025-02-12T09:39:27.757+01:00  INFO 8612 --- [s4s-gateway] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-02-12T09:39:27.773+01:00  INFO 8612 --- [s4s-gateway] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-12T09:39:27.773+01:00  INFO 8612 --- [s4s-gateway] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2025-02-12T09:39:27.857+01:00  INFO 8612 --- [s4s-gateway] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-02-12T09:39:27.857+01:00  INFO 8612 --- [s4s-gateway] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1205 ms
+2025-02-12T09:39:28.284+01:00  INFO 8612 --- [s4s-gateway] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-02-12T09:39:28.293+01:00  INFO 8612 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Started Application in 2.314 seconds (process running for 3.132)
+2025-02-12T09:39:28.296+01:00  INFO 8612 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Loading Information Sharing Agreement settings ...
+2025-02-12T09:39:28.302+01:00  INFO 8612 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Loaded this ISA:{"data_usage_policies":{"use_until":"2024-12-12","use_after":"2024-09-12","share_further":"false"},"data_sender_SIEM_version":"Version 0.1","intended_use":"alert_gathering","IDMEFv2_attributes":{"attributes_to_anonymize":[],"attributes_to_neglect":[],"attributes_to_pseudonemize":[],"attributes_to_transmit":[]},"sending_mode":"realtime","encryption_requirements":[],"authentication_requirements":[],"data_sender_SIEM_brand":"Example Company A","connection_requirements":[],"provider_reason":"compliance"}
+2025-02-12T09:39:28.302+01:00  INFO 8612 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Checking given configuration for role=SENDER ...
+2025-02-12T09:39:28.302+01:00  INFO 8612 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewaySD=localhost:8080
+2025-02-12T09:39:28.302+01:00  INFO 8612 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewayRC=localhost:8081
+2025-02-12T09:39:28.302+01:00  INFO 8612 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewayRC=localhost:8081
+2025-02-12T09:39:28.302+01:00  INFO 8612 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config kafkaLocal=kafkalocal:8082
+2025-02-12T09:39:28.302+01:00  INFO 8612 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config relevantHeaders=[content-type, accept, user-Agent, accept-Encoding, safe4soc-receiver-hostname, safe4soc-receiver-port]
+2025-02-12T09:39:34.755+01:00  INFO 8612 --- [s4s-gateway] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-02-12T09:39:34.755+01:00  INFO 8612 --- [s4s-gateway] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-02-12T09:39:34.755+01:00  INFO 8612 --- [s4s-gateway] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-02-12T09:48:39.479+01:00  INFO 21336 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Starting Application using Java 17.0.9 with PID 21336 (C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway\build\classes\java\main started by hen34416 in C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway)
+2025-02-12T09:48:39.479+01:00 DEBUG 21336 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Running with Spring Boot v3.3.5, Spring v6.1.14
+2025-02-12T09:48:39.479+01:00  INFO 21336 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : No active profile set, falling back to 1 default profile: "default"
+2025-02-12T09:48:42.643+01:00  INFO 17268 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Starting Application using Java 17.0.9 with PID 17268 (C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway\build\classes\java\main started by hen34416 in C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway)
+2025-02-12T09:48:42.647+01:00 DEBUG 17268 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Running with Spring Boot v3.3.5, Spring v6.1.14
+2025-02-12T09:48:42.647+01:00  INFO 17268 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : No active profile set, falling back to 1 default profile: "default"
+2025-02-12T09:48:43.741+01:00  INFO 17268 --- [s4s-gateway] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-02-12T09:48:43.757+01:00  INFO 17268 --- [s4s-gateway] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-12T09:48:43.757+01:00  INFO 17268 --- [s4s-gateway] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2025-02-12T09:48:43.821+01:00  INFO 17268 --- [s4s-gateway] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-02-12T09:48:43.821+01:00  INFO 17268 --- [s4s-gateway] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1101 ms
+2025-02-12T09:48:44.225+01:00  INFO 17268 --- [s4s-gateway] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-02-12T09:48:44.227+01:00  INFO 17268 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Started Application in 2.108 seconds (process running for 2.523)
+2025-02-12T09:48:44.227+01:00  INFO 17268 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Loading Information Sharing Agreement settings ...
+2025-02-12T09:48:44.227+01:00  INFO 17268 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Loaded this ISA:{"data_usage_policies":{"use_until":"2024-12-12","use_after":"2024-09-12","share_further":"false"},"data_sender_SIEM_version":"Version 0.1","intended_use":"alert_gathering","IDMEFv2_attributes":{"attributes_to_anonymize":[],"attributes_to_neglect":[],"attributes_to_pseudonemize":[],"attributes_to_transmit":[]},"sending_mode":"realtime","encryption_requirements":[],"authentication_requirements":[],"data_sender_SIEM_brand":"Example Company A","connection_requirements":[],"provider_reason":"compliance"}
+2025-02-12T09:48:44.241+01:00  INFO 17268 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Checking given configuration for role=SENDER ...
+2025-02-12T09:48:44.241+01:00  INFO 17268 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewaySD=localhost:8080
+2025-02-12T09:48:44.241+01:00  INFO 17268 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewayRC=localhost:8081
+2025-02-12T09:48:44.241+01:00  INFO 17268 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewayRC=localhost:8081
+2025-02-12T09:48:44.241+01:00  INFO 17268 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config kafkaLocal=kafkalocal:8082
+2025-02-12T09:48:44.241+01:00  INFO 17268 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config relevantHeaders=[content-type, accept, user-Agent, accept-Encoding, safe4soc-receiver-hostname, safe4soc-receiver-port]
+2025-02-12T09:49:25.362+01:00  INFO 17268 --- [s4s-gateway] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-02-12T09:49:25.362+01:00  INFO 17268 --- [s4s-gateway] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-02-12T09:49:25.362+01:00  INFO 17268 --- [s4s-gateway] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-02-12T09:53:41.814+01:00  INFO 29588 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Starting Application using Java 17.0.9 with PID 29588 (C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway\build\classes\java\main started by hen34416 in C:\Users\hen34416\GIT\SAFE4SOC\trusted-connector-next\implementation\s4sgateway)
+2025-02-12T09:53:41.814+01:00 DEBUG 29588 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Running with Spring Boot v3.3.5, Spring v6.1.14
+2025-02-12T09:53:41.814+01:00  INFO 29588 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : No active profile set, falling back to 1 default profile: "default"
+2025-02-12T09:53:42.753+01:00  INFO 29588 --- [s4s-gateway] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-02-12T09:53:42.770+01:00  INFO 29588 --- [s4s-gateway] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-12T09:53:42.770+01:00  INFO 29588 --- [s4s-gateway] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2025-02-12T09:53:42.864+01:00  INFO 29588 --- [s4s-gateway] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-02-12T09:53:42.864+01:00  INFO 29588 --- [s4s-gateway] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 942 ms
+2025-02-12T09:53:43.287+01:00  INFO 29588 --- [s4s-gateway] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-02-12T09:53:43.303+01:00  INFO 29588 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Started Application in 1.97 seconds (process running for 2.341)
+2025-02-12T09:53:43.303+01:00  INFO 29588 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Loading Information Sharing Agreement settings ...
+2025-02-12T09:53:43.303+01:00  INFO 29588 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Loaded this ISA:{"data_usage_policies":{"use_until":"2024-12-12","use_after":"2024-09-12","share_further":"false"},"data_sender_SIEM_version":"Version 0.1","intended_use":"alert_gathering","IDMEFv2_attributes":{"attributes_to_anonymize":[],"attributes_to_neglect":[],"attributes_to_pseudonemize":[],"attributes_to_transmit":[]},"sending_mode":"realtime","encryption_requirements":[],"authentication_requirements":[],"data_sender_SIEM_brand":"Example Company A","connection_requirements":[],"provider_reason":"compliance"}
+2025-02-12T09:53:43.318+01:00  INFO 29588 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Checking given configuration for role=SENDER ...
+2025-02-12T09:53:43.318+01:00  INFO 29588 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewaySD=localhost:8080
+2025-02-12T09:53:43.318+01:00  INFO 29588 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewayRC=localhost:8081
+2025-02-12T09:53:43.318+01:00  INFO 29588 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewayRC=localhost:8081
+2025-02-12T09:53:43.318+01:00  INFO 29588 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config kafkaLocal=kafkalocal:8082
+2025-02-12T09:53:43.318+01:00  INFO 29588 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config relevantHeaders=[content-type, accept, user-Agent, accept-Encoding, safe4soc-receiver-hostname, safe4soc-receiver-port]
+2025-02-12T09:53:48.272+01:00  INFO 29588 --- [s4s-gateway] [http-nio-8080-exec-5] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-02-12T09:53:48.279+01:00  INFO 29588 --- [s4s-gateway] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-02-12T09:53:48.279+01:00  INFO 29588 --- [s4s-gateway] [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-02-12T14:16:09.783+01:00  INFO 1288 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Starting Application using Java 17.0.5 with PID 1288 (/mnt/c/Users/hen34416/GIT/safe4soc-gateway/build/classes/java/main started by ubuntu in /mnt/c/Users/hen34416/GIT/safe4soc-gateway)
+2025-02-12T14:16:09.794+01:00 DEBUG 1288 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Running with Spring Boot v3.3.5, Spring v6.1.14
+2025-02-12T14:16:09.795+01:00  INFO 1288 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : No active profile set, falling back to 1 default profile: "default"
+2025-02-12T16:51:07.251+01:00  INFO 2844 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Starting Application using Java 17.0.5 with PID 2844 (/mnt/c/Users/hen34416/GIT/safe4soc-gateway/build/classes/java/main started by ubuntu in /mnt/c/Users/hen34416/GIT/safe4soc-gateway)
+2025-02-12T16:51:07.272+01:00 DEBUG 2844 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Running with Spring Boot v3.3.5, Spring v6.1.14
+2025-02-12T16:51:07.275+01:00  INFO 2844 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : No active profile set, falling back to 1 default profile: "default"
+2025-02-12T17:16:51.913+01:00  INFO 34268 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Starting Application using Java 17.0.9 with PID 34268 (C:\Users\hen34416\GIT\safe4soc-gateway\build\classes\java\main started by hen34416 in C:\Users\hen34416\GIT\safe4soc-gateway)
+2025-02-12T17:16:51.913+01:00 DEBUG 34268 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Running with Spring Boot v3.3.5, Spring v6.1.14
+2025-02-12T17:16:51.913+01:00  INFO 34268 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : No active profile set, falling back to 1 default profile: "default"
+2025-02-12T17:16:58.397+01:00  INFO 28944 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Starting Application using Java 17.0.9 with PID 28944 (C:\Users\hen34416\GIT\safe4soc-gateway\build\classes\java\main started by hen34416 in C:\Users\hen34416\GIT\safe4soc-gateway)
+2025-02-12T17:16:58.397+01:00 DEBUG 28944 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Running with Spring Boot v3.3.5, Spring v6.1.14
+2025-02-12T17:16:58.397+01:00  INFO 28944 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : No active profile set, falling back to 1 default profile: "default"
+2025-02-12T17:16:59.733+01:00  INFO 28944 --- [s4s-gateway] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-02-12T17:16:59.750+01:00  INFO 28944 --- [s4s-gateway] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-12T17:16:59.750+01:00  INFO 28944 --- [s4s-gateway] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2025-02-12T17:16:59.847+01:00  INFO 28944 --- [s4s-gateway] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-02-12T17:16:59.847+01:00  INFO 28944 --- [s4s-gateway] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1359 ms
+2025-02-12T17:17:00.370+01:00  INFO 28944 --- [s4s-gateway] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-02-12T17:17:00.379+01:00  INFO 28944 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Started Application in 2.684 seconds (process running for 3.608)
+2025-02-12T17:17:00.379+01:00  INFO 28944 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Loading Information Sharing Agreement settings ...
+2025-02-12T17:17:00.379+01:00  INFO 28944 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Loaded this ISA:{"data_usage_policies":{"use_until":"2024-12-12","use_after":"2024-09-12","share_further":"false"},"data_sender_SIEM_version":"Version 0.1","intended_use":"alert_gathering","IDMEFv2_attributes":{"attributes_to_anonymize":[],"attributes_to_neglect":[],"attributes_to_pseudonemize":[],"attributes_to_transmit":[]},"sending_mode":"realtime","encryption_requirements":[],"authentication_requirements":[],"data_sender_SIEM_brand":"Example Company A","connection_requirements":[],"provider_reason":"compliance"}
+2025-02-12T17:17:00.379+01:00  INFO 28944 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Checking given configuration for role=SENDER ...
+2025-02-12T17:17:00.379+01:00  INFO 28944 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewaySD=localhost:8080
+2025-02-12T17:17:00.379+01:00  INFO 28944 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewayRC=localhost:8081
+2025-02-12T17:17:00.379+01:00  INFO 28944 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config gatewayRC=localhost:8081
+2025-02-12T17:17:00.379+01:00  INFO 28944 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config kafkaLocal=kafkalocal:8082
+2025-02-12T17:17:00.395+01:00  INFO 28944 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Controller          : Config relevantHeaders=[content-type, accept, user-Agent, accept-Encoding, safe4soc-receiver-hostname, safe4soc-receiver-port]
+2025-02-12T17:17:31.265+01:00  INFO 28944 --- [s4s-gateway] [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-02-12T17:17:31.265+01:00  INFO 28944 --- [s4s-gateway] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-02-12T17:17:31.265+01:00  INFO 28944 --- [s4s-gateway] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-02-12T17:17:31.331+01:00 DEBUG 28944 --- [s4s-gateway] [http-nio-8080-exec-2] d.f.aisec.s4sgateway.Controller          : Header:content-type Key:application/vnd.kafka.json.v2+json
+2025-02-12T17:17:31.331+01:00 DEBUG 28944 --- [s4s-gateway] [http-nio-8080-exec-2] d.f.aisec.s4sgateway.Controller          : Header:user-agent Key:PostmanRuntime/7.43.0
+2025-02-12T17:17:31.331+01:00 DEBUG 28944 --- [s4s-gateway] [http-nio-8080-exec-2] d.f.aisec.s4sgateway.Controller          : Header:accept Key:*/*
+2025-02-12T17:17:31.331+01:00 DEBUG 28944 --- [s4s-gateway] [http-nio-8080-exec-2] d.f.aisec.s4sgateway.Controller          : Header:postman-token Key:402822fb-92d9-42de-8f22-489096363585
+2025-02-12T17:17:31.331+01:00 DEBUG 28944 --- [s4s-gateway] [http-nio-8080-exec-2] d.f.aisec.s4sgateway.Controller          : Header:host Key:localhost:8080
+2025-02-12T17:17:31.331+01:00 DEBUG 28944 --- [s4s-gateway] [http-nio-8080-exec-2] d.f.aisec.s4sgateway.Controller          : Header:accept-encoding Key:gzip, deflate, br
+2025-02-12T17:17:31.331+01:00 DEBUG 28944 --- [s4s-gateway] [http-nio-8080-exec-2] d.f.aisec.s4sgateway.Controller          : Header:connection Key:keep-alive
+2025-02-12T17:17:31.331+01:00 DEBUG 28944 --- [s4s-gateway] [http-nio-8080-exec-2] d.f.aisec.s4sgateway.Controller          : Header:content-length Key:120
+2025-02-12T17:17:31.331+01:00 DEBUG 28944 --- [s4s-gateway] [http-nio-8080-exec-2] d.f.aisec.s4sgateway.Controller          : RequestURI /topics/jsontest
+2025-02-12T17:17:31.331+01:00 DEBUG 28944 --- [s4s-gateway] [http-nio-8080-exec-2] d.f.aisec.s4sgateway.Controller          : RemotePort 63719
+2025-02-12T17:17:31.331+01:00 DEBUG 28944 --- [s4s-gateway] [http-nio-8080-exec-2] d.f.aisec.s4sgateway.Controller          : LocalPort  8080
+2025-02-12T17:17:31.331+01:00 DEBUG 28944 --- [s4s-gateway] [http-nio-8080-exec-2] d.f.aisec.s4sgateway.Controller          : ServerPort 8080
+2025-02-12T17:17:31.331+01:00 DEBUG 28944 --- [s4s-gateway] [http-nio-8080-exec-2] d.f.aisec.s4sgateway.Controller          : ServerName localhost
+2025-02-12T17:17:31.331+01:00 DEBUG 28944 --- [s4s-gateway] [http-nio-8080-exec-2] d.f.aisec.s4sgateway.Controller          : Body       {
+    "records": [
+        {
+            "value": {
+                "foo": "bar"
+            }
+        }
+    ]
+}
+2025-02-12T17:20:44.044+01:00  INFO 3761 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Starting Application using Java 17.0.5 with PID 3761 (/mnt/c/Users/hen34416/GIT/safe4soc-gateway/build/classes/java/main started by ubuntu in /mnt/c/Users/hen34416/GIT/safe4soc-gateway)
+2025-02-12T17:20:44.057+01:00 DEBUG 3761 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : Running with Spring Boot v3.3.5, Spring v6.1.14
+2025-02-12T17:20:44.059+01:00  INFO 3761 --- [s4s-gateway] [main] d.f.aisec.s4sgateway.Application         : No active profile set, falling back to 1 default profile: "default"
