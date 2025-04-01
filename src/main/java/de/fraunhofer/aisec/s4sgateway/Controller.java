@@ -43,8 +43,6 @@ public class Controller {
 	@Value("${kafkaPortLocal}")
 	private String kafkaPortLocal;
 
-	@Value("${isaConfigFilePath}")
-	private Resource isaConfigFilePath;
 	@Value("${isaConfig}")
 	private String isaConfig;
 	JSONObject isa;
@@ -56,13 +54,17 @@ public class Controller {
 	GatewayRole gatewayRole;
 	@Value("#{${relevantHeaders}}")
 	private List<String> relevantHeaders;
+	JSONObject filterConfig;
+	JSONObject enrichmentConfig;
 
 	@Bean
 	public ApplicationRunner initiationAfterLaunch() {
 		return args -> {
-			logger.info("Loading Information Sharing Agreement settings ...");
+			logger.info("Loading Information Sharing Agreement and Filter settings ...");
 			try {
 				isa = new JSONObject(isaConfig);
+				filterConfig = isa.getJSONObject("filterConfig");
+				enrichmentConfig = isa.getJSONObject("enrichmentConfig");
 			}catch (JSONException err){
 				logger.error("Error: {}", err.toString());
 			}
@@ -114,7 +116,20 @@ public class Controller {
             logger.debug("LocalPort  {}", incomingRequest.getLocalPort());
             logger.debug("ServerPort {}", incomingRequest.getServerPort());
             logger.debug("ServerName {}", incomingRequest.getServerName());
-			logger.debug("Body       {}", body);
+			logger.debug("Body     \n{}", body);
+		}
+
+		String answer = body;
+		// if format is json apply filter
+		JSONObject data = new JSONObject(answer);
+		if(!data.isEmpty()){
+			Utils.applyFilter(data, filterConfig);
+			logger.debug("Body after Filtering:\n{}",data.toString(2));
+
+			Utils.applyEnrichment(data,enrichmentConfig);
+			logger.debug("Body after Enrichment:\n{}",data.toString(2));
+
+			answer = data.toString();
 		}
 
 		//TODO activate https
@@ -139,7 +154,7 @@ public class Controller {
 				requestBuilder.GET();
 				break;
 			case "POST":
-				requestBuilder.POST(HttpRequest.BodyPublishers.ofString(body));
+				requestBuilder.POST(HttpRequest.BodyPublishers.ofString(answer));
 				break;
 		}
 
@@ -166,7 +181,7 @@ public class Controller {
 
 		if (logger.isDebugEnabled()) {
             logger.debug("Printing forwarded request info: {}", request.toString());
-            logger.debug("Printing forwarded body: {}", body);
+            logger.debug("Printing forwarded body: {}", answer);
 		}
 
 		// Create an HttpClient
