@@ -7,239 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "SENDER-gateway status",
-			"request": {
-				"method": "GET",
-				"header": []
-			},
-			"response": []
-		},
-		{
-			"name": "RECEIVER-gateway status",
-			"request": {
-				"method": "GET",
-				"header": []
-			},
-			"response": []
-		},
-		{
-			"name": "SENDER-isacheck",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"provider_reason\":\"compliance\",\"intended_use\":\"alert_gathering\",\"data_usage_policies\":{\"use_until\":\"2024-12-12\",\"use_after\":\"2024-09-12\",\"share_further\":\"false\"},\"data_sender_SIEM_brand\":\"Example Company A\",\"data_sender_SIEM_version\":\"Version 0.1\",\"IDMEFv2_attributes\":{\"attributes_to_transmit\":[],\"attributes_to_neglect\":[],\"attributes_to_anonymize\":[],\"attributes_to_pseudonemize\":[]},\"sending_mode\":\"realtime\",\"encryption_requirements\":[],\"authentication_requirements\":[],\"connection_requirements\":[]}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/isacheck",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"isacheck"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "RECEIVER-isacheck",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"provider_reason\":\"compliance\",\"intended_use\":\"alert_gathering\",\"data_usage_policies\":{\"use_until\":\"2024-12-12\",\"use_after\":\"2024-09-12\",\"share_further\":\"false\"},\"data_sender_SIEM_brand\":\"Example Company A\",\"data_sender_SIEM_version\":\"Version 0.1\",\"IDMEFv2_attributes\":{\"attributes_to_transmit\":[],\"attributes_to_neglect\":[],\"attributes_to_anonymize\":[],\"attributes_to_pseudonemize\":[]},\"sending_mode\":\"realtime\",\"encryption_requirements\":[],\"authentication_requirements\":[],\"connection_requirements\":[]}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/isacheck",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"isacheck"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "kafka-json-test",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/vnd.kafka.json.v2+json",
-						"type": "text"
-					},
-					{
-						"key": "safe4soc-receiver-hostname",
-						"value": "localhost",
-						"type": "text"
-					},
-					{
-						"key": "safe4soc-receiver-port",
-						"value": "38082",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"records\": [\r\n        {\r\n            \"value\": {\r\n                \"foo\": \"bar\"\r\n            }\r\n        }\r\n    ]\r\n}",
-					"options": {
-						"raw": {
-							"language": "text"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:38082/topics/jsontest",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "38082",
-					"path": [
-						"topics",
-						"jsontest"
-					],
-					"query": [
-						{
-							"key": null,
-							"value": "",
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "kafka-json-test-gateway-sd",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/vnd.kafka.json.v2+json",
-						"type": "text"
-					},
-					{
-						"key": "safe4soc-receiver-hostname",
-						"value": "localhost",
-						"type": "text"
-					},
-					{
-						"key": "safe4soc-receiver-port",
-						"value": "38082",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"records\": [\r\n        {\r\n            \"value\": {\r\n                \"foo\": \"bar\"\r\n            }\r\n        }\r\n    ]\r\n}",
-					"options": {
-						"raw": {
-							"language": "text"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:38082/topics/jsontest",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "38082",
-					"path": [
-						"topics",
-						"jsontest"
-					],
-					"query": [
-						{
-							"key": null,
-							"value": "",
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "kafka-json-test-gateway-rc",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/vnd.kafka.json.v2+json",
-						"type": "text"
-					},
-					{
-						"key": "safe4soc-receiver-hostname",
-						"value": "localhost",
-						"type": "text"
-					},
-					{
-						"key": "safe4soc-receiver-port",
-						"value": "38082",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"records\": [\r\n        {\r\n            \"value\": {\r\n                \"foo\": \"bar\"\r\n            }\r\n        }\r\n    ]\r\n}",
-					"options": {
-						"raw": {
-							"language": "text"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:38082/topics/jsontest",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "38082",
-					"path": [
-						"topics",
-						"jsontest"
-					],
-					"query": [
-						{
-							"key": null,
-							"value": "",
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Kafka Topics",
+			"name": "Kafka dircet test Topics List",
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -255,6 +23,238 @@
 					"port": "38082",
 					"path": [
 						"topics"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Kafka direct test Message Post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/vnd.kafka.json.v2+json",
+						"type": "text"
+					},
+					{
+						"key": "safe4soc-receiver-hostname",
+						"value": "localhost",
+						"type": "text"
+					},
+					{
+						"key": "safe4soc-receiver-port",
+						"value": "38082",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"records\": [\r\n        {\r\n            \"value\": {\r\n                \"foo\": \"bar\"\r\n            }\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:38082/topics/jsontest",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "38082",
+					"path": [
+						"topics",
+						"jsontest"
+					],
+					"query": [
+						{
+							"key": null,
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "gateway-sender status",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "gateway-receiver status",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "gateway-sender isacheck",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"provider_reason\":\"compliance\",\"intended_use\":\"alert_gathering\",\"data_usage_policies\":{\"use_until\":\"2024-12-12\",\"use_after\":\"2024-09-12\",\"share_further\":\"false\"},\"data_sender_SIEM_brand\":\"Example Company A\",\"data_sender_SIEM_version\":\"Version 0.1\",\"IDMEFv2_attributes\":{\"attributes_to_transmit\":[],\"attributes_to_neglect\":[],\"attributes_to_anonymize\":[],\"attributes_to_pseudonemize\":[]},\"sending_mode\":\"realtime\",\"encryption_requirements\":[],\"authentication_requirements\":[],\"connection_requirements\":[]}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/isacheck",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"isacheck"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "gateway-receiver isacheck",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"provider_reason\":\"compliance\",\"intended_use\":\"alert_gathering\",\"data_usage_policies\":{\"use_until\":\"2024-12-12\",\"use_after\":\"2024-09-12\",\"share_further\":\"false\"},\"data_sender_SIEM_brand\":\"Example Company A\",\"data_sender_SIEM_version\":\"Version 0.1\",\"IDMEFv2_attributes\":{\"attributes_to_transmit\":[],\"attributes_to_neglect\":[],\"attributes_to_anonymize\":[],\"attributes_to_pseudonemize\":[]},\"sending_mode\":\"realtime\",\"encryption_requirements\":[],\"authentication_requirements\":[],\"connection_requirements\":[]}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/isacheck",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"isacheck"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "gateway-sender Message Post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/vnd.kafka.json.v2+json",
+						"type": "text"
+					},
+					{
+						"key": "safe4soc-receiver-hostname",
+						"value": "localhost",
+						"type": "text"
+					},
+					{
+						"key": "safe4soc-receiver-port",
+						"value": "38082",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"records\": [\r\n        {\r\n            \"value\": {\r\n                \"foo\": \"bar\"\r\n            }\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:38082/topics/jsontest",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "38082",
+					"path": [
+						"topics",
+						"jsontest"
+					],
+					"query": [
+						{
+							"key": null,
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "gateway-receiver Message Post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/vnd.kafka.json.v2+json",
+						"type": "text"
+					},
+					{
+						"key": "safe4soc-receiver-hostname",
+						"value": "localhost",
+						"type": "text"
+					},
+					{
+						"key": "safe4soc-receiver-port",
+						"value": "38082",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"records\": [\r\n        {\r\n            \"value\": {\r\n                \"foo\": \"bar\"\r\n            }\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:38082/topics/jsontest",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "38082",
+					"path": [
+						"topics",
+						"jsontest"
+					],
+					"query": [
+						{
+							"key": null,
+							"value": "",
+							"disabled": true
+						}
 					]
 				}
 			},

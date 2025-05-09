@@ -122,13 +122,19 @@ public class Controller {
 		String answer = body;
 		// if format is json apply filter
 		JSONObject data = new JSONObject(answer);
-		if(!data.isEmpty()){
-			Utils.applyFilter(data, filterConfig);
-			logger.debug("Body after Filtering:\n{}",data.toString(2));
-
-			Utils.applyEnrichment(data,enrichmentConfig);
-			logger.debug("Body after Enrichment:\n{}",data.toString(2));
-
+		if(!data.isEmpty()&& data.has("records")){
+			if(!filterConfig.isEmpty()){
+				Utils.applyFilter(
+						data.getJSONArray("records").getJSONObject(0).getJSONObject("value"),
+						filterConfig);
+				logger.debug("Body after Filtering:\n{}",data.toString(2));
+			}
+			if(!enrichmentConfig.isEmpty()){
+				Utils.applyEnrichment(
+						data.getJSONArray("records").getJSONObject(0).getJSONObject("value"),
+						enrichmentConfig);
+				logger.debug("Body after Enrichment:\n{}",data.toString(2));
+			}
 			answer = data.toString();
 		}
 
@@ -188,17 +194,23 @@ public class Controller {
 		HttpClient client = HttpClient.newBuilder()
 				.connectTimeout(Duration.ofSeconds(10))
 				.build();
-
+		HttpResponse<String> response = null;
 		try {
 			// Send the request and receive the response
-			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+			response = client.send(request, HttpResponse.BodyHandlers.ofString());
             logger.debug("Response status code: {}", response.statusCode());
             logger.debug("Response body: {}", response.body());
 			return new ResponseEntity<>(response.body(), HttpStatusCode.valueOf(response.statusCode()));
 		} catch (HttpTimeoutException e) {
             logger.error("Request timed out: {}", e.getMessage());
+			logger.debug("Response status code: {}", response.statusCode());
+			logger.debug("Response body: {}", response.body());
 		} catch (IOException | InterruptedException e) {
             logger.error("An error occurred: {}", e.getMessage());
+			logger.debug("Response status code: {}", response.statusCode());
+			logger.debug("Response body: {}", response.body());
+			
+
 		}
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		//return new ResponseEntity<>(String.format("Listed %d headers", headers.size()), HttpStatus.OK);
@@ -206,15 +218,21 @@ public class Controller {
 
 	@RequestMapping(value = "/status", method = {RequestMethod.GET})
 	public ResponseEntity status() {
-		return new ResponseEntity<>(String.format("Gateway online."), HttpStatus.OK);
+		logger.debug("Status function was called");
+		return new ResponseEntity<>(String.format("Gateway " + gatewayRole + " online."), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/isacheck", method = {RequestMethod.POST})
 	public ResponseEntity isaCheck(@RequestBody String isaReceived) {
+		logger.debug("IsaCheck function was called");
+		logger.debug("Received the following external ISA:");
+		logger.debug(isaReceived);
 		if (Utils.isaComparison(new JSONObject(isaReceived), this.isa)){
-			return new ResponseEntity<>(String.format("ISA compatible."), HttpStatus.OK);
+			logger.debug("ISA compatible.");
+			return new ResponseEntity<>("ISA compatible.", HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(String.format("ISA incompatible."), HttpStatus.INTERNAL_SERVER_ERROR);
+			logger.debug("ISA incompatible.");
+			return new ResponseEntity<>("ISA incompatible.", HttpStatus.CONFLICT);
 		}
 	}
 
