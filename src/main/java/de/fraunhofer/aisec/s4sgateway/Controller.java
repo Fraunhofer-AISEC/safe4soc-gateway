@@ -122,20 +122,22 @@ public class Controller {
 		String answer = body;
 		// if format is json apply filter
 		JSONObject data = new JSONObject(answer);
-		if(!data.isEmpty()&& data.has("records")){
+		if(!data.isEmpty()){
 			if(!filterConfig.isEmpty()){
-				Utils.applyFilter(
-						data.getJSONArray("records").getJSONObject(0).getJSONObject("value"),
-						filterConfig);
+				Utils.applyFilter(data, filterConfig);
 				logger.debug("Body after Filtering:\n{}",data.toString(2));
 			}
 			if(!enrichmentConfig.isEmpty()){
-				Utils.applyEnrichment(
-						data.getJSONArray("records").getJSONObject(0).getJSONObject("value"),
-						enrichmentConfig);
+				Utils.applyEnrichment(data, enrichmentConfig);
 				logger.debug("Body after Enrichment:\n{}",data.toString(2));
 			}
-			answer = data.toString();
+			//Kafka Proxy requires enveloping alert messages in record, key, value format is below:
+			if(gatewayRole==GatewayRole.RECEIVER){
+				logger.debug("Putting message alert in Kafka Proxy envelope.");
+				answer = "{\"records\":[{\"key\":\"test\",\"value\":" + data.toString() + "}]}";
+			} else {
+				answer = data.toString();
+			}
 		}
 
 		//TODO activate https
