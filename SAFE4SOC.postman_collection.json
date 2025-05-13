@@ -15,12 +15,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:38082/topics",
+					"raw": "http://localhost:8082/topics",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "38082",
+					"port": "8082",
 					"path": [
 						"topics"
 					]
@@ -37,21 +37,11 @@
 						"key": "Content-Type",
 						"value": "application/vnd.kafka.json.v2+json",
 						"type": "text"
-					},
-					{
-						"key": "safe4soc-receiver-hostname",
-						"value": "localhost",
-						"type": "text"
-					},
-					{
-						"key": "safe4soc-receiver-port",
-						"value": "38082",
-						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"records\": [\r\n        {\r\n            \"value\": {\r\n                \"foo\": \"bar\"\r\n            }\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"records\": [\r\n        {\r\n            \"key\":\"test\",\r\n            \"value\":\r\n                {\r\n                    \"Version\": \"2.D.V04\",\r\n                    \"ID\": \"e5f9bbae-163e-42f9-a2f2-0daaf78fefb1\",\r\n                    \"Status\": \"Incident\",\r\n                    \"OrganisationName\": \"acme.eu\",\r\n                    \"CreateTime\": \"\",\r\n                    \"StartTime\": \"2021-01-18T23:33:04.52Z\",\r\n                    \"Cause\": \"Malicious\",\r\n                    \"Category\": [\r\n                        \"Recon.Scanning\"\r\n                    ],\r\n                    \"Priority\": \"Medium\",\r\n                    \"Confidence\": 0.9,\r\n                    \"Description\": \"An IDS event of type \\\"Unknown IP Protocol\\\" was observed\",\r\n                    \"Analyzer\": {\r\n                        \"IP\": \"172.10.5.31\",\r\n                        \"Name\": \"Core router\",\r\n                        \"Hostname\": \"core-router.example.com\",\r\n                        \"Type\": \"Cyber\",\r\n                        \"Model\": \"Cisco 4532\",\r\n                        \"Category\": [\r\n                        \"NIDS\"\r\n                        ],\r\n                        \"Data\": [\r\n                        \"Datagram\"\r\n                        ],\r\n                        \"Method\": [\r\n                        \"signature\"\r\n                        ],\r\n                        \"GeoLocation\": \"+48.75726,+2.299528,+65.1\",\r\n                        \"UnLocation\": \"GR ATH\",\r\n                        \"Location\": \"SBDX1\"\r\n                    },\r\n                    \"Sensor\": [\r\n                        {\r\n                        \"IP\": \"172.10.5.31\",\r\n                        \"Name\": \"Core router\",\r\n                        \"CaptureZone\": \"[{\\\"type\\\":\\\"ipv4-addr\\\",\\\"spec_version\\\":\\\"2.1\\\",\\\"id\\\": \\\"ipv4-addr--ff26c055-6336-5bc5-b98d-13d6226742dd\\\",\\\"value\\\": \\\"172.17.0.0\\\"},{\\\"type\\\":\\\"ipv4-net-mask\\\",\\\"spec_version\\\":\\\"2.1\\\",\\\"id\\\":\\\"ipv4-net-mask--ff26c055-6336-5bc5-b98d-13d6226742dd\\\",\\\"value\\\":\\\"255.255.0.0\\\"}]\"\r\n                        }\r\n                    ],\r\n                    \"Source\": [\r\n                        {\r\n                        \"IP\": \"77.222.222.115\",\r\n                        \"Protocol\": [\r\n                            \"Unknown\"\r\n                        ]\r\n                        }\r\n                    ],\r\n                    \"Target\": [\r\n                        {\r\n                        \"IP\": \"172.20.7.25\",\r\n                        \"Port\": [\r\n                            645\r\n                        ],\r\n                        \"Location\": \"Datacenter SBX1\"\r\n                        }\r\n                    ]\r\n                }\r\n            \r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "text"
@@ -59,15 +49,15 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:38082/topics/jsontest",
+					"raw": "http://localhost:8082/topics/alerts",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "38082",
+					"port": "8082",
 					"path": [
 						"topics",
-						"jsontest"
+						"alerts"
 					],
 					"query": [
 						{
@@ -82,9 +72,31 @@
 		},
 		{
 			"name": "gateway-sender status",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:10080/status",
+					"host": [
+						"localhost"
+					],
+					"port": "10080",
+					"path": [
+						"status"
+					]
+				}
 			},
 			"response": []
 		},
@@ -92,7 +104,17 @@
 			"name": "gateway-receiver status",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "localhost:10081/status",
+					"host": [
+						"localhost"
+					],
+					"port": "10081",
+					"path": [
+						"status"
+					]
+				}
 			},
 			"response": []
 		},
@@ -114,11 +136,11 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/isacheck",
+					"raw": "localhost:10080/isacheck",
 					"host": [
 						"localhost"
 					],
-					"port": "8080",
+					"port": "10080",
 					"path": [
 						"isacheck"
 					]
@@ -144,11 +166,11 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/isacheck",
+					"raw": "localhost:10081/isacheck",
 					"host": [
 						"localhost"
 					],
-					"port": "8080",
+					"port": "10081",
 					"path": [
 						"isacheck"
 					]
@@ -165,21 +187,11 @@
 						"key": "Content-Type",
 						"value": "application/vnd.kafka.json.v2+json",
 						"type": "text"
-					},
-					{
-						"key": "safe4soc-receiver-hostname",
-						"value": "localhost",
-						"type": "text"
-					},
-					{
-						"key": "safe4soc-receiver-port",
-						"value": "38082",
-						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"records\": [\r\n        {\r\n            \"value\": {\r\n                \"foo\": \"bar\"\r\n            }\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n  \"Version\": \"2.D.V04\",\r\n  \"ID\": \"e5f9bbae-163e-42f9-a2f2-0daaf78fefb1\",\r\n  \"Status\": \"Incident\",\r\n  \"OrganisationName\": \"acme.eu\",\r\n  \"CreateTime\": \"\",\r\n  \"StartTime\": \"2021-01-18T23:33:04.52Z\",\r\n  \"Cause\": \"Malicious\",\r\n  \"Category\": [\r\n    \"Recon.Scanning\"\r\n  ],\r\n  \"Priority\": \"Medium\",\r\n  \"Confidence\": 0.9,\r\n  \"Description\": \"An IDS event of type \\\"Unknown IP Protocol\\\" was observed\",\r\n  \"Analyzer\": {\r\n    \"IP\": \"172.10.5.31\",\r\n    \"Name\": \"Core router\",\r\n    \"Hostname\": \"core-router.example.com\",\r\n    \"Type\": \"Cyber\",\r\n    \"Model\": \"Cisco 4532\",\r\n    \"Category\": [\r\n      \"NIDS\"\r\n    ],\r\n    \"Data\": [\r\n      \"Datagram\"\r\n    ],\r\n    \"Method\": [\r\n      \"signature\"\r\n    ],\r\n    \"GeoLocation\": \"+48.75726,+2.299528,+65.1\",\r\n    \"UnLocation\": \"GR ATH\",\r\n    \"Location\": \"SBDX1\"\r\n  },\r\n  \"Sensor\": [\r\n    {\r\n      \"IP\": \"172.10.5.31\",\r\n      \"Name\": \"Core router\",\r\n      \"CaptureZone\": \"[{\\\"type\\\":\\\"ipv4-addr\\\",\\\"spec_version\\\":\\\"2.1\\\",\\\"id\\\": \\\"ipv4-addr--ff26c055-6336-5bc5-b98d-13d6226742dd\\\",\\\"value\\\": \\\"172.17.0.0\\\"},{\\\"type\\\":\\\"ipv4-net-mask\\\",\\\"spec_version\\\":\\\"2.1\\\",\\\"id\\\":\\\"ipv4-net-mask--ff26c055-6336-5bc5-b98d-13d6226742dd\\\",\\\"value\\\":\\\"255.255.0.0\\\"}]\"\r\n    }\r\n  ],\r\n  \"Source\": [\r\n    {\r\n      \"IP\": \"77.222.222.115\",\r\n      \"Protocol\": [\r\n        \"Unknown\"\r\n      ]\r\n    }\r\n  ],\r\n  \"Target\": [\r\n    {\r\n      \"IP\": \"172.20.7.25\",\r\n      \"Port\": [\r\n        645\r\n      ],\r\n      \"Location\": \"Datacenter SBX1\"\r\n    }\r\n  ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "text"
@@ -187,15 +199,15 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:38082/topics/jsontest",
+					"raw": "http://localhost:10080/topics/alerts",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "38082",
+					"port": "10080",
 					"path": [
 						"topics",
-						"jsontest"
+						"alerts"
 					],
 					"query": [
 						{
@@ -217,21 +229,11 @@
 						"key": "Content-Type",
 						"value": "application/vnd.kafka.json.v2+json",
 						"type": "text"
-					},
-					{
-						"key": "safe4soc-receiver-hostname",
-						"value": "localhost",
-						"type": "text"
-					},
-					{
-						"key": "safe4soc-receiver-port",
-						"value": "38082",
-						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"records\": [\r\n        {\r\n            \"value\": {\r\n                \"foo\": \"bar\"\r\n            }\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n  \"Version\": \"2.D.V04\",\r\n  \"ID\": \"e5f9bbae-163e-42f9-a2f2-0daaf78fefb1\",\r\n  \"Status\": \"Incident\",\r\n  \"OrganisationName\": \"acme.eu\",\r\n  \"CreateTime\": \"\",\r\n  \"StartTime\": \"2021-01-18T23:33:04.52Z\",\r\n  \"Cause\": \"Malicious\",\r\n  \"Category\": [\r\n    \"Recon.Scanning\"\r\n  ],\r\n  \"Priority\": \"Medium\",\r\n  \"Confidence\": 0.9,\r\n  \"Description\": \"An IDS event of type \\\"Unknown IP Protocol\\\" was observed\",\r\n  \"Analyzer\": {\r\n    \"IP\": \"172.10.5.31\",\r\n    \"Name\": \"Core router\",\r\n    \"Hostname\": \"core-router.example.com\",\r\n    \"Type\": \"Cyber\",\r\n    \"Model\": \"Cisco 4532\",\r\n    \"Category\": [\r\n      \"NIDS\"\r\n    ],\r\n    \"Data\": [\r\n      \"Datagram\"\r\n    ],\r\n    \"Method\": [\r\n      \"signature\"\r\n    ],\r\n    \"GeoLocation\": \"+48.75726,+2.299528,+65.1\",\r\n    \"UnLocation\": \"GR ATH\",\r\n    \"Location\": \"SBDX1\"\r\n  },\r\n  \"Sensor\": [\r\n    {\r\n      \"IP\": \"172.10.5.31\",\r\n      \"Name\": \"Core router\",\r\n      \"CaptureZone\": \"[{\\\"type\\\":\\\"ipv4-addr\\\",\\\"spec_version\\\":\\\"2.1\\\",\\\"id\\\": \\\"ipv4-addr--ff26c055-6336-5bc5-b98d-13d6226742dd\\\",\\\"value\\\": \\\"172.17.0.0\\\"},{\\\"type\\\":\\\"ipv4-net-mask\\\",\\\"spec_version\\\":\\\"2.1\\\",\\\"id\\\":\\\"ipv4-net-mask--ff26c055-6336-5bc5-b98d-13d6226742dd\\\",\\\"value\\\":\\\"255.255.0.0\\\"}]\"\r\n    }\r\n  ],\r\n  \"Source\": [\r\n    {\r\n      \"IP\": \"77.222.222.115\",\r\n      \"Protocol\": [\r\n        \"Unknown\"\r\n      ]\r\n    }\r\n  ],\r\n  \"Target\": [\r\n    {\r\n      \"IP\": \"172.20.7.25\",\r\n      \"Port\": [\r\n        645\r\n      ],\r\n      \"Location\": \"Datacenter SBX1\"\r\n    }\r\n  ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "text"
@@ -239,15 +241,15 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:38082/topics/jsontest",
+					"raw": "http://localhost:10081/topics/alerts",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "38082",
+					"port": "10081",
 					"path": [
 						"topics",
-						"jsontest"
+						"alerts"
 					],
 					"query": [
 						{
