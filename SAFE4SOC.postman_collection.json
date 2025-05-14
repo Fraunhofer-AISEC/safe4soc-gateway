@@ -71,7 +71,7 @@
 			"response": []
 		},
 		{
-			"name": "gateway-sender status",
+			"name": "gateway-sender Status",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -101,7 +101,7 @@
 			"response": []
 		},
 		{
-			"name": "gateway-receiver status",
+			"name": "gateway-receiver Status",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -119,7 +119,67 @@
 			"response": []
 		},
 		{
-			"name": "gateway-sender isacheck",
+			"name": "gateway-sender Reload Config",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:10080/reloadconfig",
+					"host": [
+						"localhost"
+					],
+					"port": "10080",
+					"path": [
+						"reloadconfig"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "gateway-receiver Reload Config",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:10081/reloadconfig",
+					"host": [
+						"localhost"
+					],
+					"port": "10081",
+					"path": [
+						"reloadconfig"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "gateway-sender Isa Check",
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -149,7 +209,7 @@
 			"response": []
 		},
 		{
-			"name": "gateway-receiver isacheck",
+			"name": "gateway-receiver Isa Check",
 			"request": {
 				"auth": {
 					"type": "noauth"

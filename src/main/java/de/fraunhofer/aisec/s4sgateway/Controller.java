@@ -60,48 +60,52 @@ public class Controller {
 	@Bean
 	public ApplicationRunner initiationAfterLaunch() {
 		return args -> {
-			logger.info("Loading Information Sharing Agreement and Filter settings ...");
-			try {
-				isa = new JSONObject(isaConfig);
-				filterConfig = isa.getJSONObject("filterConfig");
-				enrichmentConfig = isa.getJSONObject("enrichmentConfig");
-			}catch (JSONException err){
-				logger.error("Error: {}", err.toString());
-			}
-			logger.info("Loaded this ISA:{}",isa);
+			initConfig();
+		};
+	}
 
-			/* Checking given configuration  */
-			logger.info("Checking given configuration for role={} ...",gatewayRole);
-			if(gatewayRole.toString().isEmpty()){logger.error("GatewayRole is not configured!");}
+	private void initConfig(){
+		logger.info("Loading Information Sharing Agreement and Filter settings ...");
+		try {
+			isa = new JSONObject(isaConfig);
+			filterConfig = isa.getJSONObject("filterConfig");
+			enrichmentConfig = isa.getJSONObject("enrichmentConfig");
+		}catch (JSONException err){
+			logger.error("Error: {}", err.toString());
+		}
+		logger.info("Loaded this ISA:{}",isa);
+
+		/* Checking given configuration  */
+		logger.info("Checking given configuration for role={} ...",gatewayRole);
+		if(gatewayRole.toString().isEmpty()){logger.error("GatewayRole is not configured!");}
+		switch (gatewayRole){
+			case SENDER:
+				if(gatewayDomainSD.isEmpty()){logger.error("GatewayDomainSD is not configured!");}
+				if(gatewayPortSD.isEmpty()){logger.error("GatewayPortSD is not configured!");}
+				if(gatewayDomainRC.isEmpty()){logger.error("GatewayDomainRC is not configured!");}
+				if(gatewayPortRC.isEmpty()){logger.error("GatewayPortRC is not configured!");}
+				break;
+			case RECEIVER:
+				if(kafkaDomainLocal.isEmpty()){logger.error("KafkaDomainLocal is not configured!");}
+				if(kafkaPortLocal.isEmpty()){logger.error("KafkaPortLocal is not configured!");}
+				if(gatewayDomainRC.isEmpty()){logger.error("GatewayDomainRC is not configured!");}
+				if(gatewayPortRC.isEmpty()){logger.error("GatewayPortRC is not configured!");}
+				break;
+		}
+
+		if(logger.isInfoEnabled()){
 			switch (gatewayRole){
 				case SENDER:
-					if(gatewayDomainSD.isEmpty()){logger.error("GatewayDomainSD is not configured!");}
-					if(gatewayPortSD.isEmpty()){logger.error("GatewayPortSD is not configured!");}
-					if(gatewayDomainRC.isEmpty()){logger.error("GatewayDomainRC is not configured!");}
-					if(gatewayPortRC.isEmpty()){logger.error("GatewayPortRC is not configured!");}
+					logger.info("Config gatewaySD={}:{}",gatewayDomainSD,gatewayPortSD);
+					logger.info("Config gatewayRC={}:{}",gatewayDomainRC,gatewayPortRC);
 					break;
 				case RECEIVER:
-					if(kafkaDomainLocal.isEmpty()){logger.error("KafkaDomainLocal is not configured!");}
-					if(kafkaPortLocal.isEmpty()){logger.error("KafkaPortLocal is not configured!");}
-					if(gatewayDomainRC.isEmpty()){logger.error("GatewayDomainRC is not configured!");}
-					if(gatewayPortRC.isEmpty()){logger.error("GatewayPortRC is not configured!");}
+					logger.info("Config gatewayRC={}:{}",gatewayDomainRC,gatewayPortRC);
+					logger.info("Config kafkaLocal={}:{}",kafkaDomainLocal,kafkaPortLocal);
 					break;
 			}
-
-			if(logger.isInfoEnabled()){
-				switch (gatewayRole){
-					case SENDER:
-						logger.info("Config gatewaySD={}:{}",gatewayDomainSD,gatewayPortSD);
-						logger.info("Config gatewayRC={}:{}",gatewayDomainRC,gatewayPortRC);
-						break;
-					case RECEIVER:
-						logger.info("Config gatewayRC={}:{}",gatewayDomainRC,gatewayPortRC);
-						logger.info("Config kafkaLocal={}:{}",kafkaDomainLocal,kafkaPortLocal);
-						break;
-				}
-				logger.info("Config relevantHeaders={}",relevantHeaders.toString());
-			}
-		};
+			logger.info("Config relevantHeaders={}",relevantHeaders.toString());
+		}
 	}
 
 	@RequestMapping(value = "/**", method = {RequestMethod.GET, RequestMethod.POST})
@@ -222,6 +226,14 @@ public class Controller {
 	public ResponseEntity status() {
 		logger.debug("Status function was called");
 		return new ResponseEntity<>(String.format("Gateway " + gatewayRole + " online."), HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/reloadconfig", method = {RequestMethod.GET})
+	public ResponseEntity reloadConfig() {
+		logger.debug("Reload Configuration function was called");
+		initConfig();
+		return new ResponseEntity<>(String.format("Configuration reload attempt was processed, please see internal logs for results."),
+				HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/isacheck", method = {RequestMethod.POST})
