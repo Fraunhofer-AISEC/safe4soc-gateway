@@ -7,6 +7,119 @@
 	},
 	"item": [
 		{
+			"name": "Set ISA Samples",
+			"item": [
+				{
+					"name": "Set ISA gateway-sender",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"provider_reason\": \"compliance\",\r\n    \"intended_use\": \"alert_gathering\",\r\n    \"data_usage_policies\": {\r\n        \"use_until\": \"2024-12-12\",\r\n        \"use_after\": \"2024-09-12\",\r\n        \"share_further\": \"false\"\r\n    },\r\n    \"data_sender_SIEM_brand\": \"Example Company A\",\r\n    \"data_sender_SIEM_version\": \"Version 0.1\",\r\n    \"IDMEFv2_attributes\": {\r\n        \"attributes_to_transmit\": [],\r\n        \"attributes_to_neglect\": [],\r\n        \"attributes_to_anonymize\": [],\r\n        \"attributes_to_pseudonemize\": []\r\n    },\r\n    \"sending_mode\": \"\",\r\n    \"encryption_requirements\": [],\r\n    \"authentication_requirements\": [],\r\n    \"connection_requirements\": [],\r\n    \"filterConfig\": {\r\n           \"Version\": \"\",\r\n            \"ID\": \"\"\r\n    },\r\n    \"enrichmentConfig\": {\r\n        \"CreateTime\": \"\",\r\n        \"StartTime\": \"\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:10080/setisa",
+							"host": [
+								"localhost"
+							],
+							"port": "10080",
+							"path": [
+								"setisa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set ISA gateway-sender - filter source IP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"provider_reason\": \"compliance\",\r\n    \"intended_use\": \"alert_gathering\",\r\n    \"data_usage_policies\": {\r\n        \"use_until\": \"2024-12-12\",\r\n        \"use_after\": \"2024-09-12\",\r\n        \"share_further\": \"false\"\r\n    },\r\n    \"data_sender_SIEM_brand\": \"Example Company A\",\r\n    \"data_sender_SIEM_version\": \"Version 0.1\",\r\n    \"IDMEFv2_attributes\": {\r\n        \"attributes_to_transmit\": [],\r\n        \"attributes_to_neglect\": [],\r\n        \"attributes_to_anonymize\": [],\r\n        \"attributes_to_pseudonemize\": []\r\n    },\r\n    \"sending_mode\": \"\",\r\n    \"encryption_requirements\": [],\r\n    \"authentication_requirements\": [],\r\n    \"connection_requirements\": [],\r\n    \"filterConfig\": {\r\n            \"Source\": {\r\n              \"IP\": \"\"\r\n            }\r\n    },\r\n    \"enrichmentConfig\": {\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:10080/setisa",
+							"host": [
+								"localhost"
+							],
+							"port": "10080",
+							"path": [
+								"setisa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set ISA gateway-sender - no filter, no enrichment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"provider_reason\": \"compliance\",\r\n    \"intended_use\": \"alert_gathering\",\r\n    \"data_usage_policies\": {\r\n        \"use_until\": \"2024-12-12\",\r\n        \"use_after\": \"2024-09-12\",\r\n        \"share_further\": \"false\"\r\n    },\r\n    \"data_sender_SIEM_brand\": \"Example Company A\",\r\n    \"data_sender_SIEM_version\": \"Version 0.1\",\r\n    \"IDMEFv2_attributes\": {\r\n        \"attributes_to_transmit\": [],\r\n        \"attributes_to_neglect\": [],\r\n        \"attributes_to_anonymize\": [],\r\n        \"attributes_to_pseudonemize\": []\r\n    },\r\n    \"sending_mode\": \"\",\r\n    \"encryption_requirements\": [],\r\n    \"authentication_requirements\": [],\r\n    \"connection_requirements\": [],\r\n    \"filterConfig\": {},\r\n    \"enrichmentConfig\": {}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:10080/setisa",
+							"host": [
+								"localhost"
+							],
+							"port": "10080",
+							"path": [
+								"setisa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set ISA gateway-receiver",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"provider_reason\": \"compliance\",\r\n    \"intended_use\": \"alert_gathering\",\r\n    \"data_usage_policies\": {\r\n        \"use_until\": \"2024-12-12\",\r\n        \"use_after\": \"2024-09-12\",\r\n        \"share_further\": \"false\"\r\n    },\r\n    \"data_sender_SIEM_brand\": \"Example Company A\",\r\n    \"data_sender_SIEM_version\": \"Version 0.1\",\r\n    \"IDMEFv2_attributes\": {\r\n        \"attributes_to_transmit\": [],\r\n        \"attributes_to_neglect\": [],\r\n        \"attributes_to_anonymize\": [],\r\n        \"attributes_to_pseudonemize\": []\r\n    },\r\n    \"sending_mode\": \"\",\r\n    \"encryption_requirements\": [],\r\n    \"authentication_requirements\": [],\r\n    \"connection_requirements\": [],\r\n    \"filterConfig\": {\r\n           \"Version\": \"\",\r\n            \"ID\": \"\"\r\n    },\r\n    \"enrichmentConfig\": {\r\n        \"CreateTime\": \"\",\r\n        \"StartTime\": \"\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:10081/setisa",
+							"host": [
+								"localhost"
+							],
+							"port": "10081",
+							"path": [
+								"setisa"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Kafka dircet test Topics List",
 			"request": {
 				"auth": {
@@ -71,7 +184,7 @@
 			"response": []
 		},
 		{
-			"name": "gateway-sender Status",
+			"name": "Status gateway-sender",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -101,7 +214,7 @@
 			"response": []
 		},
 		{
-			"name": "gateway-receiver Status",
+			"name": "Status gateway-receiver",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -119,7 +232,7 @@
 			"response": []
 		},
 		{
-			"name": "gateway-sender Reload Config",
+			"name": "Reload Config gateway-sender",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -149,7 +262,7 @@
 			"response": []
 		},
 		{
-			"name": "gateway-receiver Reload Config",
+			"name": "Reload Config gateway-receiver",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -179,7 +292,7 @@
 			"response": []
 		},
 		{
-			"name": "gateway-sender Isa Check",
+			"name": "Isa Check gateway-sender",
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -209,7 +322,7 @@
 			"response": []
 		},
 		{
-			"name": "gateway-receiver Isa Check",
+			"name": "Isa Check gateway-receiver",
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -239,7 +352,7 @@
 			"response": []
 		},
 		{
-			"name": "gateway-sender Message Post",
+			"name": "Message Post gateway-sender",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -281,7 +394,7 @@
 			"response": []
 		},
 		{
-			"name": "gateway-receiver Message Post",
+			"name": "Message Post gateway-receiver",
 			"request": {
 				"method": "POST",
 				"header": [

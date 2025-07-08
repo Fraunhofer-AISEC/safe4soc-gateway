@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -65,48 +67,20 @@ public class Controller {
 	}
 
 	private void initConfig(){
-		logger.info("Loading Information Sharing Agreement and Filter settings ...");
-		try {
-			isa = new JSONObject(isaConfig);
-			filterConfig = isa.getJSONObject("filterConfig");
-			enrichmentConfig = isa.getJSONObject("enrichmentConfig");
-		}catch (JSONException err){
-			logger.error("Error: {}", err.toString());
-		}
-		logger.info("Loaded this ISA:{}",isa);
-
-		/* Checking given configuration  */
-		logger.info("Checking given configuration for role={} ...",gatewayRole);
-		if(gatewayRole.toString().isEmpty()){logger.error("GatewayRole is not configured!");}
-		switch (gatewayRole){
-			case SENDER:
-				if(gatewayDomainSD.isEmpty()){logger.error("GatewayDomainSD is not configured!");}
-				if(gatewayPortSD.isEmpty()){logger.error("GatewayPortSD is not configured!");}
-				if(gatewayDomainRC.isEmpty()){logger.error("GatewayDomainRC is not configured!");}
-				if(gatewayPortRC.isEmpty()){logger.error("GatewayPortRC is not configured!");}
-				break;
-			case RECEIVER:
-				if(kafkaDomainLocal.isEmpty()){logger.error("KafkaDomainLocal is not configured!");}
-				if(kafkaPortLocal.isEmpty()){logger.error("KafkaPortLocal is not configured!");}
-				if(gatewayDomainRC.isEmpty()){logger.error("GatewayDomainRC is not configured!");}
-				if(gatewayPortRC.isEmpty()){logger.error("GatewayPortRC is not configured!");}
-				break;
-		}
-
-		if(logger.isInfoEnabled()){
-			switch (gatewayRole){
-				case SENDER:
-					logger.info("Config gatewaySD={}:{}",gatewayDomainSD,gatewayPortSD);
-					logger.info("Config gatewayRC={}:{}",gatewayDomainRC,gatewayPortRC);
-					break;
-				case RECEIVER:
-					logger.info("Config gatewayRC={}:{}",gatewayDomainRC,gatewayPortRC);
-					logger.info("Config kafkaLocal={}:{}",kafkaDomainLocal,kafkaPortLocal);
-					break;
-			}
-			logger.info("Config relevantHeaders={}",relevantHeaders.toString());
-		}
+		LoadISA();
+		CheckISAConfig();
 	}
+
+
+	@RequestMapping(value = "/setisa", method = {RequestMethod.POST})
+	public ResponseEntity<String> setIsa(@RequestBody String isaIncoming) {
+		logger.debug("SetISA API function was called");
+		isaConfig = isaIncoming;
+		LoadISA();
+		CheckISAConfig();
+		return new ResponseEntity<>(String.format("Processed ISA update."), HttpStatus.OK);
+	}
+
 
 	@RequestMapping(value = "/**", method = {RequestMethod.GET, RequestMethod.POST})
 	public ResponseEntity<String> listAllHeaders(@RequestHeader Map<String, String> headers,
@@ -225,12 +199,22 @@ public class Controller {
 	@RequestMapping(value = "/status", method = {RequestMethod.GET})
 	public ResponseEntity status() {
 		logger.debug("Status function was called");
-		return new ResponseEntity<>(String.format("Gateway " + gatewayRole + " online."), HttpStatus.OK);
+		return new ResponseEntity<>(String.format("Gateway " + gatewayRole + " online." + "\nISA: " + isaConfig), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/reloadconfig", method = {RequestMethod.GET})
 	public ResponseEntity reloadConfig() {
 		logger.debug("Reload Configuration function was called");
+
+		// Loading file config for ISA
+		try (InputStream input = new ClassPathResource("application.properties").getInputStream()) {
+			Properties prop = new Properties();
+			prop.load(input);
+			this.isaConfig = prop.getProperty("isaConfig");
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+
 		initConfig();
 		return new ResponseEntity<>(String.format("Configuration reload attempt was processed, please see internal logs for results."),
 				HttpStatus.OK);
@@ -250,4 +234,50 @@ public class Controller {
 		}
 	}
 
+
+	private void LoadISA(){
+		logger.info("Loading Information Sharing Agreement and Filter settings ...");
+		try {
+			isa = new JSONObject(isaConfig);
+			filterConfig = isa.getJSONObject("filterConfig");
+			enrichmentConfig = isa.getJSONObject("enrichmentConfig");
+		}catch (JSONException err){
+			logger.error("Error: {}", err.toString());
+		}
+		logger.info("Loaded this ISA:{}",isa);
+	}
+
+	private void CheckISAConfig(){
+		/* Checking given configuration  */
+		logger.info("Checking given configuration for role={} ...",gatewayRole);
+		if(gatewayRole.toString().isEmpty()){logger.error("GatewayRole is not configured!");}
+		switch (gatewayRole){
+			case SENDER:
+				if(gatewayDomainSD.isEmpty()){logger.error("GatewayDomainSD is not configured!");}
+				if(gatewayPortSD.isEmpty()){logger.error("GatewayPortSD is not configured!");}
+				if(gatewayDomainRC.isEmpty()){logger.error("GatewayDomainRC is not configured!");}
+				if(gatewayPortRC.isEmpty()){logger.error("GatewayPortRC is not configured!");}
+				break;
+			case RECEIVER:
+				if(kafkaDomainLocal.isEmpty()){logger.error("KafkaDomainLocal is not configured!");}
+				if(kafkaPortLocal.isEmpty()){logger.error("KafkaPortLocal is not configured!");}
+				if(gatewayDomainRC.isEmpty()){logger.error("GatewayDomainRC is not configured!");}
+				if(gatewayPortRC.isEmpty()){logger.error("GatewayPortRC is not configured!");}
+				break;
+		}
+
+		if(logger.isInfoEnabled()){
+			switch (gatewayRole){
+				case SENDER:
+					logger.info("Config gatewaySD={}:{}",gatewayDomainSD,gatewayPortSD);
+					logger.info("Config gatewayRC={}:{}",gatewayDomainRC,gatewayPortRC);
+					break;
+				case RECEIVER:
+					logger.info("Config gatewayRC={}:{}",gatewayDomainRC,gatewayPortRC);
+					logger.info("Config kafkaLocal={}:{}",kafkaDomainLocal,kafkaPortLocal);
+					break;
+			}
+			logger.info("Config relevantHeaders={}",relevantHeaders.toString());
+		}
+	}
 }
