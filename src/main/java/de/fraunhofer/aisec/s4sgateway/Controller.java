@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -23,6 +25,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpTimeoutException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.time.Duration;
 import java.util.*;
 
@@ -44,7 +53,10 @@ public class Controller {
 	private String kafkaDomainLocal;
 	@Value("${kafkaPortLocal}")
 	private String kafkaPortLocal;
-
+	@Value("${trustStorePassword}")
+	private String trustStorePassword;
+	@Value("${trustStorePath}")
+	private String trustStorePath;
 	@Value("${isaConfig}")
 	private String isaConfig;
 	JSONObject isa;
@@ -85,7 +97,7 @@ public class Controller {
 	@RequestMapping(value = "/**", method = {RequestMethod.GET, RequestMethod.POST})
 	public ResponseEntity<String> listAllHeaders(@RequestHeader Map<String, String> headers,
 												 @RequestBody String body,
-												 HttpServletRequest incomingRequest) {
+												 HttpServletRequest incomingRequest) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
 
 		if (logger.isDebugEnabled()) {
 			headers.forEach((key, value) -> logger.debug("Header:{} Key:{}", key, value));
@@ -122,7 +134,7 @@ public class Controller {
 		HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
 		switch (gatewayRole){
 			case SENDER:
-				requestBuilder.uri(URI.create("http://" +
+				requestBuilder.uri(URI.create("https://" +
 						gatewayDomainRC + ":" +
 						gatewayPortRC +
 						incomingRequest.getRequestURI()));
@@ -170,8 +182,30 @@ public class Controller {
             logger.debug("Printing forwarded body: {}", answer);
 		}
 
-		// Create an HttpClient
+		// Create an HttpClient and SSL Context with TrustStore
+
+		KeyStore trustStore = KeyStore.getInstance("PKCS12");
+
+		try (InputStream is = Files.newInputStream(
+				Path.of(trustStorePath))) {
+
+			trustStore.load(is, trustStorePassword.toCharArray());
+		} catch (IOException | CertificateException e) {
+            throw new RuntimeException(e);
+        }
+
+        TrustManagerFactory tmf =
+				TrustManagerFactory.getInstance(
+						TrustManagerFactory.getDefaultAlgorithm());
+
+		tmf.init(trustStore);
+
+		SSLContext sslContext = SSLContext.getInstance("TLS");
+		sslContext.init(null, tmf.getTrustManagers(), null);
+
+
 		HttpClient client = HttpClient.newBuilder()
+				.sslContext(sslContext)
 				.connectTimeout(Duration.ofSeconds(10))
 				.build();
 		HttpResponse<String> response = null;

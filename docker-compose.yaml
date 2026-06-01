@@ -219,7 +219,26 @@ services:
     ports:
       - "10080:10080"
     volumes:
-      - ${PWD}/src/main/resources/sender.properties:/application.properties
+      - ${PWD}/src/main/resources/docker.properties:/application.properties
+      - ${PWD}/pki-test/gateway-sender/gateway-sender.p12:/keystore.p12
+      - ${PWD}/pki-test/truststore.p12:/truststore.p12
+    environment:
+      SSL_KEY_STORE: /keystore.p12
+      SSL_KEY_STORE_PASSWORD: password
+      SSL_KEY_ALIAS: 1
+
+      SSL_TRUST_STORE: /truststore.p12
+      SSL_TRUST_STORE_PASSWORD: password
+
+      GATEWAY_ROLE: SENDER
+      KAFKA_LOCAL_DOMAIN: xxxxx   #not used in this role
+      KAFKA_LOCAL_PORT: xxxx      #not used in this role
+      GATEWAY_RECEIVER_DOMAIN: gateway-receiver
+      GATEWAY_RECEIVER_PORT: 10081
+      GATEWAY_SENDER_DOMAIN: gateway-sender
+      GATEWAY_SENDER_PORT: 10080
+
+      GATEWAY_PORT: 10080
 
   gateway-receiver:
     image: s4sgateway:latest
@@ -227,4 +246,23 @@ services:
     ports: 
     - "10081:10081"
     volumes:
-    - ${PWD}/src/main/resources/receiver.properties:/application.properties
+    - ${PWD}/src/main/resources/docker.properties:/application.properties
+    - ${PWD}/pki-test/gateway-receiver/gateway-receiver.p12:/keystore.p12
+    - ${PWD}/pki-test/truststore.p12:/truststore.p12
+    environment:
+      SSL_KEY_STORE: /keystore.p12
+      SSL_KEY_STORE_PASSWORD: password
+      SSL_KEY_ALIAS: 1
+
+      SSL_TRUST_STORE: /truststore.p12
+      SSL_TRUST_STORE_PASSWORD: password
+
+      GATEWAY_ROLE: RECEIVER
+      KAFKA_LOCAL_DOMAIN: rest-proxy
+      KAFKA_LOCAL_PORT: 8082
+      GATEWAY_RECEIVER_DOMAIN: gateway-receiver
+      GATEWAY_RECEIVER_PORT: 10081
+      GATEWAY_SENDER_DOMAIN: xxxxxx   #not used in this role
+      GATEWAY_SENDER_PORT: xxxx       #not used in this role
+
+      GATEWAY_PORT: 10081
