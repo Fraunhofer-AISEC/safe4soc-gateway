@@ -230,6 +230,8 @@ services:
       SSL_TRUST_STORE: /truststore.p12
       SSL_TRUST_STORE_PASSWORD: password
 
+      SSL_MTLS_SETTING: want      # mTLS optional
+
       GATEWAY_ROLE: SENDER
       KAFKA_LOCAL_DOMAIN: xxxxx   #not used in this role
       KAFKA_LOCAL_PORT: xxxx      #not used in this role
@@ -256,6 +258,8 @@ services:
 
       SSL_TRUST_STORE: /truststore.p12
       SSL_TRUST_STORE_PASSWORD: password
+
+      SSL_MTLS_SETTING: need      # mTLS mandatory
 
       GATEWAY_ROLE: RECEIVER
       KAFKA_LOCAL_DOMAIN: rest-proxy

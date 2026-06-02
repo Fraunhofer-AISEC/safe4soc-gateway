@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.IOException;
@@ -27,10 +28,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpTimeoutException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.security.cert.CertificateException;
 import java.time.Duration;
 import java.util.*;
@@ -57,6 +55,10 @@ public class Controller {
 	private String trustStorePassword;
 	@Value("${trustStorePath}")
 	private String trustStorePath;
+	@Value("${keyStorePassword}")
+	private String keyStorePassword;
+	@Value("${keyStorePath}")
+	private String keyStorePath;
 	@Value("${isaConfig}")
 	private String isaConfig;
 	JSONObject isa;
@@ -97,7 +99,7 @@ public class Controller {
 	@RequestMapping(value = "/**", method = {RequestMethod.GET, RequestMethod.POST})
 	public ResponseEntity<String> listAllHeaders(@RequestHeader Map<String, String> headers,
 												 @RequestBody String body,
-												 HttpServletRequest incomingRequest) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+												 HttpServletRequest incomingRequest) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException, UnrecoverableKeyException {
 
 		if (logger.isDebugEnabled()) {
 			headers.forEach((key, value) -> logger.debug("Header:{} Key:{}", key, value));
@@ -183,26 +185,35 @@ public class Controller {
 		}
 
 		// Create an HttpClient and SSL Context with TrustStore
+		// 1. Load client keystore (for mTLS client cert)
+		KeyStore keyStore = KeyStore.getInstance("PKCS12");
+		try (InputStream is = Files.newInputStream(Path.of(keyStorePath))) {
+			keyStore.load(is, keyStorePassword.toCharArray());
+		} catch (IOException | CertificateException e) {
+			throw new RuntimeException(e);
+		}
 
+		// 2. Load truststore (to verify server cert)
 		KeyStore trustStore = KeyStore.getInstance("PKCS12");
-
-		try (InputStream is = Files.newInputStream(
-				Path.of(trustStorePath))) {
-
+		try (InputStream is = Files.newInputStream(Path.of(trustStorePath))) {
 			trustStore.load(is, trustStorePassword.toCharArray());
 		} catch (IOException | CertificateException e) {
             throw new RuntimeException(e);
         }
 
-        TrustManagerFactory tmf =
-				TrustManagerFactory.getInstance(
-						TrustManagerFactory.getDefaultAlgorithm());
+		KeyManagerFactory kmf = KeyManagerFactory.getInstance(
+				KeyManagerFactory.getDefaultAlgorithm());
+		kmf.init(keyStore, keyStorePassword.toCharArray());
 
+		TrustManagerFactory tmf = TrustManagerFactory.getInstance(
+				TrustManagerFactory.getDefaultAlgorithm());
 		tmf.init(trustStore);
 
 		SSLContext sslContext = SSLContext.getInstance("TLS");
-		sslContext.init(null, tmf.getTrustManagers(), null);
-
+		sslContext.init(
+				kmf.getKeyManagers(),   // enables mTLS
+				tmf.getTrustManagers(),
+				new java.security.SecureRandom());
 
 		HttpClient client = HttpClient.newBuilder()
 				.sslContext(sslContext)
@@ -223,8 +234,6 @@ public class Controller {
             logger.error("An error occurred: {}", e.getMessage());
 			logger.debug("Response status code: {}", response.statusCode());
 			logger.debug("Response body: {}", response.body());
-			
-
 		}
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		//return new ResponseEntity<>(String.format("Listed %d headers", headers.size()), HttpStatus.OK);
