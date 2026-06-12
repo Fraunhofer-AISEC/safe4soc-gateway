@@ -220,13 +220,15 @@ services:
       - "10080:10080"
     volumes:
       - ${PWD}/src/main/resources/docker.properties:/application.properties
-      - ${PWD}/pki-test/gateway-sender/gateway-sender.p12:/keystore.p12
-      - ${PWD}/pki-test/truststore.p12:/truststore.p12
+#      - ${PWD}/pki-test/gateway-sender/gateway-sender.p12:/keystore.p12
+#      - ${PWD}/pki-test/truststore.p12:/truststore.p12
+      - ${PWD}/pki-openxpki-demo/truststore.p12:/truststore.p12
+      - ${PWD}/pki-openxpki-demo/gateway-sender.p12:/keystore.p12
     environment:
       SSL_KEY_STORE: /keystore.p12
       SSL_KEY_STORE_PASSWORD: password
       SSL_KEY_ALIAS: 1
-
+ 
       SSL_TRUST_STORE: /truststore.p12
       SSL_TRUST_STORE_PASSWORD: password
 
@@ -249,8 +251,10 @@ services:
     - "10081:10081"
     volumes:
     - ${PWD}/src/main/resources/docker.properties:/application.properties
-    - ${PWD}/pki-test/gateway-receiver/gateway-receiver.p12:/keystore.p12
-    - ${PWD}/pki-test/truststore.p12:/truststore.p12
+#    - ${PWD}/pki-test/gateway-receiver/gateway-receiver.p12:/keystore.p12
+#    - ${PWD}/pki-test/truststore.p12:/truststore.p12
+    - ${PWD}/pki-openxpki-demo/truststore.p12:/truststore.p12
+    - ${PWD}/pki-openxpki-demo/gateway-receiver.p12:/keystore.p12
     environment:
       SSL_KEY_STORE: /keystore.p12
       SSL_KEY_STORE_PASSWORD: password
