@@ -223,7 +223,7 @@ services:
 #      - ${PWD}/pki-test/gateway-sender/gateway-sender.p12:/keystore.p12
 #      - ${PWD}/pki-test/truststore.p12:/truststore.p12
       - ${PWD}/pki-openxpki-demo/truststore.p12:/truststore.p12
-      - ${PWD}/pki-openxpki-demo/gateway-sender.p12:/keystore.p12
+      - ${PWD}/pki-openxpki-demo/gateway-sender.client.p12:/keystore.p12
     environment:
       SSL_KEY_STORE: /keystore.p12
       SSL_KEY_STORE_PASSWORD: password
@@ -254,7 +254,7 @@ services:
 #    - ${PWD}/pki-test/gateway-receiver/gateway-receiver.p12:/keystore.p12
 #    - ${PWD}/pki-test/truststore.p12:/truststore.p12
     - ${PWD}/pki-openxpki-demo/truststore.p12:/truststore.p12
-    - ${PWD}/pki-openxpki-demo/gateway-receiver.p12:/keystore.p12
+    - ${PWD}/pki-openxpki-demo/gateway-receiver.client.p12:/keystore.p12
     environment:
       SSL_KEY_STORE: /keystore.p12
       SSL_KEY_STORE_PASSWORD: password
