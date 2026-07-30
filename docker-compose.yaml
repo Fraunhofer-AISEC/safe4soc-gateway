@@ -220,10 +220,8 @@ services:
       - "10080:10080"
     volumes:
       - ${PWD}/src/main/resources/docker.properties:/application.properties
-#      - ${PWD}/pki-test/gateway-sender/gateway-sender.p12:/keystore.p12
-#      - ${PWD}/pki-test/truststore.p12:/truststore.p12
-      - ${PWD}/pki-openxpki-demo/truststore.p12:/truststore.p12
-      - ${PWD}/pki-openxpki-demo/gateway-sender.client.p12:/keystore.p12
+      - ${PWD}/pki-test/gateway-sender/gateway-sender.p12:/keystore.p12
+      - ${PWD}/pki-test/truststore.p12:/truststore.p12
     environment:
       SSL_KEY_STORE: /keystore.p12
       SSL_KEY_STORE_PASSWORD: password
@@ -232,6 +230,9 @@ services:
       SSL_TRUST_STORE: /truststore.p12
       SSL_TRUST_STORE_PASSWORD: password
 
+      GATEWAY_PROTOCOL: https     # for communication from gateway sender to gateway receiver
+      SSL_INBOUND_ACTIVATED: true
+      SSL_OUTBOUND_ACTIVATED: true
       SSL_MTLS_SETTING: want      # mTLS optional
 
       GATEWAY_ROLE: SENDER
@@ -251,10 +252,8 @@ services:
     - "10081:10081"
     volumes:
     - ${PWD}/src/main/resources/docker.properties:/application.properties
-#    - ${PWD}/pki-test/gateway-receiver/gateway-receiver.p12:/keystore.p12
-#    - ${PWD}/pki-test/truststore.p12:/truststore.p12
-    - ${PWD}/pki-openxpki-demo/truststore.p12:/truststore.p12
-    - ${PWD}/pki-openxpki-demo/gateway-receiver.client.p12:/keystore.p12
+    - ${PWD}/pki-test/gateway-receiver/gateway-receiver.p12:/keystore.p12
+    - ${PWD}/pki-test/truststore.p12:/truststore.p12
     environment:
       SSL_KEY_STORE: /keystore.p12
       SSL_KEY_STORE_PASSWORD: password
@@ -263,6 +262,9 @@ services:
       SSL_TRUST_STORE: /truststore.p12
       SSL_TRUST_STORE_PASSWORD: password
 
+      GATEWAY_PROTOCOL: http      # for communication to local kafka db
+      SSL_INBOUND_ACTIVATED: true
+      SSL_OUTBOUND_ACTIVATED: true
       SSL_MTLS_SETTING: need      # mTLS mandatory
 
       GATEWAY_ROLE: RECEIVER

@@ -72,8 +72,10 @@ respectively the files:
 - application.properties (for debugging directly in IntelliJ IDE)
 - receiver.properties
 - sender.properties
+- docker.properties (for launch via docker-compose script.)
 
 The files are mapped into the corresponding docker container via docker-compose.yaml.
+Please edit config in docker-compose file as otherwise the config will be overwritten.
 
 The following entries must be specified for the gateway in sender mode:
 ```
@@ -104,6 +106,28 @@ kafkaDomainLocal=kafkalocal
 kafkaPortLocal=8082
 ```
 These entries identify where the local kafka database can be found.
+
+### SSL Activation or Deactivation (DEBUG Connection Settings)
+
+The gateway has a setting to control the inbound SSL configuration (Spring boot VM settings), 
+and the outbound SSL configuration (Java internal SSL Context object).
+Both can be activated or deactivated separately using the following flags in docker-compose.
+
+```
+      GATEWAY_PROTOCOL: https     # for communication from gateway sender to gateway receiver
+      SSL_INBOUND_ACTIVATED: true
+      SSL_OUTBOUND_ACTIVATED: true
+```
+
+For debug purposes in a testing environment the SSL-settings can be both be set to false. 
+This means that neither the initial connection from the outside inside the Gateway-sender nor the forwarding from Gateway-sender to Geteway-receiver will apply HTTPS but only HTTP, which is of course not acceptable for a production environment but ONLY FOR TESTING PURPOSES!
+The file docker-compose-debug-http.yaml is properly configured to work out of the box and can be launched using:
+
+```bash
+docker compose up -d rest-proxy control-center schema-registry broker 
+docker compose -f docker-compose-debug-http.yaml up gateway-sender
+docker compose -f docker-compose-debug-http.yaml up gateway-receiver
+```
 
 ### Information Sharing Agreement Configuration
 The entry about the ISA is important, as it also contains the config about necessary filtering and enrichment instructions.

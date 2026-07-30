@@ -256,6 +256,9 @@ services:
       SSL_TRUST_STORE: /truststore.p12
       SSL_TRUST_STORE_PASSWORD: password
 
+      GATEWAY_PROTOCOL: https     # for communication from gateway sender to gateway receiver
+      SSL_INBOUND_ACTIVATED: true
+      SSL_OUTBOUND_ACTIVATED: true
       SSL_MTLS_SETTING: want      # mTLS optional
 
       GATEWAY_ROLE: SENDER
@@ -287,6 +290,9 @@ services:
       SSL_TRUST_STORE: /truststore.p12
       SSL_TRUST_STORE_PASSWORD: password
 
+      GATEWAY_PROTOCOL: http      # for communication to local kafka db
+      SSL_INBOUND_ACTIVATED: true
+      SSL_OUTBOUND_ACTIVATED: true
       SSL_MTLS_SETTING: need      # mTLS mandatory
 
       GATEWAY_ROLE: RECEIVER

@@ -46,11 +46,15 @@ public class Controller {
 	private String gatewayDomainSD;
 	@Value("${gatewayPortSD}")
 	private String gatewayPortSD;
+	@Value("${gatewayProtocol}")
+	private String gatewayProtocol;
 
 	@Value("${kafkaDomainLocal}")
 	private String kafkaDomainLocal;
 	@Value("${kafkaPortLocal}")
 	private String kafkaPortLocal;
+	@Value("${sslOutboundActivated}")
+	private boolean sslOutboundActivated;
 	@Value("${trustStorePassword}")
 	private String trustStorePassword;
 	@Value("${trustStorePath}")
@@ -132,17 +136,16 @@ public class Controller {
 			}
 		}
 
-		//TODO activate https
 		HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
 		switch (gatewayRole){
 			case SENDER:
-				requestBuilder.uri(URI.create("https://" +
+				requestBuilder.uri(URI.create(gatewayProtocol + "://" +
 						gatewayDomainRC + ":" +
 						gatewayPortRC +
 						incomingRequest.getRequestURI()));
 				break;
 			case RECEIVER:
-				requestBuilder.uri(URI.create("http://" +
+				requestBuilder.uri(URI.create(gatewayProtocol + "://" +
 					kafkaDomainLocal + ":" +
 					kafkaPortLocal +
 					incomingRequest.getRequestURI()));
@@ -209,16 +212,25 @@ public class Controller {
 				TrustManagerFactory.getDefaultAlgorithm());
 		tmf.init(trustStore);
 
-		SSLContext sslContext = SSLContext.getInstance("TLS");
-		sslContext.init(
-				kmf.getKeyManagers(),   // enables mTLS
-				tmf.getTrustManagers(),
-				new java.security.SecureRandom());
 
-		HttpClient client = HttpClient.newBuilder()
-				.sslContext(sslContext)
-				.connectTimeout(Duration.ofSeconds(10))
-				.build();
+		HttpClient.Builder builder = HttpClient.newBuilder()
+        		.connectTimeout(Duration.ofSeconds(10));
+
+		if (sslOutboundActivated) {
+			logger.debug("Activating SSL for outbound connection!");
+			SSLContext sslContext = SSLContext.getInstance("TLS");
+			sslContext.init(
+					kmf.getKeyManagers(),   // enables mTLS
+					tmf.getTrustManagers(),
+					new java.security.SecureRandom());
+
+			builder.sslContext(sslContext);
+		} else {
+			logger.warn("No SSL activated for outbound connection!");
+		}
+
+		HttpClient client = builder.build();
+		
 		HttpResponse<String> response = null;
 		try {
 			// Send the request and receive the response
