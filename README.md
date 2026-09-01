@@ -31,6 +31,20 @@ For installation instructions please see
 - Install GraalVM https://www.graalvm.org/latest/getting-started/
 - Install gcc glibc-devel zlib-devel etc. https://www.graalvm.org/latest/reference-manual/native-image/
 
+
+# Via SDKMAN (easiest)
+curl -s "https://get.sdkman.io" | bash
+source ~/.sdkman/bin/sdkman-init.sh
+
+sdk install java 24.0.1-graalce     # GraalVM CE 22.3+ ✅
+sdk use java 24.0.1-graalce
+
+# Verify
+java -version
+# should show: GraalVM CE 24.x.x
+
+
+
 ## Compilation 
 In main project's path run
 ```

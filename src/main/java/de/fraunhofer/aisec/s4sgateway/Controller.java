@@ -55,6 +55,9 @@ public class Controller {
 	private String kafkaPortLocal;
 	@Value("${sslOutboundActivated}")
 	private boolean sslOutboundActivated;
+	@Value("${kafkaTopic}")
+	private String kafkaTopic;
+
 	@Value("${trustStorePassword}")
 	private String trustStorePassword;
 	@Value("${trustStorePath}")
@@ -139,16 +142,25 @@ public class Controller {
 		HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
 		switch (gatewayRole){
 			case SENDER:
-				requestBuilder.uri(URI.create(gatewayProtocol + "://" +
-						gatewayDomainRC + ":" +
-						gatewayPortRC +
-						incomingRequest.getRequestURI()));
+				String senderUrl;
+				if (gatewayDomainRC.startsWith("http://") || gatewayDomainRC.startsWith("https://")) {
+					// Already includes scheme
+					senderUrl = gatewayDomainRC +
+							incomingRequest.getRequestURI();
+				} else {
+					// Default to http
+					senderUrl = gatewayProtocol + "://" +
+							gatewayDomainRC +
+							":" + gatewayPortRC +
+							incomingRequest.getRequestURI();
+				}
+				requestBuilder.uri(URI.create(senderUrl));
 				break;
 			case RECEIVER:
 				requestBuilder.uri(URI.create(gatewayProtocol + "://" +
 					kafkaDomainLocal + ":" +
-					kafkaPortLocal +
-					incomingRequest.getRequestURI()));
+					kafkaPortLocal + "/topics/" +
+					kafkaTopic));
 				break;
 		}
 
@@ -177,6 +189,7 @@ public class Controller {
 			case RECEIVER:
 				requestBuilder.setHeader("safe4soc-receiver-hostname",gatewayDomainRC);
 				requestBuilder.setHeader("safe4soc-receiver-port",gatewayPortRC);
+				requestBuilder.setHeader("Content-Type", "application/vnd.kafka.json.v2+json");
 				break;
 		}
 
