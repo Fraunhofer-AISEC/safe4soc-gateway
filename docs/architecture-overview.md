@@ -12,3 +12,16 @@ alert to the receiver side gateway.
 Here the alert is also filtered or enriched as configured and afterwards sent to the Kafka HTTP Rest API container.
 The Kafka REST API container does the translation to the final destination, the Kafka database which is locally 
 reachable on the receiver side.
+
+## TOC
+## TOC
+
+Architecture Overview(here)
+
+[Compilation Instructions](./compilaton.md)
+
+[Configuration Instructions](./configuration.md)
+
+[Demonstration (Getting Started)](./demonstration.md)
+
+[Additional Links](./additional-links.md)

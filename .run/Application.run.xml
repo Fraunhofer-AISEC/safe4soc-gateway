@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UnknownPolicyInFreeMode" />
+    <module name="s4sgateway.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="de.fraunhofer.aisec.s4sgateway.Application" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="de.fraunhofer.aisec.s4sgateway.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -85,6 +85,9 @@ public class Controller {
 	}
 
 	private void initConfig(){
+		if(sslOutboundActivated){
+			logger.info("HTTPS for Outbound connection active!");
+		}
 		LoadISA();
 		CheckISAConfig();
 	}

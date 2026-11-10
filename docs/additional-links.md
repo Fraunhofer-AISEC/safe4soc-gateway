@@ -14,3 +14,15 @@ These additional references should also help you:
 For Kafka message processing
 * https://docs.confluent.io/platform/current/get-started/platform-quickstart.html
 * https://developer.confluent.io/get-started/rest/#consume-events
+
+## TOC
+
+[Architecture Overview](./architecture-overview.md)
+
+[Compilation Instructions](./compilaton.md)
+
+[Configuration Instructions](./configuration.md)
+
+[Demonstration (Getting Started)](./demonstration.md)
+
+Additional Links(here)

@@ -549,3 +549,15 @@ And the expected output of the curl console or the web answer should be similar 
 ```
 {"offsets":[{"partition":0,"offset":2,"error_code":null,"error":null}],"key_schema_id":null,"value_schema_id":null}
 ```
+
+## TOC
+
+[Architecture Overview](./architecture-overview.md)
+
+[Compilation Instructions](./compilaton.md)
+
+[Configuration Instructions](./configuration.md)
+
+Demonstration - Getting Started (here)
+
+[Additional Links](./additional-links.md)

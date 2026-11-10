@@ -43,3 +43,15 @@ docker compose up gateway-receiver
 Afterward, the containers can be tested using postman collection. Get postman here: https://www.postman.com/downloads/
 Once installed the testing collection (SAFE4SOC.postman_collection.json) which contains predefined REST API requests 
 can be imported via File -> Import.
+
+## TOC
+
+[Architecture Overview](./architecture-overview.md)
+
+Compilation Instructions (here)
+
+[Configuration Instructions](./configuration.md)
+
+[Demonstration (Getting Started)](./demonstration.md)
+
+[Additional Links](./additional-links.md)
