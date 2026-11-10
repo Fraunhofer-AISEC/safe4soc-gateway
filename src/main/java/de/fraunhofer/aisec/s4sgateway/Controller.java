@@ -33,14 +33,33 @@ import java.security.cert.CertificateException;
 import java.time.Duration;
 import java.util.*;
 
+import java.nio.charset.StandardCharsets;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
+import java.net.http.HttpConnectTimeoutException;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLException;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 @Component
 @RestController
 public class Controller {
 	private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
+	@Value("${gatewayReceiverURL}")
+	private String gatewayReceiverURL;
+
+	@Value("${gatewayReceiverUsername}")
+	private String gatewayReceiverUsername;
+	@Value("${gatewayReceiverPassword}")
+	private String gatewayReceiverPassword;
+	
 	@Value("${gatewayDomainRC}")
 	private String gatewayDomainRC;
 	@Value("${gatewayPortRC}")
+
 	private String gatewayPortRC;
 	@Value("${gatewayDomainSD}")
 	private String gatewayDomainSD;
@@ -142,19 +161,15 @@ public class Controller {
 		HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
 		switch (gatewayRole){
 			case SENDER:
-				String senderUrl;
-				if (gatewayDomainRC.startsWith("http://") || gatewayDomainRC.startsWith("https://")) {
-					// Already includes scheme
-					senderUrl = gatewayDomainRC +
-							incomingRequest.getRequestURI();
+				logger.debug("gatewayReceiverURL: {}", gatewayReceiverURL);
+				if (gatewayReceiverURL != null && !gatewayReceiverURL.isEmpty()) {
+					requestBuilder.uri(URI.create(gatewayReceiverURL + incomingRequest.getRequestURI()));
 				} else {
-					// Default to http
-					senderUrl = gatewayProtocol + "://" +
-							gatewayDomainRC +
-							":" + gatewayPortRC +
-							incomingRequest.getRequestURI();
+				requestBuilder.uri(URI.create(gatewayProtocol + "://" +
+						gatewayDomainRC + ":" +
+						gatewayPortRC +
+						incomingRequest.getRequestURI()));
 				}
-				requestBuilder.uri(URI.create(senderUrl));
 				break;
 			case RECEIVER:
 				requestBuilder.uri(URI.create(gatewayProtocol + "://" +
@@ -181,10 +196,21 @@ public class Controller {
 			}
         }
 
+		String username = gatewayReceiverUsername;   
+		String password = gatewayReceiverPassword;  
+
 		switch (gatewayRole){
 			case SENDER:
 				requestBuilder.setHeader("safe4soc-sender-hostname",gatewayDomainSD);
 				requestBuilder.setHeader("safe4soc-sender-port",gatewayPortSD);
+				if (username != null
+						&& !username.isBlank()
+						&& password != null
+						&& !password.isBlank()) {
+
+					String auth = Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
+					requestBuilder.setHeader("Authorization", "Basic " + auth );
+				}
 				break;
 			case RECEIVER:
 				requestBuilder.setHeader("safe4soc-receiver-hostname",gatewayDomainRC);
@@ -242,26 +268,220 @@ public class Controller {
 			logger.warn("No SSL activated for outbound connection!");
 		}
 
-		HttpClient client = builder.build();
+		// HttpClient client = builder.build();
 		
-		HttpResponse<String> response = null;
-		try {
-			// Send the request and receive the response
-			response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            logger.debug("Response status code: {}", response.statusCode());
-            logger.debug("Response body: {}", response.body());
-			return new ResponseEntity<>(response.body(), HttpStatusCode.valueOf(response.statusCode()));
-		} catch (HttpTimeoutException e) {
-            logger.error("Request timed out: {}", e.getMessage());
-			logger.debug("Response status code: {}", response.statusCode());
-			logger.debug("Response body: {}", response.body());
-		} catch (IOException | InterruptedException e) {
-            logger.error("An error occurred: {}", e.getMessage());
-			logger.debug("Response status code: {}", response.statusCode());
-			logger.debug("Response body: {}", response.body());
-		}
-		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		// HttpResponse<String> response = null;
+		// try {
+		// 	// Send the request and receive the response
+		// 	response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        //     logger.debug("Response status code: {}", response.statusCode());
+        //     logger.debug("Response body: {}", response.body());
+		// 	return new ResponseEntity<>(response.body(), HttpStatusCode.valueOf(response.statusCode()));
+		// } catch (HttpTimeoutException e) {
+        //     logger.error("Request timed out: {}", e.getMessage());
+		// 	logger.debug("Response status code: {}", response.statusCode());
+		// 	logger.debug("Response body: {}", response.body());
+		// } catch (IOException | InterruptedException e) {
+        //     logger.error("An error occurred: {}", e.getMessage());
+		// 	logger.debug("Response status code: {}", response.statusCode());
+		// 	logger.debug("Response body: {}", response.body());
+		// }
+		// return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		//return new ResponseEntity<>(String.format("Listed %d headers", headers.size()), HttpStatus.OK);
+
+		HttpClient client = builder.build();
+
+		try {
+			HttpResponse<String> response = client.send(
+				request,
+				HttpResponse.BodyHandlers.ofString()
+			);
+
+			int status = response.statusCode();
+
+			logger.info(
+				"Receiver response: method={}, url={}, status={}",
+				request.method(),
+				request.uri(),
+				status
+			);
+
+			logger.debug(
+				"Receiver response body for {}: {}",
+				request.uri(),
+				response.body()
+			);
+
+			if (status == 401) {
+				logger.error(
+					"Receiver authentication failed: url={}, status={}",
+					request.uri(),
+					status
+				);
+
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body("Receiver authentication failed");
+			}
+
+			if (status == 403) {
+				logger.error(
+					"Receiver authorization denied: url={}, status={}",
+					request.uri(),
+					status
+				);
+
+				return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body("Receiver authorization denied");
+			}
+
+			if (status >= 500) {
+				logger.error(
+					"Receiver internal error: url={}, status={}",
+					request.uri(),
+					status
+				);
+
+				return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+					.body("Receiver returned an internal server error");
+			}
+
+			if (status >= 400) {
+				logger.error(
+					"Receiver rejected request: url={}, status={}",
+					request.uri(),
+					status
+				);
+
+				return ResponseEntity.status(
+					HttpStatusCode.valueOf(status)
+				).body(response.body());
+			}
+
+			return ResponseEntity.status(
+				HttpStatusCode.valueOf(status)
+			).body(response.body());
+
+		} catch (SSLHandshakeException e) {
+			logger.error(
+				"TLS or mTLS handshake failed: url={}, type={}",
+				request.uri(),
+				e.getClass().getSimpleName()
+			);
+
+			logger.debug(
+				"TLS or mTLS handshake details for " + request.uri(),
+				e
+			);
+
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+				.body("TLS or mTLS handshake failed");
+
+		} catch (SSLException e) {
+			logger.error(
+				"TLS communication failed: url={}, type={}",
+				request.uri(),
+				e.getClass().getSimpleName()
+			);
+
+			logger.debug(
+				"TLS communication details for " + request.uri(),
+				e
+			);
+
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+				.body("TLS communication failed");
+
+		} catch (UnknownHostException e) {
+			logger.error(
+				"Receiver hostname cannot be resolved: url={}, host={}",
+				request.uri(),
+				request.uri().getHost()
+			);
+
+			logger.debug(
+				"Hostname resolution details for " + request.uri(),
+				e
+			);
+
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+				.body("Receiver hostname cannot be resolved");
+
+		} catch (ConnectException | HttpConnectTimeoutException e) {
+			logger.error(
+				"Receiver is unreachable: url={}, type={}",
+				request.uri(),
+				e.getClass().getSimpleName()
+			);
+
+			logger.debug(
+				"Connection failure details for " + request.uri(),
+				e
+			);
+
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+				.body("Receiver is unreachable");
+
+		} catch (HttpTimeoutException e) {
+			logger.error(
+				"Receiver request timed out: url={}",
+				request.uri()
+			);
+
+			logger.debug(
+				"Timeout details for " + request.uri(),
+				e
+			);
+
+			return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT)
+				.body("Receiver request timed out");
+
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+
+			logger.error(
+				"Receiver request was interrupted: url={}",
+				request.uri()
+			);
+
+			logger.debug(
+				"Interrupted request details for " + request.uri(),
+				e
+			);
+
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+				.body("Receiver request was interrupted");
+
+		} catch (IOException e) {
+			logger.error(
+				"Network error while contacting receiver: url={}, type={}",
+				request.uri(),
+				e.getClass().getSimpleName()
+			);
+
+			logger.debug(
+				"Network error details for " + request.uri(),
+				e
+			);
+
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+				.body("Network error while contacting receiver");
+
+		} catch (Exception e) {
+			logger.error(
+				"Unexpected gateway error while contacting receiver: url={}, type={}",
+				request.uri(),
+				e.getClass().getSimpleName()
+			);
+
+			logger.debug(
+				"Unexpected gateway error details for " + request.uri(),
+				e
+			);
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body("Internal gateway error");
+		}
+
 	}
 
 	@RequestMapping(value = "/status", method = {RequestMethod.GET})
