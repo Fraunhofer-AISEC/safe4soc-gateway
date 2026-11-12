@@ -1,5 +1,8 @@
 package de.fraunhofer.aisec.s4sgateway;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,9 +21,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -32,11 +37,16 @@ import java.security.*;
 import java.security.cert.CertificateException;
 import java.time.Duration;
 import java.util.*;
+import java.util.stream.Collectors;
+import com.networknt.schema.Error;
 
 @Component
 @RestController
 public class Controller {
 	private static final Logger logger = LoggerFactory.getLogger(Controller.class);
+	private final ObjectMapper objectMapper;
+	private final JsonSchemaValidationService validator;
+
 
 	@Value("${gatewayDomainRC}")
 	private String gatewayDomainRC;
@@ -66,7 +76,13 @@ public class Controller {
 	@Value("${isaConfig}")
 	private String isaConfig;
 	JSONObject isa;
-	enum GatewayRole {
+
+    public Controller(ObjectMapper objectMapper, JsonSchemaValidationService validator) {
+        this.objectMapper = objectMapper;
+        this.validator = validator;
+    }
+
+    enum GatewayRole {
 		SENDER,
 		RECEIVER
 	}
@@ -118,9 +134,45 @@ public class Controller {
 			logger.debug("Body     \n{}", body);
 		}
 
+
+
+
 		String answer = body;
 		// if format is json apply filter
 		JSONObject data = new JSONObject(answer);
+
+		// Check JSON format and IDMEFv2 format from schema
+		// 1. Validate JSON syntax
+		JsonNode json;
+
+		try {
+			json = objectMapper.readTree(body);
+
+			if (json == null || !json.isObject()) {
+				return ResponseEntity.badRequest()
+						.body("Expected a JSON object");
+			}
+
+		} catch (JsonProcessingException e) {
+			return ResponseEntity.badRequest()
+					.body("Invalid JSON: " + e.getOriginalMessage());
+		}
+		logger.info("Alert is valid JSON.");
+
+		// 2. Validate JSON Schema
+		List<Error> errors=	validator.validate(body);
+
+		if (!errors.isEmpty()) {
+			logger.error(errors.toString());
+			return ResponseEntity.unprocessableEntity()
+					.body(errors.stream()
+							.map(Error::toString)
+							.toList().toString());
+		}
+
+		// 3. Process valid IDMEFv2 message
+		logger.info("Alert is valid against configured JSON schema.");
+
 		if(!data.isEmpty()){
 			if(!filterConfig.isEmpty()){
 				Utils.applyFilter(data, filterConfig);
@@ -191,35 +243,31 @@ public class Controller {
 		}
 
 		// Create an HttpClient and SSL Context with TrustStore
-		// 1. Load client keystore (for mTLS client cert)
-		KeyStore keyStore = KeyStore.getInstance("PKCS12");
-		try (InputStream is = Files.newInputStream(Path.of(keyStorePath))) {
-			keyStore.load(is, keyStorePassword.toCharArray());
-		} catch (IOException | CertificateException e) {
-			throw new RuntimeException(e);
-		}
-
-		// 2. Load truststore (to verify server cert)
-		KeyStore trustStore = KeyStore.getInstance("PKCS12");
-		try (InputStream is = Files.newInputStream(Path.of(trustStorePath))) {
-			trustStore.load(is, trustStorePassword.toCharArray());
-		} catch (IOException | CertificateException e) {
-            throw new RuntimeException(e);
-        }
-
-		KeyManagerFactory kmf = KeyManagerFactory.getInstance(
-				KeyManagerFactory.getDefaultAlgorithm());
-		kmf.init(keyStore, keyStorePassword.toCharArray());
-
-		TrustManagerFactory tmf = TrustManagerFactory.getInstance(
-				TrustManagerFactory.getDefaultAlgorithm());
-		tmf.init(trustStore);
-
-
 		HttpClient.Builder builder = HttpClient.newBuilder()
-        		.connectTimeout(Duration.ofSeconds(10));
+				.connectTimeout(Duration.ofSeconds(10));
 
 		if (sslOutboundActivated) {
+			// 1. Load client keystore (for mTLS client cert)
+			KeyStore keyStore = KeyStore.getInstance("PKCS12");
+			try (InputStream is = Files.newInputStream(Path.of(keyStorePath))) {
+				keyStore.load(is, keyStorePassword.toCharArray());
+			} catch (IOException | CertificateException e) {
+				throw new RuntimeException(e);
+			}
+			// 2. Load truststore (to verify server cert)
+			KeyStore trustStore = KeyStore.getInstance("PKCS12");
+			try (InputStream is = Files.newInputStream(Path.of(trustStorePath))) {
+				trustStore.load(is, trustStorePassword.toCharArray());
+			} catch (IOException | CertificateException e) {
+				throw new RuntimeException(e);
+			}
+			TrustManagerFactory tmf = TrustManagerFactory.getInstance(
+					TrustManagerFactory.getDefaultAlgorithm());
+			KeyManagerFactory kmf = KeyManagerFactory.getInstance(
+					KeyManagerFactory.getDefaultAlgorithm());
+			kmf.init(keyStore, keyStorePassword.toCharArray());
+			tmf.init(trustStore);
+
 			logger.debug("Activating SSL for outbound connection!");
 			SSLContext sslContext = SSLContext.getInstance("TLS");
 			sslContext.init(
@@ -227,31 +275,55 @@ public class Controller {
 					tmf.getTrustManagers(),
 					new java.security.SecureRandom());
 
+			SSLParameters sslParameters = new SSLParameters();
+			// Enforce hostname verification against the server certificate
+			sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
+
 			builder.sslContext(sslContext);
+			builder.sslParameters(sslParameters);
 		} else {
 			logger.warn("No SSL activated for outbound connection!");
 		}
 
 		HttpClient client = builder.build();
-		
-		HttpResponse<String> response = null;
+
+		HttpResponse<String> response;
+
 		try {
 			// Send the request and receive the response
-			response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            logger.debug("Response status code: {}", response.statusCode());
-            logger.debug("Response body: {}", response.body());
-			return new ResponseEntity<>(response.body(), HttpStatusCode.valueOf(response.statusCode()));
+			response = client.send(
+					request,
+					HttpResponse.BodyHandlers.ofString()
+			);
+			logger.debug("Response status code from {}: {}",request.uri().toString(), response.statusCode());
+			logger.debug("Response body from {}: {}", request.uri().toString(), response.body());
+			return new ResponseEntity<>(
+					response.body(),
+					HttpStatusCode.valueOf(response.statusCode())
+			);
 		} catch (HttpTimeoutException e) {
-            logger.error("Request timed out: {}", e.getMessage());
-			logger.debug("Response status code: {}", response.statusCode());
-			logger.debug("Response body: {}", response.body());
-		} catch (IOException | InterruptedException e) {
-            logger.error("An error occurred: {}", e.getMessage());
-			logger.debug("Response status code: {}", response.statusCode());
-			logger.debug("Response body: {}", response.body());
+            logger.error("Request timed out at: {} {}",request.uri().toString(), e.getMessage());
+			return ResponseEntity
+					.status(HttpStatus.GATEWAY_TIMEOUT)
+					.body("Destination service request timed out at: " + request.uri().toString());
+		} catch (ConnectException e) {
+			logger.error("Could not connect to destination at: {} {}",request.uri().toString(), e.getMessage(), e);
+			return ResponseEntity
+					.status(HttpStatus.SERVICE_UNAVAILABLE)
+					.body("Destination service is currently unavailable at: " + request.uri().toString());
+		} catch (IOException e) {
+			logger.error("I/O error while communicating with destination service at: {} {}",request.uri().toString()
+					,e.getMessage(), e);
+			return ResponseEntity
+					.status(HttpStatus.BAD_GATEWAY)
+					.body("Communication error with destination service at: " + request.uri().toString());
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+            logger.error("Request to destination service was interrupted at: {}", request.uri().toString(), e);
+			return ResponseEntity
+					.status(HttpStatus.SERVICE_UNAVAILABLE)
+					.body("Destination service request was interrupted at: " + request.uri().toString());
 		}
-		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		//return new ResponseEntity<>(String.format("Listed %d headers", headers.size()), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/status", method = {RequestMethod.GET})
