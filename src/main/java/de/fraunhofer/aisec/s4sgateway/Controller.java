@@ -58,7 +58,6 @@ public class Controller {
 	private String gatewayPortSD;
 	@Value("${gatewayProtocol}")
 	private String gatewayProtocol;
-
 	@Value("${kafkaDomainLocal}")
 	private String kafkaDomainLocal;
 	@Value("${kafkaPortLocal}")
@@ -77,7 +76,7 @@ public class Controller {
 	private String isaConfig;
 	JSONObject isa;
 
-    public Controller(ObjectMapper objectMapper, JsonSchemaValidationService validator) {
+    public Controller(ObjectMapper objectMapper, JsonSchemaValidationService validator){
         this.objectMapper = objectMapper;
         this.validator = validator;
     }

@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class Utils {
-    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
+    static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     public static boolean isaComparison(JSONObject isaReceived, JSONObject isaStored) {
         if (isaStored.similar(isaReceived)) {
