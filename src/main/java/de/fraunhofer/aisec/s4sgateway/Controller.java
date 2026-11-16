@@ -35,6 +35,8 @@ import java.util.*;
 
 import com.networknt.schema.Error;
 
+import static de.fraunhofer.aisec.s4sgateway.Utils.checkMandatoryFields;
+
 @Component
 @RestController
 public class Controller {
@@ -158,6 +160,7 @@ public class Controller {
 	JSONObject dropConfig;
 	JSONObject filterConfig;
 	JSONObject enrichmentConfig;
+	JSONObject requiredConfig;
 
 	@Bean
 	public ApplicationRunner initiationAfterLaunch() {
@@ -228,9 +231,17 @@ public class Controller {
 		if(!data.isEmpty()){
 			if(!dropConfig.isEmpty()){
 				if (Utils.applyDropCheck(data, dropConfig)){
-					logger.info("Alert rejected: forbidden value found.");
+					logger.warn("Alert rejected: forbidden value found.");
 					return new ResponseEntity<>(
 							"Alert rejected: forbidden value found.",
+							HttpStatus.UNPROCESSABLE_ENTITY);
+				}
+			}
+			if(!requiredConfig.isEmpty()){
+				if (!checkMandatoryFields(data, requiredConfig)) {
+					logger.warn("Alert rejected: missing mandatory fields.");
+					return new ResponseEntity<>(
+							"Alert rejected: missing mandatory fields.",
 							HttpStatus.UNPROCESSABLE_ENTITY);
 				}
 			}
@@ -549,6 +560,7 @@ public class Controller {
 			isa = new JSONObject(isaConfig);
 			dropConfig = isa.getJSONObject("dropConfig");
 			filterConfig = isa.getJSONObject("filterConfig");
+			requiredConfig = isa.getJSONObject("requiredConfig");
 			enrichmentConfig = isa.getJSONObject("enrichmentConfig");
 		}catch (JSONException err){
 			logger.error("Error: {}", err.toString());

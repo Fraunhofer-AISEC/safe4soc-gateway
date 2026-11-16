@@ -119,7 +119,7 @@ public class Utils {
 
     public static boolean applyDropCheck(JSONObject data, JSONObject dropConfig){
         for (String keyLevel1 : dropConfig.keySet()) {
-            logger.debug("Checking the key {}", keyLevel1);
+            logger.debug("Checking the key {} for drop instructions.", keyLevel1);
             switch (keyLevel1) {
                 //1. level key value pairs
                 case "Version":
@@ -269,4 +269,28 @@ public class Utils {
         return false;
     }
 
+    public static boolean checkMandatoryFields(JSONObject target, JSONObject mandatoryFields) {
+        if (target == null || mandatoryFields == null) {
+            return false;
+        }
+        for (String key : mandatoryFields.keySet()) {
+            logger.debug("Checking mandatory field config at key: {}",key);
+            if (!target.has(key) || target.isNull(key)) {
+                return false;
+            }
+            Object mandatoryValue = mandatoryFields.get(key);
+            Object targetValue = target.get(key);
+
+            // Recursively check nested JSON objects
+            if (mandatoryValue instanceof JSONObject mandatoryObject) {
+                if (!(targetValue instanceof JSONObject targetObject)) {
+                    return false;
+                }
+                if (!checkMandatoryFields(targetObject, mandatoryObject)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
