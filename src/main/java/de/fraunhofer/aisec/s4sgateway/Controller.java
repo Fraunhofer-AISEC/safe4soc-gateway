@@ -3,6 +3,7 @@ package de.fraunhofer.aisec.s4sgateway;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,32 +13,26 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
-import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpTimeoutException;
+import java.net.UnknownHostException;
+import java.net.http.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.time.Duration;
 import java.util.*;
-import java.util.stream.Collectors;
+
 import com.networknt.schema.Error;
 
 @Component
@@ -47,6 +42,14 @@ public class Controller {
 	private final ObjectMapper objectMapper;
 	private final JsonSchemaValidationService validator;
 
+
+	@Value("${gatewayReceiverURL}")
+	private String gatewayReceiverURL;
+
+	@Value("${gatewayReceiverUsername}")
+	private String gatewayReceiverUsername;
+	@Value("${gatewayReceiverPassword}")
+	private String gatewayReceiverPassword;
 
 	@Value("${gatewayDomainRC}")
 	private String gatewayDomainRC;
@@ -64,6 +67,8 @@ public class Controller {
 	private String kafkaPortLocal;
 	@Value("${sslOutboundActivated}")
 	private boolean sslOutboundActivated;
+	@Value("${kafkaTopic}")
+	private String kafkaTopic;
 	@Value("${trustStorePassword}")
 	private String trustStorePassword;
 	@Value("${trustStorePath}")
@@ -76,7 +81,56 @@ public class Controller {
 	private String isaConfig;
 	JSONObject isa;
 
-    public Controller(ObjectMapper objectMapper, JsonSchemaValidationService validator){
+	private HttpClient client;
+	@PostConstruct
+	public void initializeHttpClient() throws Exception {
+		// Create an HttpClient and SSL Context with TrustStore
+		HttpClient.Builder builder = HttpClient.newBuilder()
+				.connectTimeout(Duration.ofSeconds(10));
+
+		if (sslOutboundActivated) {
+			// 1. Load client keystore (for mTLS client cert)
+			KeyStore keyStore = KeyStore.getInstance("PKCS12");
+			try (InputStream is = Files.newInputStream(Path.of(keyStorePath))) {
+				keyStore.load(is, keyStorePassword.toCharArray());
+			} catch (IOException | CertificateException e) {
+				throw new RuntimeException(e);
+			}
+			// 2. Load truststore (to verify server cert)
+			KeyStore trustStore = KeyStore.getInstance("PKCS12");
+			try (InputStream is = Files.newInputStream(Path.of(trustStorePath))) {
+				trustStore.load(is, trustStorePassword.toCharArray());
+			} catch (IOException | CertificateException e) {
+				throw new RuntimeException(e);
+			}
+			TrustManagerFactory tmf = TrustManagerFactory.getInstance(
+					TrustManagerFactory.getDefaultAlgorithm());
+			KeyManagerFactory kmf = KeyManagerFactory.getInstance(
+					KeyManagerFactory.getDefaultAlgorithm());
+			kmf.init(keyStore, keyStorePassword.toCharArray());
+			tmf.init(trustStore);
+
+			logger.debug("Activating SSL for outbound connection!");
+			SSLContext sslContext = SSLContext.getInstance("TLS");
+			sslContext.init(
+					kmf.getKeyManagers(),   // enables mTLS
+					tmf.getTrustManagers(),
+					new java.security.SecureRandom());
+
+			SSLParameters sslParameters = new SSLParameters();
+			// Enforce hostname verification against the server certificate
+			sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
+
+			builder.sslContext(sslContext);
+			builder.sslParameters(sslParameters);
+		} else {
+			logger.warn("No SSL activated for outbound connection!");
+		}
+
+		client = builder.build();
+	}
+
+	public Controller(ObjectMapper objectMapper, JsonSchemaValidationService validator){
         this.objectMapper = objectMapper;
         this.validator = validator;
     }
@@ -132,9 +186,6 @@ public class Controller {
             logger.debug("ServerName {}", incomingRequest.getServerName());
 			logger.debug("Body     \n{}", body);
 		}
-
-
-
 
 		String answer = body;
 		// if format is json apply filter
@@ -193,16 +244,22 @@ public class Controller {
 		HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
 		switch (gatewayRole){
 			case SENDER:
-				requestBuilder.uri(URI.create(gatewayProtocol + "://" +
-						gatewayDomainRC + ":" +
-						gatewayPortRC +
-						incomingRequest.getRequestURI()));
+				String senderUrl;
+				logger.debug("gatewayReceiverURL: {}", gatewayReceiverURL);
+				if (gatewayReceiverURL != null && !gatewayReceiverURL.isEmpty()) {
+					requestBuilder.uri(URI.create(gatewayReceiverURL + incomingRequest.getRequestURI()));
+				} else {
+					requestBuilder.uri(URI.create(gatewayProtocol + "://" +
+							gatewayDomainRC + ":" +
+							gatewayPortRC +
+							incomingRequest.getRequestURI()));
+				}
 				break;
 			case RECEIVER:
 				requestBuilder.uri(URI.create(gatewayProtocol + "://" +
-					kafkaDomainLocal + ":" +
-					kafkaPortLocal +
-					incomingRequest.getRequestURI()));
+						kafkaDomainLocal + ":" +
+						kafkaPortLocal + "/topics/" +
+						kafkaTopic));
 				break;
 		}
 
@@ -241,87 +298,172 @@ public class Controller {
             logger.debug("Printing forwarded body: {}", answer);
 		}
 
-		// Create an HttpClient and SSL Context with TrustStore
-		HttpClient.Builder builder = HttpClient.newBuilder()
-				.connectTimeout(Duration.ofSeconds(10));
-
-		if (sslOutboundActivated) {
-			// 1. Load client keystore (for mTLS client cert)
-			KeyStore keyStore = KeyStore.getInstance("PKCS12");
-			try (InputStream is = Files.newInputStream(Path.of(keyStorePath))) {
-				keyStore.load(is, keyStorePassword.toCharArray());
-			} catch (IOException | CertificateException e) {
-				throw new RuntimeException(e);
-			}
-			// 2. Load truststore (to verify server cert)
-			KeyStore trustStore = KeyStore.getInstance("PKCS12");
-			try (InputStream is = Files.newInputStream(Path.of(trustStorePath))) {
-				trustStore.load(is, trustStorePassword.toCharArray());
-			} catch (IOException | CertificateException e) {
-				throw new RuntimeException(e);
-			}
-			TrustManagerFactory tmf = TrustManagerFactory.getInstance(
-					TrustManagerFactory.getDefaultAlgorithm());
-			KeyManagerFactory kmf = KeyManagerFactory.getInstance(
-					KeyManagerFactory.getDefaultAlgorithm());
-			kmf.init(keyStore, keyStorePassword.toCharArray());
-			tmf.init(trustStore);
-
-			logger.debug("Activating SSL for outbound connection!");
-			SSLContext sslContext = SSLContext.getInstance("TLS");
-			sslContext.init(
-					kmf.getKeyManagers(),   // enables mTLS
-					tmf.getTrustManagers(),
-					new java.security.SecureRandom());
-
-			SSLParameters sslParameters = new SSLParameters();
-			// Enforce hostname verification against the server certificate
-			sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
-
-			builder.sslContext(sslContext);
-			builder.sslParameters(sslParameters);
-		} else {
-			logger.warn("No SSL activated for outbound connection!");
-		}
-
-		HttpClient client = builder.build();
-
-		HttpResponse<String> response;
-
 		try {
-			// Send the request and receive the response
-			response = client.send(
+			HttpResponse<String> response = client.send(
 					request,
 					HttpResponse.BodyHandlers.ofString()
 			);
-			logger.debug("Response status code from {}: {}",request.uri().toString(), response.statusCode());
-			logger.debug("Response body from {}: {}", request.uri().toString(), response.body());
-			return new ResponseEntity<>(
-					response.body(),
-					HttpStatusCode.valueOf(response.statusCode())
+
+			int status = response.statusCode();
+
+			logger.info(
+					"Receiver response: method={}, url={}, status={}",
+					request.method(),
+					request.uri(),
+					status
 			);
+
+			logger.debug(
+					"Receiver response body for {}: {}",
+					request.uri(),
+					response.body()
+			);
+
+			if (status == 401) {
+				logger.error(
+						"Receiver authentication failed: url={}, status={}",
+						request.uri(),
+						status
+				);
+
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+						.body("Receiver authentication failed");
+			}
+
+			if (status == 403) {
+				logger.error(
+						"Receiver authorization denied: url={}, status={}",
+						request.uri(),
+						status
+				);
+
+				return ResponseEntity.status(HttpStatus.FORBIDDEN)
+						.body("Receiver authorization denied");
+			}
+
+			if (status >= 500) {
+				logger.error(
+						"Receiver internal error: url={}, status={}",
+						request.uri(),
+						status
+				);
+
+				return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+						.body("Receiver returned an internal server error");
+			}
+
+			if (status >= 400) {
+				logger.error(
+						"Receiver rejected request: url={}, status={}",
+						request.uri(),
+						status
+				);
+
+				return ResponseEntity.status(
+						HttpStatusCode.valueOf(status)
+				).body(response.body());
+			}
+
+			return ResponseEntity.status(
+					HttpStatusCode.valueOf(status)
+			).body(response.body());
+
+		} catch (SSLHandshakeException e) {
+			logger.error(
+					"TLS or mTLS handshake failed: url={}, type={}",
+					request.uri(),
+					e.getClass().getSimpleName()
+			);
+
+            logger.debug("TLS or mTLS handshake details for {}", request.uri(), e);
+
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+					.body("TLS or mTLS handshake failed");
+
+		} catch (SSLException e) {
+			logger.error(
+					"TLS communication failed: url={}, type={}",
+					request.uri(),
+					e.getClass().getSimpleName()
+			);
+
+            logger.debug("TLS communication details for {}", request.uri(), e);
+
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+					.body("TLS communication failed");
+
+		} catch (UnknownHostException e) {
+			logger.error(
+					"Receiver hostname cannot be resolved: url={}, host={}",
+					request.uri(),
+					request.uri().getHost()
+			);
+
+            logger.debug("Hostname resolution details for {}", request.uri(), e);
+
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+					.body("Receiver hostname cannot be resolved");
+
+		} catch (ConnectException | HttpConnectTimeoutException e) {
+			logger.error(
+					"Receiver is unreachable: url={}, type={}",
+					request.uri(),
+					e.getClass().getSimpleName()
+			);
+
+            logger.debug("Connection failure details for {}", request.uri(), e);
+
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+					.body("Receiver is unreachable");
+
 		} catch (HttpTimeoutException e) {
-            logger.error("Request timed out at: {} {}",request.uri().toString(), e.getMessage());
-			return ResponseEntity
-					.status(HttpStatus.GATEWAY_TIMEOUT)
-					.body("Destination service request timed out at: " + request.uri().toString());
-		} catch (ConnectException e) {
-			logger.error("Could not connect to destination at: {} {}",request.uri().toString(), e.getMessage(), e);
-			return ResponseEntity
-					.status(HttpStatus.SERVICE_UNAVAILABLE)
-					.body("Destination service is currently unavailable at: " + request.uri().toString());
-		} catch (IOException e) {
-			logger.error("I/O error while communicating with destination service at: {} {}",request.uri().toString()
-					,e.getMessage(), e);
-			return ResponseEntity
-					.status(HttpStatus.BAD_GATEWAY)
-					.body("Communication error with destination service at: " + request.uri().toString());
+
+			logger.error(
+					"Receiver request timed out: url={}",
+					request.uri()
+			);
+
+            logger.debug("Timeout details for {}", request.uri(), e);
+
+			return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT)
+					.body("Receiver request timed out");
+
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-            logger.error("Request to destination service was interrupted at: {}", request.uri().toString(), e);
-			return ResponseEntity
-					.status(HttpStatus.SERVICE_UNAVAILABLE)
-					.body("Destination service request was interrupted at: " + request.uri().toString());
+
+			logger.error(
+					"Receiver request was interrupted: url={}",
+					request.uri()
+			);
+
+            logger.debug("Interrupted request details for {}", request.uri(), e);
+
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+					.body("Receiver request was interrupted");
+
+		} catch (IOException e) {
+			logger.error(
+					"Network error while contacting receiver: url={}, type={}",
+					request.uri(),
+					e.getClass().getSimpleName()
+			);
+
+            logger.debug("Network error details for {}", request.uri(), e);
+
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+					.body("Network error while contacting receiver");
+
+		} catch (Exception e) {
+			logger.error(
+					"Unexpected gateway error while contacting receiver: url={}, type={}",
+					request.uri(),
+					e.getClass().getSimpleName()
+			);
+
+            logger.debug("Unexpected gateway error details for {}", request.uri(), e);
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Internal gateway error");
 		}
 	}
 
@@ -336,7 +478,7 @@ public class Controller {
 		logger.debug("Reload Configuration function was called");
 
 		// Loading file config for ISA
-		try (InputStream input = new ClassPathResource("application.properties").getInputStream()) {
+		try (InputStream input = new ClassPathResource("default.properties").getInputStream()) {
 			Properties prop = new Properties();
 			prop.load(input);
 			this.isaConfig = prop.getProperty("isaConfig");
@@ -362,7 +504,6 @@ public class Controller {
 			return new ResponseEntity<>("ISA incompatible.", HttpStatus.CONFLICT);
 		}
 	}
-
 
 	private void LoadISA(){
 		logger.info("Loading Information Sharing Agreement and Filter settings ...");

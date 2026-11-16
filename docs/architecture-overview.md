@@ -14,7 +14,6 @@ The Kafka REST API container does the translation to the final destination, the 
 reachable on the receiver side.
 
 ## TOC
-## TOC
 
 Architecture Overview(here)
 

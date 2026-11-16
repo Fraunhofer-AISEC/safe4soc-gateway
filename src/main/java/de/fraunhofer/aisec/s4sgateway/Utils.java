@@ -37,13 +37,14 @@ public class Utils {
                 case "ID":
                 case "Status":
                 case "OrganisationName":
+                case "OrganisationId":
                 case "CreateTime":
                 case "StartTime":
                 case "Priority":
                 case "Confidence":
                 case "Description":
                 case "Cause":
-                    data.put(keyLevel1, "");
+                    putFromFilterOrEmpty(data, filterConfig, keyLevel1);
                     break;
                 //1. level key array pair
                 case "Category":
@@ -136,6 +137,7 @@ public class Utils {
                 case "ID":
                 case "Status":
                 case "OrganisationName":
+                case "OrganisationId":
                 case "Priority":
                 case "Confidence":
                 case "Description":
@@ -215,5 +217,18 @@ public class Utils {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SS'Z'")
                 .withZone(java.time.ZoneOffset.UTC);
         return formatter.format(instant);
+    }
+    // private static void putFromFilterOrEmpty(JSONObject target, JSONObject filter, String key) {
+    //     if (filter.has(key) && !filter.isNull(key)) {
+    //         target.put(key, filter.get(key));
+    //     } else {
+    //         target.put(key, "");
+    //     }
+    // }
+
+    private static void putFromFilterOrEmpty(JSONObject target, JSONObject filter, String key) {
+        if (filter != null && filter.has(key) && !filter.isNull(key)) {
+            target.put(key, filter.get(key));
+        }
     }
 }

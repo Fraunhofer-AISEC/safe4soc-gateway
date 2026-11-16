@@ -219,10 +219,14 @@ services:
     ports:
       - "10080:10080"
     volumes:
-      - ${PWD}/src/main/resources/docker.properties:/application.properties
+      - ${PWD}/src/main/resources/docker.properties:/application.properties:ro
       - ${PWD}/pki-test/gateway-sender/gateway-sender.p12:/keystore.p12
       - ${PWD}/pki-test/truststore.p12:/truststore.p12
     environment:
+      #SPRING_CONFIG_LOCATION: file:/app/application.properties
+      #SPRING_PROFILES_ACTIVE: docker
+      #SPRING_CONFIG_LOCATION: file:/app/application.properties
+
       SSL_KEY_STORE: /keystore.p12
       SSL_KEY_STORE_PASSWORD: password
       SSL_KEY_ALIAS: 1

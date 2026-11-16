@@ -100,7 +100,7 @@ public class JsonSchemaValidationService {
         // 2. Fall back to the embedded classpath resource
         String resourcePath = "/schemas/idmefv2-schema.json";
 
-        logger.info("Loading embedded JSON schema: {}", resourcePath);
+        logger.info("Loading embedded JSON schema from JAR or Graal VM compiled binary: {}", resourcePath);
 
         try (InputStream input = getClass().getResourceAsStream(resourcePath)) {
 
