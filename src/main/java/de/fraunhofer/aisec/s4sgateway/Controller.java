@@ -79,6 +79,11 @@ public class Controller {
 	private String keyStorePath;
 	@Value("${isaConfig}")
 	private String isaConfig;
+	@Value("${endpoints.reloadconfig.enabled}")
+	private boolean endpointsEnabledReloadconfig;
+	@Value("${endpoints.setisa.enabled}")
+	private boolean endpointsEnabledSetisa;
+
 	JSONObject isa;
 
 	private HttpClient client;
@@ -128,6 +133,13 @@ public class Controller {
 		}
 
 		client = builder.build();
+
+		if (endpointsEnabledReloadconfig) {
+			logger.warn("Endpoint reloadconfig can be reached - only use in debug mode!");
+		}
+		if (endpointsEnabledSetisa) {
+			logger.warn("Endpoint setisa can be reached - only use in debug mode!");
+		}
 	}
 
 	public Controller(ObjectMapper objectMapper, JsonSchemaValidationService validator){
@@ -160,17 +172,6 @@ public class Controller {
 		LoadISA();
 		CheckISAConfig();
 	}
-
-
-	@RequestMapping(value = "/setisa", method = {RequestMethod.POST})
-	public ResponseEntity<String> setIsa(@RequestBody String isaIncoming) {
-		logger.debug("SetISA API function was called");
-		isaConfig = isaIncoming;
-		LoadISA();
-		CheckISAConfig();
-		return new ResponseEntity<>(String.format("Processed ISA update."), HttpStatus.OK);
-	}
-
 
 	@RequestMapping(value = "/**", method = {RequestMethod.GET, RequestMethod.POST})
 	public ResponseEntity<String> listAllHeaders(@RequestHeader Map<String, String> headers,
@@ -468,31 +469,59 @@ public class Controller {
 	}
 
 	@RequestMapping(value = "/status", method = {RequestMethod.GET})
-	public ResponseEntity status() {
+	public ResponseEntity<String>  status() {
 		logger.debug("Status function was called");
-		return new ResponseEntity<>(String.format("Gateway " + gatewayRole + " online." + "\nISA: " + isaConfig), HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/reloadconfig", method = {RequestMethod.GET})
-	public ResponseEntity reloadConfig() {
-		logger.debug("Reload Configuration function was called");
-
-		// Loading file config for ISA
-		try (InputStream input = new ClassPathResource("default.properties").getInputStream()) {
-			Properties prop = new Properties();
-			prop.load(input);
-			this.isaConfig = prop.getProperty("isaConfig");
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-
-		initConfig();
-		return new ResponseEntity<>(String.format("Configuration reload attempt was processed, please see internal logs for results."),
+		return new ResponseEntity<>(String.format("Gateway " + gatewayRole + " online." + "\nISA: " + isaConfig),
 				HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/reloadconfig", method = {RequestMethod.GET})
+	public ResponseEntity<String>  reloadConfig() {
+		if (!endpointsEnabledReloadconfig){
+			logger.debug("Reload Configuration endpoint was called, but is disabled via config");
+			return new ResponseEntity<>(
+                    "Configuration reload endpoint deactivated.",
+					HttpStatus.NOT_ACCEPTABLE);
+		} else {
+			logger.debug("Reload Configuration function was called");
+
+			// Loading file config for ISA
+			try (InputStream input = new ClassPathResource("application.properties").getInputStream()) {
+				Properties prop = new Properties();
+				prop.load(input);
+				this.isaConfig = prop.getProperty("isaConfig");
+			} catch (IOException ex) {
+				logger.error("Failed to load application.properties: {}", ex.getMessage(), ex);
+				return new ResponseEntity<>(
+						"Configuration reload attempt failed, please see internal logs for results.",
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+
+			initConfig();
+			return new ResponseEntity<>(
+                    "Configuration reload attempt was processed, please see internal logs for results.",
+					HttpStatus.OK);
+		}
+	}
+
+	@RequestMapping(value = "/setisa", method = {RequestMethod.POST})
+	public ResponseEntity<String> setIsa(@RequestBody String isaIncoming) {
+		if (!endpointsEnabledSetisa){
+			logger.debug("SetISA Configuration endpoint was called, but is disabled via config");
+			return new ResponseEntity<>(
+                    "SetISA configuration endpoint deactivated.",
+					HttpStatus.NOT_ACCEPTABLE);
+		} else {
+			logger.debug("SetISA API function was called");
+			isaConfig = isaIncoming;
+			LoadISA();
+			CheckISAConfig();
+			return new ResponseEntity<>("Processed ISA update.", HttpStatus.OK);
+		}
+	}
+
 	@RequestMapping(value = "/isacheck", method = {RequestMethod.POST})
-	public ResponseEntity isaCheck(@RequestBody String isaReceived) {
+	public ResponseEntity<String>  isaCheck(@RequestBody String isaReceived) {
 		logger.debug("IsaCheck function was called");
 		logger.debug("Received the following external ISA:");
 		logger.debug(isaReceived);

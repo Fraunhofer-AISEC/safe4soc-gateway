@@ -222,10 +222,16 @@ services:
       - ${PWD}/src/main/resources/docker.properties:/application.properties:ro
       - ${PWD}/pki-test/gateway-sender/gateway-sender.p12:/keystore.p12
       - ${PWD}/pki-test/truststore.p12:/truststore.p12
+      - ${PWD}/src/main/resources/schemas/idmefv2-schema.json:/idmefv2-schema.json
     environment:
       #SPRING_CONFIG_LOCATION: file:/app/application.properties
       #SPRING_PROFILES_ACTIVE: docker
       #SPRING_CONFIG_LOCATION: file:/app/application.properties
+      IDMEFv2SchemaPath: /idmefv2-schema.json
+      GATEWAY_RECEIVER_URL: https://gateway-receiver:10081
+
+      ENDPOINT_ACTIVE_RELOADCONFIG: true
+      ENDPOINT_ACTIVE_SETISA: true
 
       SSL_KEY_STORE: /keystore.p12
       SSL_KEY_STORE_PASSWORD: password
@@ -242,6 +248,7 @@ services:
       GATEWAY_ROLE: SENDER
       KAFKA_LOCAL_DOMAIN: xxxxx   #not used in this role
       KAFKA_LOCAL_PORT: xxxx      #not used in this role
+      KAFKA_TOPIC: alerts
       GATEWAY_RECEIVER_DOMAIN: gateway-receiver
       GATEWAY_RECEIVER_PORT: 10081
       GATEWAY_SENDER_DOMAIN: gateway-sender
@@ -259,6 +266,10 @@ services:
     - ${PWD}/pki-test/gateway-receiver/gateway-receiver.p12:/keystore.p12
     - ${PWD}/pki-test/truststore.p12:/truststore.p12
     environment:
+
+      ENDPOINT_ACTIVE_RELOADCONFIG: true
+      ENDPOINT_ACTIVE_SETISA: true
+
       SSL_KEY_STORE: /keystore.p12
       SSL_KEY_STORE_PASSWORD: password
       SSL_KEY_ALIAS: 1
