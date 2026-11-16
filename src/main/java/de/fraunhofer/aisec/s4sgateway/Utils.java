@@ -117,6 +117,35 @@ public class Utils {
         }
     }
 
+    public static boolean applyDropCheck(JSONObject data, JSONObject dropConfig){
+        for (String keyLevel1 : dropConfig.keySet()) {
+            logger.debug("Checking the key {}", keyLevel1);
+            switch (keyLevel1) {
+                //1. level key value pairs
+                case "Version":
+                case "ID":
+                case "Status":
+                case "OrganisationName":
+                case "OrganisationId":
+                case "CreateTime":
+                case "StartTime":
+                case "Priority":
+                case "Confidence":
+                case "Description":
+                case "Cause":
+                case "Category":
+                    if(checkFromDropConfig(data, dropConfig, keyLevel1)){
+                        logger.info("Dropped alert due to triggered drop configuration at key: {}",keyLevel1);
+                        return true;
+                    } else {
+                        break;
+                    }
+               default:
+                    logger.debug("No drop was applied.");
+            }
+        }
+        return false;
+    }
 
     public static void applyEnrichment(JSONObject data, JSONObject enrichmentConfig) {
         JSONObject contentObject;
@@ -211,6 +240,8 @@ public class Utils {
         }
     }
 
+
+
     public static String TimestampFormatterIDMEFv2() {
         Instant instant = Instant.now().truncatedTo(ChronoUnit.MILLIS);
         // Format it as the required ISO 8601 string
@@ -218,17 +249,24 @@ public class Utils {
                 .withZone(java.time.ZoneOffset.UTC);
         return formatter.format(instant);
     }
-    // private static void putFromFilterOrEmpty(JSONObject target, JSONObject filter, String key) {
-    //     if (filter.has(key) && !filter.isNull(key)) {
-    //         target.put(key, filter.get(key));
-    //     } else {
-    //         target.put(key, "");
-    //     }
-    // }
+
 
     private static void putFromFilterOrEmpty(JSONObject target, JSONObject filter, String key) {
         if (filter != null && filter.has(key) && !filter.isNull(key)) {
             target.put(key, filter.get(key));
         }
     }
+
+    private static boolean checkFromDropConfig(
+            JSONObject target, JSONObject dropConfig, String key) {
+
+        if (dropConfig != null && dropConfig.has(key) && !dropConfig.isNull(key)
+                && target != null && target.has(key) && !target.isNull(key)) {
+
+            return target.get(key).equals(dropConfig.get(key));
+        }
+
+        return false;
+    }
+
 }

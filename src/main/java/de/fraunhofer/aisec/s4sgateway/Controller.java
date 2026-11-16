@@ -155,6 +155,7 @@ public class Controller {
 	GatewayRole gatewayRole;
 	@Value("#{${relevantHeaders}}")
 	private List<String> relevantHeaders;
+	JSONObject dropConfig;
 	JSONObject filterConfig;
 	JSONObject enrichmentConfig;
 
@@ -225,6 +226,14 @@ public class Controller {
 		logger.info("Alert is valid against configured JSON schema.");
 
 		if(!data.isEmpty()){
+			if(!dropConfig.isEmpty()){
+				if (Utils.applyDropCheck(data, dropConfig)){
+					logger.info("Alert rejected: forbidden value found.");
+					return new ResponseEntity<>(
+							"Alert rejected: forbidden value found.",
+							HttpStatus.UNPROCESSABLE_ENTITY);
+				}
+			}
 			if(!filterConfig.isEmpty()){
 				Utils.applyFilter(data, filterConfig);
 				logger.debug("Body after Filtering:\n{}",data.toString(2));
@@ -538,6 +547,7 @@ public class Controller {
 		logger.info("Loading Information Sharing Agreement and Filter settings ...");
 		try {
 			isa = new JSONObject(isaConfig);
+			dropConfig = isa.getJSONObject("dropConfig");
 			filterConfig = isa.getJSONObject("filterConfig");
 			enrichmentConfig = isa.getJSONObject("enrichmentConfig");
 		}catch (JSONException err){
