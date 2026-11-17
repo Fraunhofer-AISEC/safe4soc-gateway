@@ -272,6 +272,9 @@ services:
       ENDPOINT_ACTIVE_RELOADCONFIG: true
       ENDPOINT_ACTIVE_SETISA: true
 
+#      GATEWAY_RECEIVER_USERNAME: admin
+#      GATEWAY_RECEIVER_PASSWORD: safe4soc
+
       SSL_KEY_STORE: /keystore.p12
       SSL_KEY_STORE_PASSWORD: password
       SSL_KEY_ALIAS: 1

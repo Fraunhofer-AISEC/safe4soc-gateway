@@ -83,7 +83,7 @@ public class Controller {
 	private String keyStorePassword;
 	@Value("${keyStorePath}")
 	private String keyStorePath;
-	
+
 	@Value("${isaPath}")
 	private String isaPath;
 
@@ -308,14 +308,25 @@ public class Controller {
 			}
         }
 
+		String username = gatewayReceiverUsername;
+		String password = gatewayReceiverPassword;
 		switch (gatewayRole){
 			case SENDER:
 				requestBuilder.setHeader("safe4soc-sender-hostname",gatewayDomainSD);
 				requestBuilder.setHeader("safe4soc-sender-port",gatewayPortSD);
+				if (username != null
+						&& !username.isBlank()
+						&& password != null
+						&& !password.isBlank()) {
+
+					String auth = Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
+					requestBuilder.setHeader("Authorization", "Basic " + auth );
+				}
 				break;
 			case RECEIVER:
 				requestBuilder.setHeader("safe4soc-receiver-hostname",gatewayDomainRC);
 				requestBuilder.setHeader("safe4soc-receiver-port",gatewayPortRC);
+				requestBuilder.setHeader("Content-Type", "application/vnd.kafka.json.v2+json");
 				break;
 		}
 
