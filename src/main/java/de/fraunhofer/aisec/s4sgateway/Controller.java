@@ -20,14 +20,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import javax.net.ssl.*;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.net.http.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.time.Duration;
@@ -52,7 +55,8 @@ public class Controller {
 	private String gatewayReceiverUsername;
 	@Value("${gatewayReceiverPassword}")
 	private String gatewayReceiverPassword;
-
+	@Value("${gateway.version}")
+	private String gatewayVersion;
 	@Value("${gatewayDomainRC}")
 	private String gatewayDomainRC;
 	@Value("${gatewayPortRC}")
@@ -79,8 +83,10 @@ public class Controller {
 	private String keyStorePassword;
 	@Value("${keyStorePath}")
 	private String keyStorePath;
-	@Value("${isaConfig}")
-	private String isaConfig;
+	
+	@Value("${isaPath}")
+	private String isaPath;
+
 	@Value("${endpoints.reloadconfig.enabled}")
 	private boolean endpointsEnabledReloadconfig;
 	@Value("${endpoints.setisa.enabled}")
@@ -170,6 +176,7 @@ public class Controller {
 	}
 
 	private void initConfig(){
+		logger.info("SAFE4SOC-IS-Gateway version: {}",gatewayVersion);
 		if(sslOutboundActivated){
 			logger.info("HTTPS for Outbound connection active!");
 		}
@@ -491,12 +498,12 @@ public class Controller {
 	@RequestMapping(value = "/status", method = {RequestMethod.GET})
 	public ResponseEntity<String>  status() {
 		logger.debug("Status function was called");
-		return new ResponseEntity<>(String.format("Gateway " + gatewayRole + " online." + "\nISA: " + isaConfig),
+		return new ResponseEntity<>(String.format("Gateway " + gatewayRole + " online." + "\nISA: " + isa.toString()),
 				HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/reloadconfig", method = {RequestMethod.GET})
-	public ResponseEntity<String>  reloadConfig() {
+	public ResponseEntity<String>  reloadConfig() throws IOException {
 		if (!endpointsEnabledReloadconfig){
 			logger.debug("Reload Configuration endpoint was called, but is disabled via config");
 			return new ResponseEntity<>(
@@ -504,18 +511,6 @@ public class Controller {
 					HttpStatus.NOT_ACCEPTABLE);
 		} else {
 			logger.debug("Reload Configuration function was called");
-
-			// Loading file config for ISA
-			try (InputStream input = new ClassPathResource("application.properties").getInputStream()) {
-				Properties prop = new Properties();
-				prop.load(input);
-				this.isaConfig = prop.getProperty("isaConfig");
-			} catch (IOException ex) {
-				logger.error("Failed to load application.properties: {}", ex.getMessage(), ex);
-				return new ResponseEntity<>(
-						"Configuration reload attempt failed, please see internal logs for results.",
-						HttpStatus.INTERNAL_SERVER_ERROR);
-			}
 
 			initConfig();
 			return new ResponseEntity<>(
@@ -533,9 +528,18 @@ public class Controller {
 					HttpStatus.NOT_ACCEPTABLE);
 		} else {
 			logger.debug("SetISA API function was called");
-			isaConfig = isaIncoming;
 			LoadISA();
-			CheckISAConfig();
+			try {
+				isa = new JSONObject(isaIncoming);
+				dropConfig = isa.getJSONObject("dropConfig");
+				filterConfig = isa.getJSONObject("filterConfig");
+				requiredConfig = isa.getJSONObject("requiredConfig");
+				enrichmentConfig = isa.getJSONObject("enrichmentConfig");
+			}catch (JSONException err){
+				logger.error("Error: {}", err.toString());
+			}
+			logger.info("Loaded this ISA:{}",isa);
+            CheckISAConfig();
 			return new ResponseEntity<>("Processed ISA update.", HttpStatus.OK);
 		}
 	}
@@ -557,15 +561,17 @@ public class Controller {
 	private void LoadISA(){
 		logger.info("Loading Information Sharing Agreement and Filter settings ...");
 		try {
-			isa = new JSONObject(isaConfig);
+			isa = new JSONObject(loadIsaFromFile());
 			dropConfig = isa.getJSONObject("dropConfig");
 			filterConfig = isa.getJSONObject("filterConfig");
 			requiredConfig = isa.getJSONObject("requiredConfig");
 			enrichmentConfig = isa.getJSONObject("enrichmentConfig");
 		}catch (JSONException err){
 			logger.error("Error: {}", err.toString());
-		}
-		logger.info("Loaded this ISA:{}",isa);
+		} catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        logger.info("Loaded this ISA:{}",isa);
 	}
 
 	private void CheckISAConfig(){
@@ -601,4 +607,42 @@ public class Controller {
 			logger.info("Config relevantHeaders={}",relevantHeaders.toString());
 		}
 	}
+
+	private String loadIsaFromFile() throws IOException {
+
+		// 1. Try loading an external filesystem schema
+		if (isaPath != null && !isaPath.isBlank()) {
+
+			Path path = Paths.get(isaPath);
+
+			if (Files.isRegularFile(path) && Files.isReadable(path)) {
+				logger.info("Loading external ISA: {}", path.toAbsolutePath());
+
+				return Files.readString(path, StandardCharsets.UTF_8);
+			}
+
+			logger.warn(
+					"External ISA not found or not readable: {}. "
+							+ "Trying embedded schema inside binary instead.",
+					path.toAbsolutePath()
+			);
+		}
+
+		// 2. Fall back to the embedded classpath resource
+		String resourcePath = "/isa/isa.json";
+
+		logger.info("Loading embedded ISA from JAR or Graal VM compiled binary: {}", resourcePath);
+
+		try (InputStream input = getClass().getResourceAsStream(resourcePath)) {
+
+			if (input == null) {
+				throw new FileNotFoundException(
+						"Embedded ISA not found: " + resourcePath
+				);
+			}
+
+			return new String(input.readAllBytes(), StandardCharsets.UTF_8);
+		}
+	}
+
 }

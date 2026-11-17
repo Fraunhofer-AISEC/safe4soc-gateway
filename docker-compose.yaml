@@ -223,11 +223,13 @@ services:
       - ${PWD}/pki-test/gateway-sender/gateway-sender.p12:/keystore.p12
       - ${PWD}/pki-test/truststore.p12:/truststore.p12
       - ${PWD}/src/main/resources/schemas/idmefv2-schema.json:/idmefv2-schema.json
+      - ${PWD}/src/main/resources/isa/isa.json:/isa.json
     environment:
       #SPRING_CONFIG_LOCATION: file:/app/application.properties
       #SPRING_PROFILES_ACTIVE: docker
       #SPRING_CONFIG_LOCATION: file:/app/application.properties
       IDMEFv2SchemaPath: /idmefv2-schema.json
+      ISA_PATH: /isa.json
       GATEWAY_RECEIVER_URL: https://gateway-receiver:10081
 
       ENDPOINT_ACTIVE_RELOADCONFIG: true
