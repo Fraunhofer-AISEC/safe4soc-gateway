@@ -234,6 +234,8 @@ services:
 
       ENDPOINT_ACTIVE_RELOADCONFIG: true
       ENDPOINT_ACTIVE_SETISA: true
+      GATEWAY_RECEIVER_USERNAME: admin
+      GATEWAY_RECEIVER_PASSWORD: safe4soc
 
       SSL_KEY_STORE: /keystore.p12
       SSL_KEY_STORE_PASSWORD: password
@@ -245,7 +247,7 @@ services:
       GATEWAY_PROTOCOL: https     # for communication from gateway sender to gateway receiver
       SSL_INBOUND_ACTIVATED: true
       SSL_OUTBOUND_ACTIVATED: true
-      SSL_MTLS_SETTING: want      # mTLS optional
+      SSL_MTLS_SETTING: want      # mTLS optional  none|want|need
 
       GATEWAY_ROLE: SENDER
       KAFKA_LOCAL_DOMAIN: xxxxx   #not used in this role
@@ -267,13 +269,18 @@ services:
     - ${PWD}/src/main/resources/docker.properties:/application.properties
     - ${PWD}/pki-test/gateway-receiver/gateway-receiver.p12:/keystore.p12
     - ${PWD}/pki-test/truststore.p12:/truststore.p12
+    - ${PWD}/src/main/resources/schemas/idmefv2-schema.json:/idmefv2-schema.json
+    - ${PWD}/src/main/resources/isa/isa.json:/isa.json
     environment:
+      IDMEFv2SchemaPath: /idmefv2-schema.json
+      ISA_PATH: /isa.json
+      GATEWAY_RECEIVER_URL: https://localhost:10081
 
       ENDPOINT_ACTIVE_RELOADCONFIG: true
       ENDPOINT_ACTIVE_SETISA: true
 
-#      GATEWAY_RECEIVER_USERNAME: admin
-#      GATEWAY_RECEIVER_PASSWORD: safe4soc
+      GATEWAY_RECEIVER_USERNAME: ""
+      GATEWAY_RECEIVER_PASSWORD: ""
 
       SSL_KEY_STORE: /keystore.p12
       SSL_KEY_STORE_PASSWORD: password
@@ -285,11 +292,13 @@ services:
       GATEWAY_PROTOCOL: http      # for communication to local kafka db
       SSL_INBOUND_ACTIVATED: true
       SSL_OUTBOUND_ACTIVATED: true
-      SSL_MTLS_SETTING: need      # mTLS mandatory
+      SSL_MTLS_SETTING: need      # mTLS mandatory  none|want|need
 
       GATEWAY_ROLE: RECEIVER
       KAFKA_LOCAL_DOMAIN: rest-proxy
       KAFKA_LOCAL_PORT: 8082
+      KAFKA_TOPIC: alerts
+
       GATEWAY_RECEIVER_DOMAIN: gateway-receiver
       GATEWAY_RECEIVER_PORT: 10081
       GATEWAY_SENDER_DOMAIN: xxxxxx   #not used in this role

@@ -117,7 +117,7 @@ public class Utils {
         }
     }
 
-    public static boolean applyDropCheck(JSONObject data, JSONObject dropConfig){
+    public static String applyDropCheck(JSONObject data, JSONObject dropConfig){
         for (String keyLevel1 : dropConfig.keySet()) {
             logger.debug("Checking the key {} for drop instructions.", keyLevel1);
             switch (keyLevel1) {
@@ -136,7 +136,7 @@ public class Utils {
                 case "Category":
                     if(checkFromDropConfig(data, dropConfig, keyLevel1)){
                         logger.info("Dropped alert due to triggered drop configuration at key: {}",keyLevel1);
-                        return true;
+                        return keyLevel1;
                     } else {
                         break;
                     }
@@ -144,7 +144,7 @@ public class Utils {
                     logger.debug("No drop was applied.");
             }
         }
-        return false;
+        return "";
     }
 
     public static void applyEnrichment(JSONObject data, JSONObject enrichmentConfig) {
@@ -269,14 +269,14 @@ public class Utils {
         return false;
     }
 
-    public static boolean checkMandatoryFields(JSONObject target, JSONObject mandatoryFields) {
+    public static String checkMandatoryFields(JSONObject target, JSONObject mandatoryFields) {
         if (target == null || mandatoryFields == null) {
-            return false;
+            return "";
         }
         for (String key : mandatoryFields.keySet()) {
             logger.debug("Checking mandatory field config at key: {}",key);
             if (!target.has(key) || target.isNull(key)) {
-                return false;
+                return key;
             }
             Object mandatoryValue = mandatoryFields.get(key);
             Object targetValue = target.get(key);
@@ -284,13 +284,13 @@ public class Utils {
             // Recursively check nested JSON objects
             if (mandatoryValue instanceof JSONObject mandatoryObject) {
                 if (!(targetValue instanceof JSONObject targetObject)) {
-                    return false;
+                    return key;
                 }
-                if (!checkMandatoryFields(targetObject, mandatoryObject)) {
-                    return false;
+                if (!checkMandatoryFields(targetObject, mandatoryObject).isEmpty()) {
+                    return key;
                 }
             }
         }
-        return true;
+        return "";
     }
 }

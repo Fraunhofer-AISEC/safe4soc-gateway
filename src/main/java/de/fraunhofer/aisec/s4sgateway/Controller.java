@@ -237,18 +237,20 @@ public class Controller {
 
 		if(!data.isEmpty()){
 			if(!dropConfig.isEmpty()){
-				if (Utils.applyDropCheck(data, dropConfig)){
-					logger.warn("Alert rejected: forbidden value found.");
+				String dropcheckResult = Utils.applyDropCheck(data, dropConfig);
+				if (!dropcheckResult.isEmpty()){
+					logger.warn("Alert rejected: forbidden value found in {}.",dropcheckResult);
 					return new ResponseEntity<>(
-							"Alert rejected: forbidden value found.",
+							"Alert rejected: forbidden value found in " + dropcheckResult,
 							HttpStatus.UNPROCESSABLE_ENTITY);
 				}
 			}
 			if(!requiredConfig.isEmpty()){
-				if (!checkMandatoryFields(data, requiredConfig)) {
-					logger.warn("Alert rejected: missing mandatory fields.");
+				String mandatoryFieldFound = checkMandatoryFields(data, requiredConfig);
+				if (!mandatoryFieldFound.isEmpty()) {
+					logger.warn("Alert rejected: missing mandatory field {}.",mandatoryFieldFound);
 					return new ResponseEntity<>(
-							"Alert rejected: missing mandatory fields.",
+							"Alert rejected: missing mandatory field " + mandatoryFieldFound,
 							HttpStatus.UNPROCESSABLE_ENTITY);
 				}
 			}
@@ -366,7 +368,7 @@ public class Controller {
 				);
 
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-						.body("Receiver authentication failed");
+						.body("Receiver authentication failed: url=" + request.uri());
 			}
 
 			if (status == 403) {
@@ -377,7 +379,7 @@ public class Controller {
 				);
 
 				return ResponseEntity.status(HttpStatus.FORBIDDEN)
-						.body("Receiver authorization denied");
+						.body("Receiver authorization denied: url=" + request.uri());
 			}
 
 			if (status >= 500) {
@@ -388,7 +390,7 @@ public class Controller {
 				);
 
 				return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
-						.body("Receiver returned an internal server error");
+						.body("Receiver returned an internal server error: url=" + request.uri());
 			}
 
 			if (status >= 400) {

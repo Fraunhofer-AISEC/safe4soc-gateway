@@ -219,6 +219,9 @@ services:
 #      test: ["CMD", "/app/script_main.sh"]
 #      interval: 10s
 #      retries: 10
+    build:
+      context: ./enrollment
+      dockerfile: Dockerfile
     environment:
       DOMAIN_PKI: pki.safe4soc.cosypoc.fr
       DOMAIN_GATEWAY: gateway-sender
@@ -245,10 +248,21 @@ services:
 #      - ${PWD}/pki-test/truststore.p12:/truststore.p12
       - ${PWD}/enrollment/archives/truststore.p12:/truststore.p12
       - ${PWD}/enrollment/archives/keystore.p12:/keystore.p12
+      - ${PWD}/src/main/resources/schemas/idmefv2-schema.json:/idmefv2-schema.json
+      - ${PWD}/src/main/resources/isa/isa.json:/isa.json
     depends_on:
       safe4soc-enrollment:
         condition: service_completed_successfully
     environment:
+      IDMEFv2SchemaPath: /idmefv2-schema.json
+      ISA_PATH: /isa.json
+      GATEWAY_RECEIVER_URL: https://gateway-receiver:10081
+
+      ENDPOINT_ACTIVE_RELOADCONFIG: true
+      ENDPOINT_ACTIVE_SETISA: true
+      GATEWAY_RECEIVER_USERNAME: admin
+      GATEWAY_RECEIVER_PASSWORD: safe4soc
+
       SSL_KEY_STORE: /keystore.p12
       SSL_KEY_STORE_PASSWORD: password
       SSL_KEY_ALIAS: 1
@@ -264,6 +278,7 @@ services:
       GATEWAY_ROLE: SENDER
       KAFKA_LOCAL_DOMAIN: xxxxx   #not used in this role
       KAFKA_LOCAL_PORT: xxxx      #not used in this role
+      KAFKA_TOPIC: alerts
       GATEWAY_RECEIVER_DOMAIN: gateway-receiver
       GATEWAY_RECEIVER_PORT: 10081
       GATEWAY_SENDER_DOMAIN: gateway-sender
@@ -282,7 +297,19 @@ services:
 #    - ${PWD}/pki-test/truststore.p12:/truststore.p12
     - ${PWD}/onboarding/truststore.p12:/truststore.p12
     - ${PWD}/onboarding/gateway-receiver.client.p12:/keystore.p12
+    - ${PWD}/src/main/resources/schemas/idmefv2-schema.json:/idmefv2-schema.json
+    - ${PWD}/src/main/resources/isa/isa.json:/isa.json
     environment:
+      IDMEFv2SchemaPath: /idmefv2-schema.json
+      ISA_PATH: /isa.json
+      GATEWAY_RECEIVER_URL: https://localhost:10081
+
+      ENDPOINT_ACTIVE_RELOADCONFIG: true
+      ENDPOINT_ACTIVE_SETISA: true
+
+      GATEWAY_RECEIVER_USERNAME: ""
+      GATEWAY_RECEIVER_PASSWORD: ""
+
       SSL_KEY_STORE: /keystore.p12
       SSL_KEY_STORE_PASSWORD: password
       SSL_KEY_ALIAS: 1
@@ -298,6 +325,8 @@ services:
       GATEWAY_ROLE: RECEIVER
       KAFKA_LOCAL_DOMAIN: rest-proxy
       KAFKA_LOCAL_PORT: 8082
+      KAFKA_TOPIC: alerts
+
       GATEWAY_RECEIVER_DOMAIN: gateway-receiver
       GATEWAY_RECEIVER_PORT: 10081
       GATEWAY_SENDER_DOMAIN: xxxxxx   #not used in this role
