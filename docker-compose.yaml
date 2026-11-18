@@ -220,8 +220,8 @@ services:
       - "10080:10080"
     volumes:
       - ${PWD}/src/main/resources/docker.properties:/application.properties:ro
-      - ${PWD}/pki-test/gateway-sender/gateway-sender.p12:/keystore.p12
-      - ${PWD}/pki-test/truststore.p12:/truststore.p12
+      - ${PWD}/pki-test/mtls-certs/gateway-sender/keystore.p12:/keystore.p12
+      - ${PWD}/pki-test/mtls-certs/truststore.p12:/truststore.p12
       - ${PWD}/src/main/resources/schemas/idmefv2-schema.json:/idmefv2-schema.json
       - ${PWD}/src/main/resources/isa/isa.json:/isa.json
     environment:
@@ -267,14 +267,14 @@ services:
     - "10081:10081"
     volumes:
     - ${PWD}/src/main/resources/docker.properties:/application.properties
-    - ${PWD}/pki-test/gateway-receiver/gateway-receiver.p12:/keystore.p12
-    - ${PWD}/pki-test/truststore.p12:/truststore.p12
+    - ${PWD}/pki-test/mtls-certs/gateway-receiver/keystore.p12:/keystore.p12
+    - ${PWD}/pki-test/mtls-certs/truststore.p12:/truststore.p12
     - ${PWD}/src/main/resources/schemas/idmefv2-schema.json:/idmefv2-schema.json
     - ${PWD}/src/main/resources/isa/isa.json:/isa.json
     environment:
       IDMEFv2SchemaPath: /idmefv2-schema.json
       ISA_PATH: /isa.json
-      GATEWAY_RECEIVER_URL: https://localhost:10081
+      GATEWAY_RECEIVER_URL: ""
 
       ENDPOINT_ACTIVE_RELOADCONFIG: true
       ENDPOINT_ACTIVE_SETISA: true

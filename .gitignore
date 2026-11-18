@@ -4,6 +4,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+production.yml
 
 ### STS ###
 .apt_generated
@@ -35,3 +36,20 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Enrollment data ###
+enrollment/archives/
+enrollment/key/
+enrollment/tmp/
+index.html
+
+### Logs ###
+logs/*
+logs/spring-boot-app.log
+
+### Testing PKI ###
+pki-test/mtls-certs
+
+
+
+
