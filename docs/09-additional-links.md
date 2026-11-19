@@ -17,12 +17,14 @@ For Kafka message processing
 
 ## TOC
 
-[Architecture Overview](./architecture-overview.md)
+[Architecture Overview](01-architecture-overview.md)
 
-[Compilation Instructions](./compilaton.md)
+[Compilation Instructions](02̀-compilation.md)
 
-[Configuration Instructions](./configuration.md)
+[Configuration Instructions](03-configuration.md)
 
-[Demonstration (Getting Started)](./demonstration.md)
+[Testing Instructions](04-testing.md)
+
+[Demonstration Instructions](05-demonstration.md)
 
 Additional Links(here)
