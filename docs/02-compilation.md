@@ -11,35 +11,46 @@ For installation instructions please see
 - Install gcc glibc-devel zlib-devel etc. https://www.graalvm.org/latest/reference-manual/native-image/
 
 
-### Via SDKMAN (easiest)
+### GraalVM Installation Via SDKMAN (a simplified option)
 ```
 curl -s "https://get.sdkman.io" | bash
 source ~/.sdkman/bin/sdkman-init.sh
 ```
+
 ```
-sdk install java 24.0.1-graalce     # GraalVM CE 22.3+ ✅
-sdk use java 24.0.1-graalce
+sdk install java 21.0.2-graalce
+sdk use java 21.0.2-graalce
 ```
 ### Verify
 ```
 java -version
+echo $GRAALVM_HOME 
+echo $JAVA_HOME
 ```
 should show: GraalVM CE 24.x.x
+and both variables need to show to the installed GraalVM directory on your machine.
+Please note, do not use Graal VM 25 or above as it is not compatible with the Java-version used.
 
 ## Building Instructions
 In main project's path run
 ```
-./gradlew nativeCompile
+./gradlew clean nativeCompile
 ```
 Then a binary is compiled which is later used for the docker build.
 The compilation time takes about 5 minutes on a modern laptop.
-You can do a test of the app as follows:
+You can do a test of the app as follows (expect missing configuration issues at this stage):
 ```
 build/native/nativeCompile/s4sgateway
 ```
 Then, you can build the docker container image:
 ```
 docker build -t s4sgateway .  
+```
+Testing keystores must be available for propper configuration which must be created by calling:
+```
+cd pki-test
+./generate-mtls-certs.sh
+cd ..
 ```
 Once the image was built these commands can launch the kafka services and the gateways
 Launching kafka.
@@ -55,18 +66,19 @@ Launching gateway-receiver (separate console recommended)
 ```
 docker compose up gateway-receiver 
 ```
-Afterward, the containers can be tested using postman collection. Get postman here: https://www.postman.com/downloads/
-Once installed the testing collection (SAFE4SOC.postman_collection.json) which contains predefined REST API requests 
-can be imported via File -> Import.
+
+If all services are up and running the gateways can be tested, please see the next sections.
 
 ## TOC
 
-[Architecture Overview](./architecture-overview.md)
+[Architecture Overview](01-architecture-overview.md)
 
 Compilation Instructions (here)
 
-[Configuration Instructions](./configuration.md)
+[Configuration Instructions](03-configuration.md)
 
-[Demonstration (Getting Started)](./demonstration.md)
+[Testing Instructions](04-testing.md)
 
-[Additional Links](./additional-links.md)
+[Demonstration Instructions](05-demonstration.md)
+
+[Additional Links](09-additional-links.md)

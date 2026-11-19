@@ -18,7 +18,7 @@ The gateway acts as an intermediary between cybersecurity systems, allowing them
 
 [Architecture Overview](01-architecture-overview.md)
 
-[Compilation Instructions](02̀-compilation.md)
+[Compilation Instructions](02-compilation.md)
 
 [Configuration Instructions](03-configuration.md)
 
