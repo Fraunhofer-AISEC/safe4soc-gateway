@@ -69,16 +69,3 @@ docker compose up gateway-receiver
 
 If all services are up and running the gateways can be tested, please see the next sections.
 
-## TOC
-
-[Architecture Overview](architecture-overview.md)
-
-Compilation Instructions (here)
-
-[Configuration Instructions](configuration.md)
-
-[Testing Instructions](testing.md)
-
-[Demonstration Instructions](demonstration.md)
-
-[Additional Links](additional-links.md)

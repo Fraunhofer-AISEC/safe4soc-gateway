@@ -192,7 +192,9 @@ curl --location 'http://localhost:10080/topics/alerts' \
 }'
 ```
 
-Tha expected output of the gateway-sender should be:
+<details>
+<summary>▶ Click to see expected similar output of gateway-sender:</summary>
+
 ```
 docker compose up gateway-sender
 [+] Running 1/1
@@ -394,8 +396,10 @@ gateway-sender-1  | 2025-05-13T21:12:35.616Z DEBUG 1 --- [s4s-gateway] [io-10080
 gateway-sender-1  | 2025-05-13T21:12:35.685Z DEBUG 1 --- [s4s-gateway] [io-10080-exec-2] d.f.aisec.s4sgateway.Controller          : Response status code: 200
 gateway-sender-1  | 2025-05-13T21:12:35.685Z DEBUG 1 --- [s4s-gateway] [io-10080-exec-2] d.f.aisec.s4sgateway.Controller          : Response body: {"offsets":[{"partition":0,"offset":9,"error_code":null,"error":null}],"key_schema_id":null,"value_schema_id":null}
 ```
+</details>
 
-The expected output at gateway receiver should be similar to:
+<details>
+<summary>▶ Click to see expected similar output of gateway-receiver:</summary>
 
 ```
 docker compose up gateway-receiver
@@ -545,21 +549,10 @@ gateway-receiver-1  | 2025-05-13T21:12:35.684Z DEBUG 1 --- [s4s-gateway] [io-100
 gateway-receiver-1  | 2025-05-13T21:12:35.684Z DEBUG 1 --- [s4s-gateway] [io-10081-exec-1] d.f.aisec.s4sgateway.Controller          : Response body: {"offsets":[{"partition":0,"offset":9,"error_code":null,"error":null}],"key_schema_id":null,"value_schema_id":null}
 ```
 
+</details>
+
 And the expected output of the curl console or the web answer should be similar to:
 ```
 {"offsets":[{"partition":0,"offset":2,"error_code":null,"error":null}],"key_schema_id":null,"value_schema_id":null}
 ```
 
-## TOC
-
-[Architecture Overview](architecture-overview.md)
-
-[Compilation Instructions](compilation.md)
-
-[Configuration Instructions](configuration.md)
-
-[Testing Instructions](testing.md)
-
-Demonstration Instructions (here)
-
-[Additional Links](additional-links.md)

@@ -323,16 +323,3 @@ gateway-sender-1  | 2025-07-08T07:55:21.230Z  INFO 1 --- [s4s-gateway] [io-10080
 gateway-sender-1  | 2025-07-08T07:55:21.230Z  INFO 1 --- [s4s-gateway] [io-10080-exec-5] d.f.aisec.s4sgateway.Controller          : Config relevantHeaders=[content-type, accept, user-Agent, accept-Encoding, safe4soc-receiver-hostname, safe4soc-receiver-port]
 ```
 
-## TOC
-
-[Architecture Overview](architecture-overview.md)
-
-[Compilation Instructions](compilation.md)
-
-Configuration Instructions(here)
-
-[Testing Instructions](testing.md)
-
-[Demonstration Instructions](demonstration.md)
-
-[Additional Links](additional-links.md)

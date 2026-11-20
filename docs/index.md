@@ -14,16 +14,3 @@ The gateway acts as an intermediary between cybersecurity systems, allowing them
 4. Data validation: Validate exchanged security alerts against predefined JSON schemas to ensure structural correctness and interoperability.
 5. Integration: Connect existing SOC infrastructures and security monitoring systems without requiring major changes to their internal architectures.
 
-## Documentation Overview
-
-[Architecture Overview](architecture-overview.md)
-
-[Compilation Instructions](compilation.md)
-
-[Configuration Instructions](configuration.md)
-
-[Testing Instructions](testing.md)
-
-[Demonstration Instructions](demonstration.md)
-
-[Additional Links](additional-links.md)

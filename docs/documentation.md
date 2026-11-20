@@ -1,6 +1,6 @@
 # Documentation
 
-## Compilation
+## Compilation of Project Documentation
 
 Use these commands to update the documentation
 
