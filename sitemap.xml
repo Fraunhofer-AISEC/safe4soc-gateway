@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://fraunhofer-aisec.github.io/safe4soc-gateway/</loc>
+         <lastmod>2026-11-20</lastmod>
+    </url>
+    <url>
+         <loc>https://fraunhofer-aisec.github.io/safe4soc-gateway/additional-links/</loc>
+         <lastmod>2026-11-20</lastmod>
+    </url>
+    <url>
+         <loc>https://fraunhofer-aisec.github.io/safe4soc-gateway/architecture/</loc>
+         <lastmod>2026-11-20</lastmod>
+    </url>
+    <url>
+         <loc>https://fraunhofer-aisec.github.io/safe4soc-gateway/compilation/</loc>
+         <lastmod>2026-11-20</lastmod>
+    </url>
+    <url>
+         <loc>https://fraunhofer-aisec.github.io/safe4soc-gateway/configuration/</loc>
+         <lastmod>2026-11-20</lastmod>
+    </url>
+    <url>
+         <loc>https://fraunhofer-aisec.github.io/safe4soc-gateway/demonstration/</loc>
+         <lastmod>2026-11-20</lastmod>
+    </url>
+    <url>
+         <loc>https://fraunhofer-aisec.github.io/safe4soc-gateway/documentation/</loc>
+         <lastmod>2026-11-20</lastmod>
+    </url>
+    <url>
+         <loc>https://fraunhofer-aisec.github.io/safe4soc-gateway/testing/</loc>
+         <lastmod>2026-11-20</lastmod>
+    </url>
+</urlset>
