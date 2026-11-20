@@ -16,11 +16,11 @@ The gateway acts as an intermediary between cybersecurity systems, allowing them
 
 ## Documentation
 
-Installation, usage, and configuration instructions can be found in the [Project Documentation](./docs/main.md).
+Installation, usage, and configuration instructions can be found in the [Project Documentation](https://fraunhofer-aisec.github.io/).
 
 ## How to Build and Run
 
-Please see the [Compilation Documentation](docs/compilation.md).
+Please see the [Compilation Documentation](https://fraunhofer-aisec.github.io/safe4soc-gateway/).
 
 ## Maintenance
 
