@@ -325,14 +325,14 @@ gateway-sender-1  | 2025-07-08T07:55:21.230Z  INFO 1 --- [s4s-gateway] [io-10080
 
 ## TOC
 
-[Architecture Overview](01-architecture-overview.md)
+[Architecture Overview](architecture-overview.md)
 
-[Compilation Instructions](./compilaton.md)
+[Compilation Instructions](compilation.md)
 
 Configuration Instructions(here)
 
-[Testing Instructions](04-testing.md)
+[Testing Instructions](testing.md)
 
-[Demonstration Instructions](05-demonstration.md)
+[Demonstration Instructions](demonstration.md)
 
-[Additional Links](09-additional-links.md)
+[Additional Links](additional-links.md)

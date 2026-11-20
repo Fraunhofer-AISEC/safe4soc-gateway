@@ -20,7 +20,7 @@ Installation, usage, and configuration instructions can be found in the [Project
 
 ## How to Build and Run
 
-Please see the [Compilation Documentation](docs/02-compilation.md).
+Please see the [Compilation Documentation](docs/compilation.md).
 
 ## Maintenance
 

@@ -50,6 +50,9 @@ logs/spring-boot-app.log
 ### Testing PKI ###
 pki-test/mtls-certs
 
+### Docu Site ###
+site
+
 
 
 

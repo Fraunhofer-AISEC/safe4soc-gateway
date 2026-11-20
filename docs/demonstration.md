@@ -552,14 +552,14 @@ And the expected output of the curl console or the web answer should be similar 
 
 ## TOC
 
-[Architecture Overview](01-architecture-overview.md)
+[Architecture Overview](architecture-overview.md)
 
-[Compilation Instructions](02-compilation.md)
+[Compilation Instructions](compilation.md)
 
-[Configuration Instructions](03-configuration.md)
+[Configuration Instructions](configuration.md)
 
-[Testing Instructions](04-testing.md)
+[Testing Instructions](testing.md)
 
 Demonstration Instructions (here)
 
-[Additional Links](09-additional-links.md)
+[Additional Links](additional-links.md)
