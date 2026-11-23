@@ -12,6 +12,7 @@ These additional references should also help you:
 * [Configure AOT settings in Build Plugin](https://docs.spring.io/spring-boot/3.3.5/how-to/aot.html)
 
 For Kafka message processing
+
 * https://docs.confluent.io/platform/current/get-started/platform-quickstart.html
 * https://developer.confluent.io/get-started/rest/#consume-events
 

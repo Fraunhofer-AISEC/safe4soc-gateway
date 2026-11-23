@@ -1,7 +1,7 @@
 # Demonstration 
 
 To fully demonstrate how alerts are sent to Kafka through the gateway following commands are necessary.
-The Kafka github project provides docker samples for all their services running out the box.
+The Kafka GitHub project provides docker samples for all their services running out the box.
 Their sample was taken from here: 
 https://docs.confluent.io/platform/current/get-started/platform-quickstart.html. 
 The docker sample was taken from here:
