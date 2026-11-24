@@ -44,7 +44,7 @@ Please note that for Kafke message consumption each message requires a key, in t
 It is also possible to specify a JSON schema for the correct format of the messages, but for this demo it is not required.
 Please note that the Kafka rest proxy cannot process IDMEFv2 alerts directly but requires an envelope using a JSON record array and a key and value object as shown below.
 
-To test whether new messages arrive in Kafka you can use this curl command containing an IDMEFv2 alert or the Postman collection provided:
+To test whether new messages arrive in Kafka you can use this curl command containing an IDMEFv2 alert or the Bruno collection provided:
 
 ```declarative
 curl --location 'http://localhost:8082/topics/alerts' \

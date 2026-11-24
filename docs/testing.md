@@ -1,16 +1,15 @@
 # Testing the Endpoints
 
-## Postman Collections (highly recommended)
+## Bruno Client (highly recommended)
 
 This section details how alerts can be sent through the gateways.
 
-The gateways can be tested using a postman collection, one for either a secured gateway or an insecure
-configured gateway using http for development purposes.
-Get postman here: https://www.postman.com/downloads/
-Once installed the testing collection (SAFE4SOC.postman_collection.json) which contains predefined REST API requests
-can be imported via File -> Import.
+The gateways can be tested using Bruno Client collection
+Get Bruno here: https://www.usebruno.com/
+Once installed the testing collection located under ./api-testing which contains predefined REST API requests
+can be imported via File(top left) -> Open Collection.
 
-![Postman sample image](./documentation-figures/postman.png)
+![Bruno sample image](./documentation-figures/bruno.png)
 
 ## Curl Commands wih Variables
 
