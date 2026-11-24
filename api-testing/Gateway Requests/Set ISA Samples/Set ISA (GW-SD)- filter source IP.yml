@@ -1,0 +1,82 @@
+info:
+  name: "Set ISA (GW-SD): filter source IP"
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{PROTOCOL}}://{{HOSTNAME}}:{{SENDER_PORT}}/setisa"
+  body:
+    type: json
+    data: "{\r
+
+      \    \"provider_reason\": \"compliance\",\r
+
+      \    \"intended_use\": \"alert_gathering\",\r
+
+      \    \"data_usage_policies\": {\r
+
+      \        \"use_until\": \"2024-12-12\",\r
+
+      \        \"use_after\": \"2024-09-12\",\r
+
+      \        \"share_further\": \"false\"\r
+
+      \    },\r
+
+      \    \"data_sender_SIEM_brand\": \"Example Company A\",\r
+
+      \    \"data_sender_SIEM_version\": \"Version 0.1\",\r
+
+      \    \"IDMEFv2_attributes\": {\r
+
+      \        \"attributes_to_transmit\": [],\r
+
+      \        \"attributes_to_neglect\": [],\r
+
+      \        \"attributes_to_anonymize\": [],\r
+
+      \        \"attributes_to_pseudonemize\": []\r
+
+      \    },\r
+
+      \    \"sending_mode\": \"\",\r
+
+      \    \"encryption_requirements\": [],\r
+
+      \    \"authentication_requirements\": [],\r
+
+      \    \"connection_requirements\": [],\r
+
+      \    \"filterConfig\": {\r
+
+      \            \"Source\": {\r
+
+      \              \"IP\": \"\"\r
+
+      \            }\r
+
+      \    },\r
+
+      \    \"enrichmentConfig\": {\r
+
+      \    }\r
+
+      }"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+docs: |-
+  This API has the purpose to receive an ISA for configuration at the receiving gateway. 
+
+  It is only used for debugging purposes and frequent reloading of configurations during testing. 
+
+  No production environment is allowed to use this feature as external entities could change the gateway configuration this way. 
+
+  Please see the documentation on configuration to see how to disable this endpoint.

@@ -44,10 +44,11 @@ public class JsonSchemaValidationService {
 
     private final Schema schema;
     private final String schemaPath;
+    private final JsonNode schemaRoot;
 
     public JsonSchemaValidationService(
             @Value("${IDMEFv2SchemaPath}") String schemaPath
-    ){
+    ) {
         this.schemaPath = schemaPath;
 
         SchemaRegistry registry =
@@ -60,9 +61,9 @@ public class JsonSchemaValidationService {
             String schemaJson = loadSchema();
 
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(schemaJson);
+            this.schemaRoot = mapper.readTree(schemaJson);
 
-            String schemaVersion = root
+            String schemaVersion = schemaRoot
                     .path("properties")
                     .path("Version")
                     .path("enum")
@@ -126,4 +127,103 @@ public class JsonSchemaValidationService {
             return new String(input.readAllBytes(), StandardCharsets.UTF_8);
         }
     }
+
+    public boolean isMandatory(String keyLevel1) {
+        return containsRequired(resolveReference(schemaRoot), keyLevel1);
+    }
+
+    public boolean isMandatory(String keyLevel1, String keyLevel2) {
+
+        JsonNode property = resolveReference(schemaRoot)
+                .path("properties")
+                .path(keyLevel1);
+
+        property = resolveReference(property);
+
+        // Handle arrays of JSON objects
+        if (property.has("items")) {
+            property = resolveReference(property.path("items"));
+        }
+
+        return containsRequired(property, keyLevel2);
+    }
+
+    private boolean containsRequired(JsonNode node, String key) {
+
+        JsonNode required = node.path("required");
+
+        if (required.isArray()) {
+            for (JsonNode element : required) {
+                if (key.equals(element.asText())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private JsonNode resolveReference(JsonNode node) {
+
+        int depth = 0;
+
+        while (node.has("$ref")) {
+
+            String ref = node.path("$ref").asText();
+
+            if (!ref.startsWith("#/")) {
+                throw new IllegalArgumentException(
+                        "Unsupported schema reference: " + ref
+                );
+            }
+
+            if (++depth > 100) {
+                throw new IllegalStateException(
+                        "Circular schema reference detected: " + ref
+                );
+            }
+
+            node = schemaRoot.at(ref.substring(1));
+
+            if (node.isMissingNode()) {
+                throw new IllegalArgumentException(
+                        "Schema reference not found: " + ref
+                );
+            }
+        }
+
+        return node;
+    }
+
+    public boolean hasPattern(String keyLevel1) {
+
+        JsonNode property = resolveReference(schemaRoot)
+                .path("properties")
+                .path(keyLevel1);
+
+        return resolveReference(property).has("pattern");
+    }
+
+    public boolean hasPattern(String keyLevel1, String keyLevel2) {
+
+        JsonNode property = resolveReference(schemaRoot)
+                .path("properties")
+                .path(keyLevel1);
+
+        property = resolveReference(property);
+
+        // Handle arrays of JSON objects
+        if (property.has("items")) {
+            property = resolveReference(property.path("items"));
+        }
+
+        JsonNode nestedProperty = property
+                .path("properties")
+                .path(keyLevel2);
+
+        return resolveReference(nestedProperty).has("pattern");
+    }
+
+
+
 }

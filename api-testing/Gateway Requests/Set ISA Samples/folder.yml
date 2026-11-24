@@ -1,0 +1,7 @@
+info:
+  name: Set ISA Samples
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit

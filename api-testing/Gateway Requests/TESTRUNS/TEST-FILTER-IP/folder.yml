@@ -1,0 +1,7 @@
+info:
+  name: TEST-FILTER-IP
+  type: folder
+  seq: 3
+
+request:
+  auth: inherit

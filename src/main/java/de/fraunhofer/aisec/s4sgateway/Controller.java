@@ -238,18 +238,18 @@ public class Controller {
 
 		// 2. Validate JSON Schema
 		List<Error> errors=	validator.validate(body);
-
 		if (!errors.isEmpty()) {
+			logger.error("Incoming alert is not valid against configured JSON schema.");
 			logger.error(errors.toString());
 			return ResponseEntity.unprocessableEntity()
-					.body(errors.stream()
-							.map(Error::toString)
-							.toList().toString());
+					.body("Incoming alert is not valid against JSON Schema\n" +
+							errors.stream()
+									.map(Error::toString)
+									.toList().toString());
 		}
+		logger.info("Incoming alert is valid against configured JSON schema.");
 
 		// 3. Process valid IDMEFv2 message
-		logger.info("Alert is valid against configured JSON schema.");
-
 		if(!data.isEmpty()){
 			if(!dropConfig.isEmpty()){
 				String dropcheckResult = Utils.applyDropCheck(data, dropConfig);
@@ -270,7 +270,13 @@ public class Controller {
 				}
 			}
 			if(!filterConfig.isEmpty()){
-				Utils.applyFilter(data, filterConfig);
+				String errorFieldFound = Utils.applyFilter(data, filterConfig, validator);
+				if (!errorFieldFound.isEmpty()) {
+					logger.warn("Alert cant be filtered: missing field {}.",errorFieldFound);
+					return new ResponseEntity<>(
+							"Alert cant be filtered: missing field " + errorFieldFound,
+							HttpStatus.UNPROCESSABLE_ENTITY);
+				}
 				logger.debug("Body after Filtering:\n{}",data.toString(2));
 			}
 			if(!enrichmentConfig.isEmpty()){
@@ -285,6 +291,19 @@ public class Controller {
 				answer = data.toString();
 			}
 		}
+
+		// 4. Validate JSON Schema
+		errors=	validator.validate(body);
+		if (!errors.isEmpty()) {
+			logger.error("Outgoing alert is not valid against configured JSON schema.");
+			logger.error(errors.toString());
+			return ResponseEntity.unprocessableEntity()
+					.body("Outgoing alert is not valid against JSON Schema\n" +
+							errors.stream()
+							.map(Error::toString)
+							.toList().toString());
+		}
+		logger.info("Outgoing alert is valid against configured JSON schema.");
 
 		HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
 		switch (gatewayRole){

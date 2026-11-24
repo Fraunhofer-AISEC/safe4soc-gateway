@@ -1,0 +1,51 @@
+info:
+  name: "Set ISA (GW-SD): no filter, no enrichment"
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{PROTOCOL}}://{{HOSTNAME}}:{{SENDER_PORT}}/setisa"
+  body:
+    type: json
+    data: |-
+      {
+          "provider_reason": "compliance",
+          "intended_use": "alert_gathering",
+          "data_usage_policies": {
+              "use_until": "2024-12-12",
+              "use_after": "2024-09-12",
+              "share_further": "false"
+          },
+          "data_sender_SIEM_brand": "Example Company A",
+          "data_sender_SIEM_version": "Version 0.1",
+          "IDMEFv2_attributes": {
+              "attributes_to_transmit": [],
+              "attributes_to_neglect": [],
+              "attributes_to_anonymize": [],
+              "attributes_to_pseudonemize": []
+          },
+          "sending_mode": "",
+          "encryption_requirements": [],
+          "authentication_requirements": [],
+          "connection_requirements": [],
+          "filterConfig": {},
+          "enrichmentConfig": {}
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+docs: |-
+  This API has the purpose to receive an ISA for configuration at the receiving gateway.
+
+  It is only used for debugging purposes and frequent reloading of configurations during testing.
+
+  No production environment is allowed to use this feature as external entities could change the gateway configuration this way.
+
+  Please see the documentation on configuration to see how to disable this endpoint.

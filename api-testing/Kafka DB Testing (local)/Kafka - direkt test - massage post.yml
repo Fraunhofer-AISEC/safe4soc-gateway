@@ -1,0 +1,159 @@
+info:
+  name: Kafka - direkt test - massage post
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://localhost:8082/topics/alerts
+  headers:
+    - name: Content-Type
+      value: application/vnd.kafka.json.v2+json
+  params:
+    - name: ""
+      value: ""
+      type: query
+      disabled: true
+  body:
+    type: text
+    data: "{\r
+
+      \    \"records\": [\r
+
+      \        {\r
+
+      \            \"key\":\"test\",\r
+
+      \            \"value\":\r
+
+      \                {\r
+
+      \                    \"Version\": \"2.D.V04\",\r
+
+      \                    \"ID\": \"e5f9bbae-163e-42f9-a2f2-0daaf78fefb1\",\r
+
+      \                    \"Status\": \"Incident\",\r
+
+      \                    \"OrganisationName\": \"acme.eu\",\r
+
+      \                    \"CreateTime\": \"\",\r
+
+      \                    \"StartTime\": \"2021-01-18T23:33:04.52Z\",\r
+
+      \                    \"Cause\": \"Malicious\",\r
+
+      \                    \"Category\": [\r
+
+      \                        \"Recon.Scanning\"\r
+
+      \                    ],\r
+
+      \                    \"Priority\": \"Medium\",\r
+
+      \                    \"Confidence\": 0.9,\r
+
+      \                    \"Description\": \"An IDS event of type \\\"Unknown IP Protocol\\\" was observed\",\r
+
+      \                    \"Analyzer\": {\r
+
+      \                        \"IP\": \"172.10.5.31\",\r
+
+      \                        \"Name\": \"Core router\",\r
+
+      \                        \"Hostname\": \"core-router.example.com\",\r
+
+      \                        \"Type\": \"Cyber\",\r
+
+      \                        \"Model\": \"Cisco 4532\",\r
+
+      \                        \"Category\": [\r
+
+      \                        \"NIDS\"\r
+
+      \                        ],\r
+
+      \                        \"Data\": [\r
+
+      \                        \"Datagram\"\r
+
+      \                        ],\r
+
+      \                        \"Method\": [\r
+
+      \                        \"signature\"\r
+
+      \                        ],\r
+
+      \                        \"GeoLocation\": \"+48.75726,+2.299528,+65.1\",\r
+
+      \                        \"UnLocation\": \"GR ATH\",\r
+
+      \                        \"Location\": \"SBDX1\"\r
+
+      \                    },\r
+
+      \                    \"Sensor\": [\r
+
+      \                        {\r
+
+      \                        \"IP\": \"172.10.5.31\",\r
+
+      \                        \"Name\": \"Core router\",\r
+
+      \                        \"CaptureZone\": \"[{\\\"type\\\":\\\"ipv4-addr\\\",\\\"spec_version\\\":\\\"2.1\\\",\\\"id\\\": \\\"ipv4-addr--ff26c055-6336-5bc5-b98d-13d6226742dd\\\",\\\"value\\\": \\\"172.17.0.0\\\"},{\\\"type\\\":\\\"ipv4-net-mask\\\",\\\"spec_version\\\":\\\"2.1\\\",\\\"id\\\":\\\"ipv4-net-mask--ff26c055-6336-5bc5-b98d-13d6226742dd\\\",\\\"value\\\":\\\"255.255.0.0\\\"}]\"\r
+
+      \                        }\r
+
+      \                    ],\r
+
+      \                    \"Source\": [\r
+
+      \                        {\r
+
+      \                        \"IP\": \"77.222.222.115\",\r
+
+      \                        \"Protocol\": [\r
+
+      \                            \"Unknown\"\r
+
+      \                        ]\r
+
+      \                        }\r
+
+      \                    ],\r
+
+      \                    \"Target\": [\r
+
+      \                        {\r
+
+      \                        \"IP\": \"172.20.7.25\",\r
+
+      \                        \"Port\": [\r
+
+      \                            645\r
+
+      \                        ],\r
+
+      \                        \"Location\": \"Datacenter SBX1\"\r
+
+      \                        }\r
+
+      \                    ]\r
+
+      \                }\r
+
+      \            \r
+
+      \        }\r
+
+      \    ]\r
+
+      }"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

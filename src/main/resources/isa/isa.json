@@ -18,33 +18,8 @@
   "encryption_requirements": [],
   "authentication_requirements": [],
   "connection_requirements": [],
-  "filterConfig": {
-    "CreateTime": "",
-    "StartTime": ""
-  },
-  "dropConfig": {
-    "Version": "",
-    "ID": "",
-    "Status": "",
-    "OrganisationName": "",
-    "CreateTime": "",
-    "StartTime": "",
-    "Cause": "",
-    "Category": "",
-    "Priority": "High",
-    "Confidence": "",
-    "Description": ""
-  },
-  "enrichmentConfig": {
-    "CreateTime": "",
-    "StartTime": ""
-  },
-  "requiredConfig": {
-    "Version": "",
-    "ID": "",
-    "StartTime": "",
-    "Status": "",
-    "Source": "",
-    "Target": ""
-  }
+  "filterConfig": {},
+  "dropConfig": {},
+  "enrichmentConfig": {},
+  "requiredConfig": {}
 }

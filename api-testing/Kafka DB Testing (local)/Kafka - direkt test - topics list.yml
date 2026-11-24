@@ -1,0 +1,15 @@
+info:
+  name: Kafka - direkt test - topics list
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://localhost:8082/topics
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

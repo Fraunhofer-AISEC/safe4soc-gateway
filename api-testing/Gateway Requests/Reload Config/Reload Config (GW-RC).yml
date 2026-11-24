@@ -1,0 +1,20 @@
+info:
+  name: Reload Config (GW-RC)
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: "{{PROTOCOL}}://{{HOSTNAME}}:{{RECEIVER_PORT}}/reloadconfig"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+docs: |-
+  This API has the purpose to trigger a reload of the ISA configuration from stored configuration file within the gateway receiving this request.
+  It is only supposed to be active for debugging purposes and not for production environments!

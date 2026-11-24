@@ -1,0 +1,42 @@
+info:
+  name: Set ISA (GW-SD)
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{PROTOCOL}}://{{HOSTNAME}}:{{SENDER_PORT}}/setisa"
+  body:
+    type: json
+    data: |-
+      {
+        "requiredConfig": {},
+        "enrichmentConfig": {},
+        "dropConfig": {},
+        "filterConfig": {}
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("HTTP status is 200", function () {
+            expect(res.getStatus()).to.equal(200);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+docs: |-
+  This API has the purpose to receive an ISA for configuration at the receiving gateway. 
+
+  It is only used for debugging purposes and frequent reloading of configurations during testing. 
+
+  No production environment is allowed to use this feature as external entities could change the gateway configuration this way. 
+
+  Please see the documentation on configuration to see how to disable this endpoint.

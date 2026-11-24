@@ -451,7 +451,7 @@ gateway-sender-1  | 2026-11-23T09:08:44.258Z  INFO 1 --- [s4s-gateway] [        
 The Kafka backend must also be launched before the data transmission can be successful using: 
 
 ```bash
-docker-compose up -d rest-proxy control-center schema-registry broker gateway-receiver gateway-sender
+docker compose up -d rest-proxy control-center schema-registry broker
 ```
 
 See Sections [Testing](testing.md) and [Demonstration](demonstration.md) for the next steps.

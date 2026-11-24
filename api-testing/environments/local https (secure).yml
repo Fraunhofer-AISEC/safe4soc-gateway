@@ -1,0 +1,106 @@
+name: local https (secure)
+variables:
+  - name: HOSTNAME
+    value: localhost
+    description: ""
+  - name: SENDER_PORT
+    value: "10080"
+    description: ""
+  - name: RECEIVER_PORT
+    value: "10081"
+    description: ""
+  - name: PROTOCOL
+    value: https
+    description: ""
+  - name: KAFKE_TOPIC
+    value: alerts
+    description: ""
+  - name: ISA
+    value: |-
+      {
+        "provider_reason": "compliance",
+        "intended_use": "alert_gathering",
+        "data_usage_policies": {
+          "use_until": "2024-12-12",
+          "use_after": "2024-09-12",
+          "share_further": false
+        },
+        "data_sender_SIEM_brand": "Example Company A",
+        "data_sender_SIEM_version": "Version 0.1",
+        "IDMEFv2_attributes": {
+          "attributes_to_transmit": [],
+          "attributes_to_neglect": [],
+          "attributes_to_anonymize": [],
+          "attributes_to_pseudonemize": []
+        },
+        "sending_mode": "",
+        "encryption_requirements": [],
+        "authentication_requirements": [],
+        "connection_requirements": [],
+        "filterConfig": {
+          "Version": "",
+          "ID": "",
+          "Status": "",
+          "OrganisationName": "",
+          "CreateTime": "",
+          "StartTime": "",
+          "Cause": "",
+          "Category": "",
+          "Priority": "",
+          "Confidence": "",
+          "Description": "",
+          "Analyzer": {
+            "IP": "",
+            "Name": "",
+            "Hostname": "",
+            "Type": "",
+            "Model": "",
+            "Category": "",
+            "Data": "",
+            "Method": "",
+            "GeoLocation": "",
+            "UnLocation": "",
+            "Location": ""
+          },
+          "Sensor": "",
+          "Source": {
+            "IP": "",
+            "Protocol": ""
+          },
+          "Target": ""
+        },
+          "enrichmentConfig": {
+          "CreateTime": "",
+          "StartTime": ""
+        }
+      }
+    description: ""
+  - name: ISA_MINIMAL
+    value: |-
+      {
+        "provider_reason": "compliance",
+        "intended_use": "alert_gathering",
+        "data_usage_policies": {
+          "use_until": "2024-12-12",
+          "use_after": "2024-09-12",
+          "share_further": false
+        },
+        "data_sender_SIEM_brand": "Example Company A",
+        "data_sender_SIEM_version": "Version 0.1",
+        "IDMEFv2_attributes": {
+          "attributes_to_transmit": [],
+          "attributes_to_neglect": [],
+          "attributes_to_anonymize": [],
+          "attributes_to_pseudonemize": []
+        },
+        "sending_mode": "",
+        "encryption_requirements": [],
+        "authentication_requirements": [],
+        "connection_requirements": [],
+        "filterConfig": {},
+        "enrichmentConfig": {}
+      }
+    description: ""
+  - name: ISA_ALL_FEATURES
+    value: ""
+    description: ""
