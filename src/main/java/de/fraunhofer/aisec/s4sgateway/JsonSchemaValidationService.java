@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.Schema;
 import com.networknt.schema.SchemaRegistry;
 import com.networknt.schema.SpecificationVersion;
-import com.networknt.schema.InputFormat;
 import com.networknt.schema.Error;
 
 import org.slf4j.Logger;
@@ -47,7 +46,8 @@ public class JsonSchemaValidationService {
     private final JsonNode schemaRoot;
 
     public JsonSchemaValidationService(
-            @Value("${IDMEFv2SchemaPath}") String schemaPath
+            @Value("${IDMEFv2SchemaPath}") String schemaPath,
+            ObjectMapper objectMapper
     ) {
         this.schemaPath = schemaPath;
 
@@ -60,8 +60,7 @@ public class JsonSchemaValidationService {
         try {
             String schemaJson = loadSchema();
 
-            ObjectMapper mapper = new ObjectMapper();
-            this.schemaRoot = mapper.readTree(schemaJson);
+            this.schemaRoot = objectMapper.readTree(schemaJson);
 
             String schemaVersion = schemaRoot
                     .path("properties")
@@ -72,10 +71,7 @@ public class JsonSchemaValidationService {
 
             logger.info("IDMEFv2 schema found in version: {}", schemaVersion);
 
-            this.schema = registry.getSchema(
-                    schemaJson,
-                    InputFormat.JSON
-            );
+            this.schema = registry.getSchema(schemaRoot);
 
             logger.info("IDMEFv2 schema successfully loaded");
 
@@ -87,8 +83,8 @@ public class JsonSchemaValidationService {
         }
     }
 
-    public List<Error> validate(String json) {
-        return schema.validate(json, InputFormat.JSON);
+    public List<Error> validate(JsonNode json) {
+        return schema.validate(json);
     }
 
     private String loadSchema() throws IOException {

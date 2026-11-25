@@ -16,29 +16,56 @@
 
 package de.fraunhofer.aisec.s4sgateway;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Iterator;
 
 public class Utils {
     static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
-    public static boolean isaComparison(JSONObject isaReceived, JSONObject isaStored) {
-        return isaStored.similar(isaReceived);
+    static ObjectNode requireObject(JsonNode node) {
+        if (node instanceof ObjectNode object) {
+            return object;
+        }
+        throw new IllegalArgumentException("Expected a JSON object");
     }
 
-    public static String applyFilter(JSONObject data, JSONObject filterConfig, JsonSchemaValidationService jsonSchemaValidator) {
-        JSONObject contentObject;
-        JSONArray contentArray;
-        JSONObject filterLevel2;
-        for (String keyLevel1 : filterConfig.keySet()) {
+    private static ArrayNode requireArray(JsonNode node) {
+        if (node instanceof ArrayNode array) {
+            return array;
+        }
+        throw new IllegalArgumentException("Expected a JSON array");
+    }
+
+    private static String requireText(JsonNode node) {
+        if (node.isTextual()) {
+            return node.textValue();
+        }
+        throw new IllegalArgumentException("Expected a JSON string");
+    }
+
+    public static boolean isaComparison(ObjectNode isaReceived, ObjectNode isaStored) {
+        return isaStored != null && isaReceived.equals((left, right) -> {
+            if (left.isNumber() && right.isNumber()) {
+                return left.decimalValue().compareTo(right.decimalValue());
+            }
+            return left.equals(right) ? 0 : 1;
+        }, isaStored);
+    }
+
+    public static String applyFilter(ObjectNode data, ObjectNode filterConfig, JsonSchemaValidationService jsonSchemaValidator) {
+        ObjectNode contentObject;
+        ArrayNode contentArray;
+        ObjectNode filterLevel2;
+        for (Iterator<String> fields = filterConfig.fieldNames(); fields.hasNext(); ) {
+            String keyLevel1 = fields.next();
             try {
                 logger.debug("Filtering the key {}", keyLevel1);
                 switch (keyLevel1) {
@@ -59,16 +86,17 @@ public class Utils {
                         break;
                     //1. level key array pair
                     case "Category":
-                        data.getJSONArray(keyLevel1).clear();
+                        requireArray(data.path(keyLevel1)).removeAll();
                         break;
                     //1. level nested JSON objects
                     case "Analyzer":
-                        filterLevel2 = filterConfig.getJSONObject(keyLevel1);
-                        contentObject = data.getJSONObject(keyLevel1);
+                        filterLevel2 = requireObject(filterConfig.path(keyLevel1));
+                        contentObject = requireObject(data.path(keyLevel1));
                         if (filterLevel2.isEmpty()) {
-                            contentObject.clear();
+                            contentObject.removeAll();
                         } else {
-                            for (String keyLevel2 : filterLevel2.keySet()) {
+                            for (Iterator<String> nestedFields = filterLevel2.fieldNames(); nestedFields.hasNext(); ) {
+                                String keyLevel2 = nestedFields.next();
                                 switch (keyLevel2) {
                                     //2. level key value pairs
                                     case "Name":
@@ -79,9 +107,9 @@ public class Utils {
                                     case "UnLocation":
                                     case "Location":
                                     case "IP":
-                                        if (!filterLevel2.getString(keyLevel2).isEmpty()) {
+                                        if (!requireText(filterLevel2.path(keyLevel2)).isEmpty()) {
                                             contentObject.put(keyLevel2,
-                                                    filterLevel2.getString(keyLevel2));
+                                                    requireText(filterLevel2.path(keyLevel2)));
                                         } else {
                                             contentObject.put(keyLevel2, "");
                                             ifContentMandatoryDeleteWholeElement(contentObject,
@@ -92,40 +120,41 @@ public class Utils {
                                     case "Category":
                                     case "Data":
                                     case "Method":
-                                        contentObject.getJSONArray(keyLevel2).clear();
+                                        requireArray(contentObject.path(keyLevel2)).removeAll();
                                         break;
                                 }
                             }
                         }
                         break;
                     case "Sensor":
-                        data.getJSONArray(keyLevel1).clear();
+                        requireArray(data.path(keyLevel1)).removeAll();
                         break;
                     //TODO Ip Name
                     //TODO Capture Zone
                     case "Source":
-                        filterLevel2 = filterConfig.getJSONObject(keyLevel1);
-                        contentArray = data.getJSONArray(keyLevel1);
+                        filterLevel2 = requireObject(filterConfig.path(keyLevel1));
+                        contentArray = requireArray(data.path(keyLevel1));
                         if (filterLevel2.isEmpty()) {
-                            contentArray.clear();
+                            contentArray.removeAll();
                         } else {
-                            for (int i = 0; i < contentArray.length(); i++) {
-                                for (String keyLevel2 : filterLevel2.keySet()) {
+                            for (int i = 0; i < contentArray.size(); i++) {
+                                for (Iterator<String> nestedFields = filterLevel2.fieldNames(); nestedFields.hasNext(); ) {
+                                    String keyLevel2 = nestedFields.next();
                                     switch (keyLevel2) {
                                         //2. level key value pairs
                                         case "IP":
-                                            if (!filterLevel2.getString(keyLevel2).isEmpty()) {
-                                                contentArray.getJSONObject(i).put(keyLevel2,
-                                                        filterLevel2.getString(keyLevel2));
+                                            if (!requireText(filterLevel2.path(keyLevel2)).isEmpty()) {
+                                                requireObject(contentArray.path(i)).put(keyLevel2,
+                                                        requireText(filterLevel2.path(keyLevel2)));
                                             } else {
-                                                contentArray.getJSONObject(i).put(keyLevel2, "");
-                                                ifContentMandatoryDeleteWholeElement(contentArray.getJSONObject(i),
+                                                requireObject(contentArray.path(i)).put(keyLevel2, "");
+                                                ifContentMandatoryDeleteWholeElement(requireObject(contentArray.path(i)),
                                                         keyLevel1,keyLevel2,jsonSchemaValidator);
                                             }
                                             break;
                                         //2. level key array pairs
                                         case "Protocol":
-                                            contentArray.getJSONObject(i).put(keyLevel2, new JSONArray());
+                                            requireObject(contentArray.path(i)).putArray(keyLevel2);
                                             break;
                                     }
                                 }
@@ -133,21 +162,22 @@ public class Utils {
                         }
                         break;
                     case "Target":
-                        data.getJSONArray(keyLevel1).clear();
+                        requireArray(data.path(keyLevel1)).removeAll();
                         break;
                     //TODO Ip Port Location
                     default:
                         logger.debug("Found unknown filter instruction: {}", keyLevel1);
                 }
-            } catch (JSONException e) {
+            } catch (IllegalArgumentException e) {
                 return keyLevel1;
             }
         }
         return "";
     }
 
-    static String applyDropCheck(JSONObject data, JSONObject dropConfig) {
-        for (String keyLevel1 : dropConfig.keySet()) {
+    static String applyDropCheck(ObjectNode data, ObjectNode dropConfig) {
+        for (Iterator<String> fields = dropConfig.fieldNames(); fields.hasNext(); ) {
+            String keyLevel1 = fields.next();
             logger.debug("Checking the key {} for drop instructions.", keyLevel1);
             switch (keyLevel1) {
                 //1. level key value pairs
@@ -176,12 +206,13 @@ public class Utils {
         return "";
     }
 
-    static void applyEnrichment(JSONObject data, JSONObject enrichmentConfig) {
-        JSONObject contentObject;
-        JSONArray contentArray;
-        JSONObject filterLevel2;
+    static void applyEnrichment(ObjectNode data, ObjectNode enrichmentConfig) {
+        ObjectNode contentObject;
+        ArrayNode contentArray;
+        ObjectNode filterLevel2;
 
-        for (String keyLevel1 : enrichmentConfig.keySet()) {
+        for (Iterator<String> fields = enrichmentConfig.fieldNames(); fields.hasNext(); ) {
+            String keyLevel1 = fields.next();
             logger.debug("Enriching the key {}", keyLevel1);
             switch (keyLevel1) {
                 //1. level key value pairs
@@ -191,7 +222,7 @@ public class Utils {
                         data.put(keyLevel1, TimestampFormatterIDMEFv2());
                         break;
                     }
-                    if (data.getString(keyLevel1).isEmpty()) {
+                    if (requireText(data.path(keyLevel1)).isEmpty()) {
                         data.put(keyLevel1, TimestampFormatterIDMEFv2());
                     }
                     break;
@@ -208,12 +239,13 @@ public class Utils {
                 case "Category":
                     //1. level nested JSON objects
                 case "Analyzer":
-                    filterLevel2 = enrichmentConfig.getJSONObject(keyLevel1);
-                    contentObject = data.getJSONObject(keyLevel1);
+                    filterLevel2 = requireObject(enrichmentConfig.path(keyLevel1));
+                    contentObject = requireObject(data.path(keyLevel1));
                     if (filterLevel2.isEmpty()) {
-                        contentObject.clear();
+                        contentObject.removeAll();
                     } else {
-                        for (String keyLevel2 : filterLevel2.keySet()) {
+                        for (Iterator<String> nestedFields = filterLevel2.fieldNames(); nestedFields.hasNext(); ) {
+                            String keyLevel2 = nestedFields.next();
                             switch (keyLevel2) {
                                 //2. level key value pairs
                                 case "IP":
@@ -230,33 +262,34 @@ public class Utils {
                                 case "Category":
                                 case "Data":
                                 case "Method":
-                                    //contentObject.getJSONArray(keyLevel2).clear();
+                                    //requireArray(contentObject.path(keyLevel2)).removeAll();
                                     break;
                             }
                         }
                     }
                     break;
                 case "Sensor":
-                    data.getJSONArray(keyLevel1).clear();
+                    requireArray(data.path(keyLevel1)).removeAll();
                     break;
                 //TODO Ip Name
                 //TODO Capture Zone
                 case "Source":
-                    filterLevel2 = enrichmentConfig.getJSONObject(keyLevel1);
-                    contentArray = data.getJSONArray(keyLevel1);
+                    filterLevel2 = requireObject(enrichmentConfig.path(keyLevel1));
+                    contentArray = requireArray(data.path(keyLevel1));
                     if (filterLevel2.isEmpty()) {
-                        contentArray.clear();
+                        contentArray.removeAll();
                     } else {
-                        for (int i = 0; i < contentArray.length(); i++) {
-                            for (String keyLevel2 : filterLevel2.keySet()) {
+                        for (int i = 0; i < contentArray.size(); i++) {
+                            for (Iterator<String> nestedFields = filterLevel2.fieldNames(); nestedFields.hasNext(); ) {
+                                String keyLevel2 = nestedFields.next();
                                 switch (keyLevel2) {
                                     //2. level key value pairs
                                     case "IP":
-                                        //contentArray.getJSONObject(i).put(keyLevel2, "");
+                                        //requireObject(contentArray.path(i)).put(keyLevel2, "");
                                         break;
                                     //2. level key array pairs
                                     case "Protocol":
-                                        //contentArray.getJSONObject(i).put(keyLevel2, new JSONArray());
+                                        //requireObject(contentArray.path(i)).putArray(keyLevel2);
                                         break;
                                 }
                             }
@@ -264,7 +297,7 @@ public class Utils {
 
                     }
                 case "Target":
-                    //data.getJSONArray(keyLevel1).clear();
+                    //requireArray(data.path(keyLevel1)).removeAll();
                     break;
                 //TODO Ip Port Location
                 default:
@@ -283,13 +316,13 @@ public class Utils {
     }
 
 
-    static void putFromFilterOrEmpty(JSONObject target, JSONObject filter, String key) {
-        if (filter != null && filter.has(key) && !filter.isNull(key)) {
-            target.put(key, filter.get(key));
+    static void putFromFilterOrEmpty(ObjectNode target, ObjectNode filter, String key) {
+        if (filter != null && filter.hasNonNull(key)) {
+            target.set(key, filter.get(key).deepCopy());
         }
     }
 
-    static void ifContentMandatoryDeleteWholeElement(JSONObject target, String key1, String key2,
+    static void ifContentMandatoryDeleteWholeElement(ObjectNode target, String key1, String key2,
                                                      JsonSchemaValidationService validator) {
         if (key2.isEmpty()){
             if (validator.isMandatory(key1) || validator.hasPattern(key1)){
@@ -303,32 +336,34 @@ public class Utils {
     }
 
     static boolean checkFromDropConfig(
-            JSONObject target, JSONObject dropConfig, String key) {
+            ObjectNode target, ObjectNode dropConfig, String key) {
 
-        if (dropConfig != null && dropConfig.has(key) && !dropConfig.isNull(key)
-                && target != null && target.has(key) && !target.isNull(key)) {
+        if (dropConfig != null && dropConfig.hasNonNull(key)
+                && target != null && target.hasNonNull(key)) {
 
-            return target.get(key).equals(dropConfig.get(key));
+            JsonNode value = target.get(key);
+            return value.isValueNode() && value.equals(dropConfig.get(key));
         }
 
         return false;
     }
 
-    public static String checkMandatoryFields(JSONObject target, JSONObject mandatoryFields) {
+    public static String checkMandatoryFields(ObjectNode target, ObjectNode mandatoryFields) {
         if (target == null || mandatoryFields == null) {
             return "";
         }
-        for (String key : mandatoryFields.keySet()) {
+        for (Iterator<String> fields = mandatoryFields.fieldNames(); fields.hasNext(); ) {
+            String key = fields.next();
             logger.debug("Checking mandatory field config at key: {}", key);
-            if (!target.has(key) || target.isNull(key)) {
+            if (!target.hasNonNull(key)) {
                 return key;
             }
-            Object mandatoryValue = mandatoryFields.get(key);
-            Object targetValue = target.get(key);
+            JsonNode mandatoryValue = mandatoryFields.get(key);
+            JsonNode targetValue = target.get(key);
 
             // Recursively check nested JSON objects
-            if (mandatoryValue instanceof JSONObject mandatoryObject) {
-                if (!(targetValue instanceof JSONObject targetObject)) {
+            if (mandatoryValue instanceof ObjectNode mandatoryObject) {
+                if (!(targetValue instanceof ObjectNode targetObject)) {
                     return key;
                 }
                 if (!checkMandatoryFields(targetObject, mandatoryObject).isEmpty()) {

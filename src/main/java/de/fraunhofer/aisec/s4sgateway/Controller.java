@@ -19,10 +19,10 @@ package de.fraunhofer.aisec.s4sgateway;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -107,7 +107,7 @@ public class Controller {
 	@Value("${endpoints.setisa.enabled}")
 	private boolean endpointsEnabledSetisa;
 
-	JSONObject isa;
+	ObjectNode isa;
 
 	private HttpClient client;
 	@PostConstruct
@@ -178,10 +178,10 @@ public class Controller {
 	GatewayRole gatewayRole;
 	@Value("#{${relevantHeaders}}")
 	private List<String> relevantHeaders;
-	JSONObject dropConfig;
-	JSONObject filterConfig;
-	JSONObject enrichmentConfig;
-	JSONObject requiredConfig;
+	ObjectNode dropConfig;
+	ObjectNode filterConfig;
+	ObjectNode enrichmentConfig;
+	ObjectNode requiredConfig;
 
 	@Bean
 	public ApplicationRunner initiationAfterLaunch() {
@@ -215,29 +215,21 @@ public class Controller {
 		}
 
 		String answer = body;
-		// if format is json apply filter
-		JSONObject data = new JSONObject(answer);
 
 		// Check JSON format and IDMEFv2 format from schema
 		// 1. Validate JSON syntax
-		JsonNode json;
+		ObjectNode data;
 
 		try {
-			json = objectMapper.readTree(body);
-
-			if (json == null || !json.isObject()) {
-				return ResponseEntity.badRequest()
-						.body("Expected a JSON object");
-			}
-
-		} catch (JsonProcessingException e) {
+			data = readJsonObject(body);
+		} catch (JsonProcessingException | IllegalArgumentException e) {
 			return ResponseEntity.badRequest()
-					.body("Invalid JSON: " + e.getOriginalMessage());
+					.body("Invalid JSON: " + e.getMessage());
 		}
 		logger.info("Alert is valid JSON.");
 
 		// 2. Validate JSON Schema
-		List<Error> errors=	validator.validate(body);
+		List<Error> errors = validator.validate(data);
 		if (!errors.isEmpty()) {
 			logger.error("Incoming alert is not valid against configured JSON schema.");
 			logger.error(errors.toString());
@@ -277,11 +269,11 @@ public class Controller {
 							"Alert cant be filtered: missing field " + errorFieldFound,
 							HttpStatus.UNPROCESSABLE_ENTITY);
 				}
-				logger.debug("Body after Filtering:\n{}",data.toString(2));
+				logger.debug("Body after Filtering:\n{}",data.toPrettyString());
 			}
 			if(!enrichmentConfig.isEmpty()){
 				Utils.applyEnrichment(data, enrichmentConfig);
-				logger.debug("Body after Enrichment:\n{}",data.toString(2));
+				logger.debug("Body after Enrichment:\n{}",data.toPrettyString());
 			}
 			//Kafka Proxy requires enveloping alert messages in record, key, value format is below:
 			if(gatewayRole==GatewayRole.RECEIVER){
@@ -293,7 +285,7 @@ public class Controller {
 		}
 
 		// 4. Validate JSON Schema
-		errors=	validator.validate(data.toString());
+		errors = validator.validate(data);
 		if (!errors.isEmpty()) {
 			logger.error("Outgoing alert is not valid against configured JSON schema.");
 			logger.error(errors.toString());
@@ -577,12 +569,8 @@ public class Controller {
 			logger.debug("SetISA API function was called");
 			LoadISA();
 			try {
-				isa = new JSONObject(isaIncoming);
-				dropConfig = isa.getJSONObject("dropConfig");
-				filterConfig = isa.getJSONObject("filterConfig");
-				requiredConfig = isa.getJSONObject("requiredConfig");
-				enrichmentConfig = isa.getJSONObject("enrichmentConfig");
-			}catch (JSONException err){
+				loadIsaConfig(readJsonObject(isaIncoming));
+			}catch (JsonProcessingException | IllegalArgumentException err){
 				logger.error("Error: {}", err.toString());
 			}
 			logger.info("Loaded this ISA:{}",isa);
@@ -596,7 +584,13 @@ public class Controller {
 		logger.debug("IsaCheck function was called");
 		logger.debug("Received the following external ISA:");
 		logger.debug(isaReceived);
-		if (Utils.isaComparison(new JSONObject(isaReceived), this.isa)){
+				ObjectNode received;
+		try {
+			received = readJsonObject(isaReceived);
+		} catch (JsonProcessingException | IllegalArgumentException e) {
+			return ResponseEntity.badRequest().body("Invalid ISA JSON: " + e.getMessage());
+		}
+		if (Utils.isaComparison(received, this.isa)){
 			logger.debug("ISA compatible.");
 			return new ResponseEntity<>("ISA compatible.", HttpStatus.OK);
 		} else {
@@ -605,15 +599,33 @@ public class Controller {
 		}
 	}
 
+	private ObjectNode readJsonObject(String json) throws JsonProcessingException {
+		JsonNode node = objectMapper.reader()
+				.with(DeserializationFeature.FAIL_ON_TRAILING_TOKENS,
+						DeserializationFeature.FAIL_ON_READING_DUP_TREE_KEY,
+						DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
+				.readTree(json);
+		return Utils.requireObject(node);
+	}
+
+	private void loadIsaConfig(ObjectNode agreement) {
+		ObjectNode drop = Utils.requireObject(agreement.path("dropConfig"));
+		ObjectNode filter = Utils.requireObject(agreement.path("filterConfig"));
+		ObjectNode required = Utils.requireObject(agreement.path("requiredConfig"));
+		ObjectNode enrichment = Utils.requireObject(agreement.path("enrichmentConfig"));
+
+		isa = agreement;
+		dropConfig = drop;
+		filterConfig = filter;
+		requiredConfig = required;
+		enrichmentConfig = enrichment;
+	}
+
 	private void LoadISA(){
 		logger.info("Loading Information Sharing Agreement and Filter settings ...");
 		try {
-			isa = new JSONObject(loadIsaFromFile());
-			dropConfig = isa.getJSONObject("dropConfig");
-			filterConfig = isa.getJSONObject("filterConfig");
-			requiredConfig = isa.getJSONObject("requiredConfig");
-			enrichmentConfig = isa.getJSONObject("enrichmentConfig");
-		}catch (JSONException err){
+			loadIsaConfig(readJsonObject(loadIsaFromFile()));
+		}catch (JsonProcessingException | IllegalArgumentException err){
 			logger.error("Error: {}", err.toString());
 		} catch (IOException e) {
             throw new RuntimeException(e);
