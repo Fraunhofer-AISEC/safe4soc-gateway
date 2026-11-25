@@ -175,6 +175,34 @@ The following is a sample ISA.json file which can be found in ./src/main/ressour
 ```
 The basic attributes above were derived from the requirements specified during the Safe4Soc project.
 
+### Gateway access control
+
+Spring Security uses the leaf client certificate supplied by the TLS connector. A trusted certificate receives only the permissions listed for its SHA-256 fingerprint. With no grants configured, protected routes deny access. Configure the inbound TLS key store and trust store, enable TLS, and set client authentication to `want` or `need` (`SSL_MTLS_SETTING` in Docker). Use `want` when an internal health probe connects without a client certificate. With `need`, the TLS connector requires a trusted certificate before any HTTP endpoint can be reached.
+
+| Route | Required access |
+| --- | --- |
+| Alert forwarding (GET and POST) | Client certificate with `SOC` |
+| `GET /isa`, `GET /status`, `POST /isacheck` | Client certificate with `ISA_ADMIN` |
+| `POST /setisa` | Client certificate with `ISA_ADMIN` and a CSRF token |
+| `POST /reloadconfig` | Client certificate with `GATEWAY_ADMIN` and a CSRF token |
+| `GET /actuator/health` | Configured internal network; health status only |
+| `GET /actuator/metrics` and metric details | Configured internal network and client certificate with `MONITORING_SERVICE` |
+
+Configure grants and internal CIDRs through Spring configuration. The same structure can be supplied as JSON through `SPRING_APPLICATION_JSON`. Use the 64 hexadecimal digits of the leaf certificate's SHA-256 fingerprint without colons. Register the sender's outbound certificate with `SOC` on the receiver. Update the grant when rotating a leaf certificate. Internal networks default to IPv4 and IPv6 loopback, and the rules use the connection's remote address.
+
+```yaml
+gateway:
+  security:
+    internal-networks:
+      - 127.0.0.0/8
+      - "::1/128"
+    certificates:
+      - sha256: "<64 hexadecimal digits of the client certificate fingerprint>"
+        permissions: [SOC]
+```
+
+Before an administrative write, make an authenticated `GET /csrf` request. Keep the returned `XSRF-TOKEN` cookie and send it with the write, along with the response's `token` value in the header named by `headerName`. The existing endpoint enable flags still control whether ISA modification and reload are available.
+
 ### Filter Configuration
 
 The Filtering configuration uses a nested list in JSON format.

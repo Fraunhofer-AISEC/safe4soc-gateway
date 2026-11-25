@@ -23,10 +23,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 public class AdminController {
@@ -45,10 +48,10 @@ public class AdminController {
         this.reloadEnabled = reloadEnabled;
         this.setIsaEnabled = setIsaEnabled;
         if (reloadEnabled) {
-            logger.warn("Endpoint reloadconfig can be reached - only use in debug mode!");
+            logger.info("Configuration reload is enabled for gateway administrators");
         }
         if (setIsaEnabled) {
-            logger.warn("Endpoint setisa can be reached - only use in debug mode!");
+            logger.info("ISA updates are enabled for ISA administrators");
         }
     }
 
@@ -57,7 +60,17 @@ public class AdminController {
         return ResponseEntity.ok("Gateway " + role + " online.\nISA: " + isa.current().asJson());
     }
 
-    @GetMapping("/reloadconfig")
+    @GetMapping(value = "/isa", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getIsa() {
+        return ResponseEntity.ok(isa.current().asJson());
+    }
+
+    @GetMapping("/csrf")
+    public Map<String, String> csrf(CsrfToken token) {
+        return Map.of("headerName", token.getHeaderName(), "token", token.getToken());
+    }
+
+    @PostMapping("/reloadconfig")
     public ResponseEntity<String> reloadConfig() {
         if (!reloadEnabled) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Configuration reload endpoint deactivated.");
