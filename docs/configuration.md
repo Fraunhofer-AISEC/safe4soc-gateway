@@ -178,9 +178,12 @@ The basic attributes above were derived from the requirements specified during t
 ### Filter Configuration
 
 The Filtering configuration uses a nested list in JSON format.
-If identifiers for key value pairs are found, the entry's content is replaced with an empty string ("").
-If identifiers for nested objects are found, either the complete object is cleaned, when no sub-entries were given,
-or only the sub entries mentioned are replaced with blank spaces or empty arrays, depending on the element.
+Scalar filter rules use the configured replacement value. For an empty string (""), the gateway checks a candidate alert against the configured schema. It omits the field if the empty string introduces a validation error.
+An empty object clears the contents of the corresponding object or array for supported nested filters.
+For `Analyzer`, `Sensor`, `Source`, and `Target`, a blank rule applies to the named field and preserves the rest of the entry.
+A nonempty string rule for `Sensor`, `Source`, or `Target` replaces the existing IP addresses in the array.
+The gateway validates the alert against the configured IDMEFv2 schema before ISA processing and again after filtering and enrichment.
+If either validation fails, the gateway returns HTTP 422 and stops forwarding.
 
 ```
   "filterConfig": {

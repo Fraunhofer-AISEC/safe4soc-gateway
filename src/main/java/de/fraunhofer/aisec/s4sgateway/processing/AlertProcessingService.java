@@ -46,7 +46,7 @@ public class AlertProcessingService {
         }
 
         validate(alert, "Incoming");
-        isa.current().apply(alert, validator).ifPresent(rejection -> {
+        isa.current().apply(alert, validator::validate).ifPresent(rejection -> {
             throw new AlertRejectedException(ISA_DENIED, rejection);
         });
         validate(alert, "Outgoing");

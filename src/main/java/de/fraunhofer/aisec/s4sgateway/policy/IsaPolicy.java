@@ -18,9 +18,11 @@ package de.fraunhofer.aisec.s4sgateway.policy;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Function;
 
-/** Applies an information sharing agreement using Jackson and caller-supplied field constraints. */
+/** Applies an information sharing agreement using Jackson. */
 public final class IsaPolicy {
     private final ObjectNode agreement;
     private final ObjectNode drop;
@@ -52,9 +54,10 @@ public final class IsaPolicy {
     }
 
     /**
-     * Applies the agreement to a caller-owned alert. Discard the alert if a rejection is returned.
+     * Applies the agreement to a caller-owned alert. The validator returns schema violations
+     * for candidate blank replacements. Discard the alert if a rejection is returned.
      */
-    public Optional<String> apply(ObjectNode alert, AlertFieldConstraints constraints) {
+    public Optional<String> apply(ObjectNode alert, Function<ObjectNode, ? extends Collection<?>> validate) {
         String dropped = DropPolicy.applyDropCheck(alert, drop);
         if (!dropped.isEmpty()) {
             return Optional.of("Alert rejected: forbidden value found in " + dropped);
@@ -63,7 +66,7 @@ public final class IsaPolicy {
         if (!missing.isEmpty()) {
             return Optional.of("Alert rejected: missing mandatory field " + missing);
         }
-        String unfilterable = FilterPolicy.applyFilter(alert, filter, constraints);
+        String unfilterable = FilterPolicy.applyFilter(alert, filter, validate);
         if (!unfilterable.isEmpty()) {
             return Optional.of("Alert cant be filtered: missing field " + unfilterable);
         }

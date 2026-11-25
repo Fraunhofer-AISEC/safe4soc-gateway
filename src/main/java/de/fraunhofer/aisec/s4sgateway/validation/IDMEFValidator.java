@@ -16,8 +16,6 @@
 
 package de.fraunhofer.aisec.s4sgateway.validation;
 
-import de.fraunhofer.aisec.s4sgateway.policy.AlertFieldConstraints;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.Schema;
@@ -40,19 +38,15 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @Service
-public class IDMEFValidator implements AlertFieldConstraints {
+public class IDMEFValidator {
     private static final Logger logger = LoggerFactory.getLogger(IDMEFValidator.class);
 
     private final Schema schema;
-    private final String schemaPath;
-    private final JsonNode schemaRoot;
 
     public IDMEFValidator(
             @Value("${IDMEFv2SchemaPath}") String schemaPath,
             ObjectMapper objectMapper
     ) {
-        this.schemaPath = schemaPath;
-
         SchemaRegistry registry =
                 SchemaRegistry.withDefaultDialect(
                         SpecificationVersion.DRAFT_4
@@ -60,9 +54,9 @@ public class IDMEFValidator implements AlertFieldConstraints {
         logger.debug("JSON Schema path is: {}", schemaPath);
 
         try {
-            String schemaJson = loadSchema();
+            String schemaJson = loadSchema(schemaPath);
 
-            this.schemaRoot = objectMapper.readTree(schemaJson);
+            JsonNode schemaRoot = objectMapper.readTree(schemaJson);
 
             String schemaVersion = schemaRoot
                     .path("properties")
@@ -74,6 +68,7 @@ public class IDMEFValidator implements AlertFieldConstraints {
             logger.info("IDMEFv2 schema found in version: {}", schemaVersion);
 
             this.schema = registry.getSchema(schemaRoot);
+            this.schema.initializeValidators();
 
             logger.info("IDMEFv2 schema successfully loaded");
 
@@ -89,7 +84,7 @@ public class IDMEFValidator implements AlertFieldConstraints {
         return schema.validate(json);
     }
 
-    private String loadSchema() throws IOException {
+    private String loadSchema(String schemaPath) throws IOException {
 
         // 1. Try loading an external filesystem schema
         if (schemaPath != null && !schemaPath.isBlank()) {
@@ -125,107 +120,4 @@ public class IDMEFValidator implements AlertFieldConstraints {
             return new String(input.readAllBytes(), StandardCharsets.UTF_8);
         }
     }
-
-    @Override
-    public boolean isMandatory(String keyLevel1) {
-        return containsRequired(resolveReference(schemaRoot), keyLevel1);
-    }
-
-    @Override
-    public boolean isMandatory(String keyLevel1, String keyLevel2) {
-
-        JsonNode property = resolveReference(schemaRoot)
-                .path("properties")
-                .path(keyLevel1);
-
-        property = resolveReference(property);
-
-        // Handle arrays of JSON objects
-        if (property.has("items")) {
-            property = resolveReference(property.path("items"));
-        }
-
-        return containsRequired(property, keyLevel2);
-    }
-
-    private boolean containsRequired(JsonNode node, String key) {
-
-        JsonNode required = node.path("required");
-
-        if (required.isArray()) {
-            for (JsonNode element : required) {
-                if (key.equals(element.asText())) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    private JsonNode resolveReference(JsonNode node) {
-
-        int depth = 0;
-
-        while (node.has("$ref")) {
-
-            String ref = node.path("$ref").asText();
-
-            if (!ref.startsWith("#/")) {
-                throw new IllegalArgumentException(
-                        "Unsupported schema reference: " + ref
-                );
-            }
-
-            if (++depth > 100) {
-                throw new IllegalStateException(
-                        "Circular schema reference detected: " + ref
-                );
-            }
-
-            node = schemaRoot.at(ref.substring(1));
-
-            if (node.isMissingNode()) {
-                throw new IllegalArgumentException(
-                        "Schema reference not found: " + ref
-                );
-            }
-        }
-
-        return node;
-    }
-
-    @Override
-    public boolean hasPattern(String keyLevel1) {
-
-        JsonNode property = resolveReference(schemaRoot)
-                .path("properties")
-                .path(keyLevel1);
-
-        return resolveReference(property).has("pattern");
-    }
-
-    @Override
-    public boolean hasPattern(String keyLevel1, String keyLevel2) {
-
-        JsonNode property = resolveReference(schemaRoot)
-                .path("properties")
-                .path(keyLevel1);
-
-        property = resolveReference(property);
-
-        // Handle arrays of JSON objects
-        if (property.has("items")) {
-            property = resolveReference(property.path("items"));
-        }
-
-        JsonNode nestedProperty = property
-                .path("properties")
-                .path(keyLevel2);
-
-        return resolveReference(nestedProperty).has("pattern");
-    }
-
-
-
 }

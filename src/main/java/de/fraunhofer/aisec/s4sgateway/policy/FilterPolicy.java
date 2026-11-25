@@ -16,12 +16,18 @@
 
 package de.fraunhofer.aisec.s4sgateway.policy;
 
+import com.fasterxml.jackson.core.JsonPointer;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.function.Function;
 
 import static de.fraunhofer.aisec.s4sgateway.policy.IsaRules.*;
 
@@ -31,136 +37,126 @@ final class FilterPolicy {
     private FilterPolicy() {
     }
 
-    static String applyFilter(ObjectNode data, ObjectNode filterConfig, AlertFieldConstraints jsonSchemaValidator) {
-        ObjectNode contentObject;
-        ArrayNode contentArray;
-        ObjectNode filterLevel2;
-        for (Iterator<String> fields = filterConfig.fieldNames(); fields.hasNext(); ) {
-            String keyLevel1 = fields.next();
+    static String applyFilter(ObjectNode data, ObjectNode filterConfig,
+                              Function<ObjectNode, ? extends Collection<?>> validate) {
+        List<JsonPointer> blankFields = new ArrayList<>();
+        var fields = filterConfig.fields();
+        while (fields.hasNext()) {
+            var instruction = fields.next();
+            String field = instruction.getKey();
+            JsonNode replacement = instruction.getValue();
+            JsonPointer path = JsonPointer.empty().appendProperty(field);
             try {
-                logger.debug("Filtering the key {}", keyLevel1);
-                switch (keyLevel1) {
-                    //1. level key value pairs
-                    case "Version":
-                    case "ID":
-                    case "Status":
-                    case "OrganisationName":
-                    case "OrganisationId":
-                    case "CreateTime":
-                    case "StartTime":
-                    case "Priority":
-                    case "Confidence":
-                    case "Description":
-                    case "Cause":
-                            putFromFilterOrEmpty(data, filterConfig, keyLevel1);
-                            ifContentMandatoryDeleteWholeElement(data,keyLevel1,"",jsonSchemaValidator);
-                        break;
-                    //1. level key array pair
-                    case "Category":
-                        requireArray(data.path(keyLevel1)).removeAll();
-                        break;
-                    //1. level nested JSON objects
-                    case "Analyzer":
-                        filterLevel2 = requireObject(filterConfig.path(keyLevel1));
-                        contentObject = requireObject(data.path(keyLevel1));
-                        if (filterLevel2.isEmpty()) {
-                            contentObject.removeAll();
-                        } else {
-                            for (Iterator<String> nestedFields = filterLevel2.fieldNames(); nestedFields.hasNext(); ) {
-                                String keyLevel2 = nestedFields.next();
-                                switch (keyLevel2) {
-                                    //2. level key value pairs
-                                    case "Name":
-                                    case "Hostname":
-                                    case "Type":
-                                    case "Model":
-                                    case "GeoLocation":
-                                    case "UnLocation":
-                                    case "Location":
-                                    case "IP":
-                                        if (!requireText(filterLevel2.path(keyLevel2)).isEmpty()) {
-                                            contentObject.put(keyLevel2,
-                                                    requireText(filterLevel2.path(keyLevel2)));
-                                        } else {
-                                            contentObject.put(keyLevel2, "");
-                                            ifContentMandatoryDeleteWholeElement(contentObject,
-                                                    keyLevel1,keyLevel2,jsonSchemaValidator);
-                                        }
-                                        break;
-                                    //2. level key array pairs
-                                    case "Category":
-                                    case "Data":
-                                    case "Method":
-                                        requireArray(contentObject.path(keyLevel2)).removeAll();
-                                        break;
-                                }
-                            }
+                logger.debug("Filtering the key {}", field);
+                switch (field) {
+                    case "Version", "ID", "Status", "OrganisationName", "OrganisationId",
+                         "CreateTime", "StartTime", "Priority", "Confidence", "Description", "Cause" -> {
+                        if (isBlank(replacement)) {
+                            blankFields.add(path);
+                        } else if (!replacement.isNull()) {
+                            data.set(field, replacement.deepCopy());
                         }
-                        break;
-                    case "Sensor":
-                        requireArray(data.path(keyLevel1)).removeAll();
-                        break;
-                    //TODO Ip Name
-                    //TODO Capture Zone
-                    case "Source":
-                        filterLevel2 = requireObject(filterConfig.path(keyLevel1));
-                        contentArray = requireArray(data.path(keyLevel1));
-                        if (filterLevel2.isEmpty()) {
-                            contentArray.removeAll();
-                        } else {
-                            for (int i = 0; i < contentArray.size(); i++) {
-                                for (Iterator<String> nestedFields = filterLevel2.fieldNames(); nestedFields.hasNext(); ) {
-                                    String keyLevel2 = nestedFields.next();
-                                    switch (keyLevel2) {
-                                        //2. level key value pairs
-                                        case "IP":
-                                            if (!requireText(filterLevel2.path(keyLevel2)).isEmpty()) {
-                                                requireObject(contentArray.path(i)).put(keyLevel2,
-                                                        requireText(filterLevel2.path(keyLevel2)));
-                                            } else {
-                                                requireObject(contentArray.path(i)).put(keyLevel2, "");
-                                                ifContentMandatoryDeleteWholeElement(requireObject(contentArray.path(i)),
-                                                        keyLevel1,keyLevel2,jsonSchemaValidator);
-                                            }
-                                            break;
-                                        //2. level key array pairs
-                                        case "Protocol":
-                                            requireObject(contentArray.path(i)).putArray(keyLevel2);
-                                            break;
-                                    }
-                                }
-                            }
+                    }
+                    case "Category" -> requireArray(data.path(field)).removeAll();
+                    case "Analyzer" -> {
+                        if (data.has(field)) {
+                            applyObjectFilter(requireObject(data.path(field)), requireObject(replacement), path, blankFields);
                         }
-                        break;
-                    case "Target":
-                        requireArray(data.path(keyLevel1)).removeAll();
-                        break;
-                    //TODO Ip Port Location
-                    default:
-                        logger.debug("Found unknown filter instruction: {}", keyLevel1);
+                    }
+                    case "Sensor", "Source", "Target" -> {
+                        if (data.has(field)) {
+                            applyArrayFilter(requireArray(data.path(field)), replacement, path, blankFields);
+                        }
+                    }
+                    default -> logger.debug("Found unknown filter instruction: {}", field);
                 }
             } catch (IllegalArgumentException e) {
-                return keyLevel1;
+                return field;
             }
         }
+        applyBlanks(data, blankFields, validate);
         return "";
     }
 
-    private static void putFromFilterOrEmpty(ObjectNode target, ObjectNode filter, String key) {
-        if (filter != null && filter.hasNonNull(key)) {
-            target.set(key, filter.get(key).deepCopy());
+    private static void applyArrayFilter(ArrayNode entries, JsonNode replacement,
+                                         JsonPointer path, List<JsonPointer> blankFields) {
+        if (replacement.isTextual()) {
+            if (replacement.textValue().isEmpty()) {
+                entries.removeAll();
+            } else {
+                for (JsonNode entry : entries) {
+                    ObjectNode target = requireObject(entry);
+                    if (target.has("IP")) {
+                        target.set("IP", replacement);
+                    }
+                }
+            }
+            return;
+        }
+
+        ObjectNode fields = requireObject(replacement);
+        if (fields.isEmpty()) {
+            entries.removeAll();
+        } else {
+            for (int index = 0; index < entries.size(); index++) {
+                applyObjectFilter(requireObject(entries.get(index)), fields, path.appendIndex(index), blankFields);
+            }
         }
     }
 
-    private static void ifContentMandatoryDeleteWholeElement(ObjectNode target, String key1, String key2,
-                                                     AlertFieldConstraints validator) {
-        if (key2.isEmpty()){
-            if (validator.isMandatory(key1) || validator.hasPattern(key1)){
-                target.remove(key1);
+    private static void applyObjectFilter(ObjectNode target, ObjectNode fields,
+                                          JsonPointer path, List<JsonPointer> blankFields) {
+        if (fields.isEmpty()) {
+            target.removeAll();
+            return;
+        }
+        var instructions = fields.fields();
+        while (instructions.hasNext()) {
+            var instruction = instructions.next();
+            String field = instruction.getKey();
+            JsonNode replacement = instruction.getValue();
+            JsonNode current = target.get(field);
+            if (current == null || replacement.isNull()) {
+                continue;
             }
-        } else {
-            if (validator.isMandatory(key1,key2) || validator.hasPattern(key1,key2)){
-                target.remove(key2);
+            if (isBlank(replacement)) {
+                if (current instanceof ArrayNode array) {
+                    array.removeAll();
+                } else {
+                    blankFields.add(path.appendProperty(field));
+                }
+            } else {
+                target.set(field, replacement.deepCopy());
+            }
+        }
+    }
+
+    private static boolean isBlank(JsonNode replacement) {
+        return replacement.isTextual() && replacement.textValue().isEmpty();
+    }
+
+    private static void applyBlanks(ObjectNode data, List<JsonPointer> fields,
+                                    Function<ObjectNode, ? extends Collection<?>> validate) {
+        if (fields.isEmpty()) {
+            return;
+        }
+
+        // Probe a detached alert so a rejected replacement never lands in the outgoing alert.
+        ObjectNode candidate = data.deepCopy();
+        var currentErrors = new HashSet<>(validate.apply(candidate));
+        for (JsonPointer fieldPath : fields) {
+            String field = fieldPath.last().getMatchingProperty();
+            ObjectNode trial = requireObject(candidate.at(fieldPath.head()));
+            ObjectNode target = requireObject(data.at(fieldPath.head()));
+            trial.put(field, "");
+            var blankErrors = new HashSet<>(validate.apply(candidate));
+            if (currentErrors.containsAll(blankErrors)) {
+                target.put(field, "");
+                currentErrors = blankErrors;
+            } else {
+                trial.remove(field);
+                target.remove(field);
+                currentErrors = new HashSet<>(validate.apply(candidate));
             }
         }
     }
