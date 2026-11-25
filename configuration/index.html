@@ -1,0 +1,1577 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for the SAFE4SOC Information Sharing Gateway">
+      
+      
+      
+        <link rel="canonical" href="https://fraunhofer-aisec.github.io/safe4soc-gateway/configuration/">
+      
+      
+        <link rel="prev" href="../compilation/">
+      
+      
+        <link rel="next" href="../testing/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
+    
+    
+      
+        <title>Configuration - SAFE4SOC Information Sharing Gateway</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#configuration-files" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="SAFE4SOC Information Sharing Gateway" class="md-header__button md-logo" aria-label="SAFE4SOC Information Sharing Gateway" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SAFE4SOC Information Sharing Gateway
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Configuration
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Fraunhofer-AISEC/safe4soc-gateway" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Fraunhofer-AISEC/safe4soc-gateway
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="SAFE4SOC Information Sharing Gateway" class="md-nav__button md-logo" aria-label="SAFE4SOC Information Sharing Gateway" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SAFE4SOC Information Sharing Gateway
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Fraunhofer-AISEC/safe4soc-gateway" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Fraunhofer-AISEC/safe4soc-gateway
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compilation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compilation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gateway-role" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway Role
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sender-gateway-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sender Gateway Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#receiver-gateway-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Receiver Gateway Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ssl-activation-or-deactivation-debug-connection-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SSL Activation or Deactivation (DEBUG Connection Settings)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relevant-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relevant Headers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#additional-endpoints-for-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Additional Endpoints for Debugging
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#information-sharing-agreement-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Information Sharing Agreement Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Information Sharing Agreement Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#filter-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filter Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enrichment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enrichment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#drop-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drop Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#required-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Required Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updating-the-isa-via-rest-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Updating the ISA via REST Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#idmefv2-schema-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IDMEFv2 Schema Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../demonstration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Demonstration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../additional-links/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Additional Links
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gateway-role" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway Role
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sender-gateway-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sender Gateway Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#receiver-gateway-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Receiver Gateway Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ssl-activation-or-deactivation-debug-connection-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SSL Activation or Deactivation (DEBUG Connection Settings)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relevant-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relevant Headers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#additional-endpoints-for-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Additional Endpoints for Debugging
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#information-sharing-agreement-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Information Sharing Agreement Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Information Sharing Agreement Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#filter-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filter Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enrichment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enrichment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#drop-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drop Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#required-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Required Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updating-the-isa-via-rest-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Updating the ISA via REST Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#idmefv2-schema-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IDMEFv2 Schema Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h1>
+<p>The gateway must be configured using the file application.properties which is available under path ./src/main/resources. Please note that a copy of the contents of this resources folder in embedded into the GraalVM binary, in any case and must be overloaded using an external configuration file via docker volume as shown in the corresponding docker compose files.</p>
+<h2 id="configuration-files">Configuration Files<a class="headerlink" href="#configuration-files" title="Permanent link">&para;</a></h2>
+<p>Different configuration profiles were developed for configuration and testing within IntelliJ IDEA for sender and receiver. The corresponding files are:</p>
+<ul>
+<li>application.properties (main default config for debugging directly in IntelliJ IDEA)</li>
+<li>application-receiver.properties</li>
+<li>application-sender.properties</li>
+<li>application-tls-in-on.properties (profile that activates incoming tls config)</li>
+<li>application-tls-out-on.properties (profile that activates outgoing tls config)</li>
+<li>docker.properties (is loaded externally docker-compose script.)</li>
+</ul>
+<p>Please edit config in docker-compose file as otherwise the config will be overwritten.</p>
+<h2 id="configuration-overview">Configuration Overview<a class="headerlink" href="#configuration-overview" title="Permanent link">&para;</a></h2>
+<h3 id="configuration-table">Configuration Table<a class="headerlink" href="#configuration-table" title="Permanent link">&para;</a></h3>
+<p>The following table shows on overview of configuration values that can be set either via docker compose environment variable or within the Spring Boot configuration files. 
+The meaning of the most important variables which is not self-explanatory is detailed in the sections below.</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Spring Boot application.properties</th>
+<th>Docker Compose environment variable</th>
+<th>Sample value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>General Configuration</td>
+<td>spring.application.name</td>
+<td></td>
+<td>s4s-gateway</td>
+</tr>
+<tr>
+<td>General Configuration</td>
+<td>gateway.version</td>
+<td></td>
+<td>0.3</td>
+</tr>
+<tr>
+<td>General Configuration</td>
+<td>spring.profiles.active</td>
+<td></td>
+<td>docker</td>
+</tr>
+<tr>
+<td>Gateway Configuration</td>
+<td>gatewayRole</td>
+<td>GATEWAY_ROLE</td>
+<td>SENDER</td>
+</tr>
+<tr>
+<td>Gateway Configuration</td>
+<td>gatewayDomainRC</td>
+<td>GATEWAY_RECEIVER_DOMAIN</td>
+<td>gateway-receiver</td>
+</tr>
+<tr>
+<td>Gateway Configuration</td>
+<td>gatewayPortRC</td>
+<td>GATEWAY_RECEIVER_PORT</td>
+<td>10081</td>
+</tr>
+<tr>
+<td>Gateway Configuration</td>
+<td>gatewayDomainSD</td>
+<td>GATEWAY_SENDER_DOMAIN</td>
+<td>gateway-sender</td>
+</tr>
+<tr>
+<td>Gateway Configuration</td>
+<td>gatewayPortSD</td>
+<td>GATEWAY_SENDER_PORT</td>
+<td>10080</td>
+</tr>
+<tr>
+<td>Gateway Configuration</td>
+<td>gatewayProtocol</td>
+<td>GATEWAY_PROTOCOL</td>
+<td>https</td>
+</tr>
+<tr>
+<td>Kafka Configuration</td>
+<td>kafkaDomainLocal</td>
+<td>KAFKA_LOCAL_DOMAIN</td>
+<td>kafka</td>
+</tr>
+<tr>
+<td>Kafka Configuration</td>
+<td>kafkaPortLocal</td>
+<td>KAFKA_LOCAL_PORT</td>
+<td>9092</td>
+</tr>
+<tr>
+<td>Kafka Configuration</td>
+<td>kafkaTopic</td>
+<td>KAFKA_TOPIC</td>
+<td>idmefv2-alerts</td>
+</tr>
+<tr>
+<td>Gateway Receiver Connection</td>
+<td>gatewayReceiverURL</td>
+<td>GATEWAY_RECEIVER_URL</td>
+<td>https://gateway-receiver:10081</td>
+</tr>
+<tr>
+<td>Gateway Receiver Connection</td>
+<td>gatewayReceiverUsername</td>
+<td>GATEWAY_RECEIVER_USERNAME</td>
+<td>gateway-user</td>
+</tr>
+<tr>
+<td>Gateway Receiver Connection</td>
+<td>gatewayReceiverPassword</td>
+<td>GATEWAY_RECEIVER_PASSWORD</td>
+<td>change-me</td>
+</tr>
+<tr>
+<td>Spring Boot Server Configuration</td>
+<td>server.port</td>
+<td>GATEWAY_PORT</td>
+<td>10080</td>
+</tr>
+<tr>
+<td>Inbound SSL/TLS Configuration</td>
+<td>server.ssl.enabled</td>
+<td>SSL_INBOUND_ACTIVATED</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Inbound SSL/TLS Configuration</td>
+<td>server.ssl.key-store</td>
+<td>SSL_KEY_STORE</td>
+<td>/keystore.p12</td>
+</tr>
+<tr>
+<td>Inbound SSL/TLS Configuration</td>
+<td>server.ssl.key-store-password</td>
+<td>SSL_KEY_STORE_PASSWORD</td>
+<td>password</td>
+</tr>
+<tr>
+<td>Inbound SSL/TLS Configuration</td>
+<td>server.ssl.key-store-type</td>
+<td></td>
+<td>PKCS12</td>
+</tr>
+<tr>
+<td>Inbound SSL/TLS Configuration</td>
+<td>server.ssl.key-alias</td>
+<td>SSL_KEY_ALIAS</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Inbound SSL/TLS Configuration</td>
+<td>server.ssl.trust-store</td>
+<td>SSL_TRUST_STORE</td>
+<td>/truststore.p12</td>
+</tr>
+<tr>
+<td>Inbound SSL/TLS Configuration</td>
+<td>server.ssl.trust-store-password</td>
+<td>SSL_TRUST_STORE_PASSWORD</td>
+<td>password</td>
+</tr>
+<tr>
+<td>Inbound SSL/TLS Configuration</td>
+<td>server.ssl.trust-store-type</td>
+<td></td>
+<td>PKCS12</td>
+</tr>
+<tr>
+<td>Inbound SSL/TLS Configuration</td>
+<td>server.ssl.client-auth</td>
+<td>SSL_MTLS_SETTING</td>
+<td>want</td>
+</tr>
+<tr>
+<td>Outbound SSL/TLS Configuration (Java SSLContext)</td>
+<td>sslOutboundActivated</td>
+<td>SSL_OUTBOUND_ACTIVATED</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Outbound SSL/TLS Configuration (Java SSLContext)</td>
+<td>trustStorePassword</td>
+<td>SSL_TRUST_STORE_PASSWORD</td>
+<td>password</td>
+</tr>
+<tr>
+<td>Outbound SSL/TLS Configuration (Java SSLContext)</td>
+<td>trustStorePath</td>
+<td>SSL_TRUST_STORE</td>
+<td>/truststore.p12</td>
+</tr>
+<tr>
+<td>Outbound SSL/TLS Configuration (Java SSLContext)</td>
+<td>keyStorePath</td>
+<td>SSL_KEY_STORE</td>
+<td>/keystore.p12</td>
+</tr>
+<tr>
+<td>Outbound SSL/TLS Configuration (Java SSLContext)</td>
+<td>keyStorePassword</td>
+<td>SSL_KEY_STORE_PASSWORD</td>
+<td>password</td>
+</tr>
+<tr>
+<td>Administrative Endpoints</td>
+<td>endpoints.reloadconfig.enabled</td>
+<td>ENDPOINT_ACTIVE_RELOADCONFIG</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Administrative Endpoints</td>
+<td>endpoints.setisa.enabled</td>
+<td>ENDPOINT_ACTIVE_SETISA</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Message Processing Configuration</td>
+<td>relevantHeaders</td>
+<td></td>
+<td>{'content-type','accept','user-Agent','accept-Encoding','safe4soc-receiver-hostname','safe4soc-receiver-port'}</td>
+</tr>
+<tr>
+<td>Message Processing Configuration</td>
+<td>isaPath</td>
+<td>ISA_PATH</td>
+<td>/config/isa.json</td>
+</tr>
+<tr>
+<td>Message Processing Configuration</td>
+<td>IDMEFv2SchemaPath</td>
+<td>IDMEFv2SchemaPath</td>
+<td>classpath:/schemas/idmefv2-schema.json</td>
+</tr>
+<tr>
+<td>Logging Configuration</td>
+<td>logging.level.root</td>
+<td></td>
+<td>INFO</td>
+</tr>
+<tr>
+<td>Logging Configuration</td>
+<td>logging.level. de.fraunhofer.aisec. s4sgateway</td>
+<td></td>
+<td>DEBUG</td>
+</tr>
+<tr>
+<td>Logging Configuration</td>
+<td>logging.level. org.springframework. boot.autoconfigure</td>
+<td></td>
+<td>INFO</td>
+</tr>
+<tr>
+<td>Logging Configuration</td>
+<td>logging.file.name</td>
+<td></td>
+<td>logs/spring-boot-app.log</td>
+</tr>
+<tr>
+<td>Logging Configuration</td>
+<td>logging.file.max-size</td>
+<td></td>
+<td>10MB</td>
+</tr>
+<tr>
+<td>Logging Configuration</td>
+<td>logging.file.total-size-cap</td>
+<td></td>
+<td>50MB</td>
+</tr>
+</tbody>
+</table>
+<p>Set <code>logging.level.de.fraunhofer.aisec.s4sgateway.processing.AlertProcessingService=DEBUG</code> to log the parsed incoming alert and the validated outgoing alert as indented JSON. The incoming log contains the full alert before ISA filtering and enrichment.</p>
+<h3 id="gateway-role">Gateway Role<a class="headerlink" href="#gateway-role" title="Permanent link">&para;</a></h3>
+<p>This switch lets the gateway act as sending gateway. Options are either SENDER or RECEIVER.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>gatewayRole=SENDER
+</code></pre></div></p>
+<h3 id="sender-gateway-properties">Sender Gateway Properties<a class="headerlink" href="#sender-gateway-properties" title="Permanent link">&para;</a></h3>
+<p>These entries specify the destination domain and port of the receiving gateway where messages must be forwarded to.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>gatewayDomainRC=localhost
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>gatewayPortRC=8081
+</code></pre></div>
+<p>These entries specify self-information for the gateway, needed for alert entry enrichment, for instance.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>gatewayDomainSD=localhost
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>gatewayPortSD=8080
+</code></pre></div></p>
+<h3 id="receiver-gateway-properties">Receiver Gateway Properties<a class="headerlink" href="#receiver-gateway-properties" title="Permanent link">&para;</a></h3>
+<p>These entries identify where the local Kafka database can be found.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kafkaDomainLocal=kafkalocal
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>kafkaPortLocal=8082
+</code></pre></div></p>
+<h3 id="ssl-activation-or-deactivation-debug-connection-settings">SSL Activation or Deactivation (DEBUG Connection Settings)<a class="headerlink" href="#ssl-activation-or-deactivation-debug-connection-settings" title="Permanent link">&para;</a></h3>
+<p>The gateway has a setting to control the inbound SSL configuration (Spring boot VM settings), 
+and the outbound SSL configuration (Java internal SSL Context object).
+Both can be activated or deactivated separately using the following flags in docker-compose.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>      GATEWAY_PROTOCOL: https     # for communication from gateway sender to gateway receiver
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>      SSL_INBOUND_ACTIVATED: true
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>      SSL_OUTBOUND_ACTIVATED: true
+</code></pre></div>
+<p>For debug purposes in a testing environment the SSL-settings can be both be set to false. 
+This means that neither the initial connection from the outside inside the Gateway-sender nor the forwarding from Gateway-sender to Geteway-receiver will apply HTTPS but only HTTP.
+This setting is not acceptable for a production environment but ONLY FOR TESTING PURPOSES!</p>
+<p>The file docker-compose-debug-http.yaml is properly configured to work out of the box and can be launched using:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>rest-proxy<span class="w"> </span>control-center<span class="w"> </span>schema-registry<span class="w"> </span>broker<span class="w"> </span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker-compose-debug-http.yaml<span class="w"> </span>up<span class="w"> </span>gateway-sender
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker-compose-debug-http.yaml<span class="w"> </span>up<span class="w"> </span>gateway-receiver
+</code></pre></div>
+<h3 id="relevant-headers">Relevant Headers<a class="headerlink" href="#relevant-headers" title="Permanent link">&para;</a></h3>
+<p>For information purposes the outgoing requests hold the role information as HTTP Headers.
+This array lists headers to be forwarded within the gateway. All other headers are dropped.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>relevantHeaders={'content-type','accept','user-Agent','accept-Encoding','safe4soc-receiver-hostname','safe4soc-receiver-port'}
+</code></pre></div></p>
+<h3 id="additional-endpoints-for-debugging">Additional Endpoints for Debugging<a class="headerlink" href="#additional-endpoints-for-debugging" title="Permanent link">&para;</a></h3>
+<p>If configuration testing is required the following endpoints can be used to reload a configuration during runtime. However, they MUST BE DEACTIVATED in secure mode using the corresponding flags:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>endpoints.reloadconfig.enabled: false
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>endpoints.setisa.enabled: false
+</code></pre></div></p>
+<h2 id="information-sharing-agreement-configuration">Information Sharing Agreement Configuration<a class="headerlink" href="#information-sharing-agreement-configuration" title="Permanent link">&para;</a></h2>
+<p>The entry about the ISA is very important, as it contains the configuration about necessary filtering, enrichment, required fields, and alert drop instructions.
+If no external ISA.json file is found under the specified "isaPath" by default a standard ISA embedded into the GraalVM compiled binary will be used.</p>
+<p>What was used can be seen in the startup logs:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>gateway-sender-1  | 2026-11-23T09:08:44.257Z  INFO 1 --- [s4s-gateway] [           main] d.f.aisec.s4sgateway.Controller          : Loading external ISA: /isa.json
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>gateway-sender-1  | 2026-11-23T09:08:44.258Z  INFO 1 --- [s4s-gateway] [           main] d.f.aisec.s4sgateway.Controller          : Loaded this ISA:{"data_usage_policies":... ..."provider_reason":"compliance"}
+</code></pre></div></p>
+<p>The following is a sample ISA.json file which can be found in ./src/main/ressources/isa/isa.json.</p>
+<p><div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">{</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">"provider_reason"</span><span class="p">:</span><span class="w"> </span><span class="s2">"compliance"</span><span class="p">,</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="nt">"intended_use"</span><span class="p">:</span><span class="w"> </span><span class="s2">"alert_gathering"</span><span class="p">,</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="nt">"data_usage_policies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="nt">"use_until"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-12-12"</span><span class="p">,</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">    </span><span class="nt">"use_after"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-09-12"</span><span class="p">,</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">    </span><span class="nt">"share_further"</span><span class="p">:</span><span class="w"> </span><span class="s2">"false"</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">  </span><span class="p">},</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">  </span><span class="nt">"data_sender_SIEM_brand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Example Company A"</span><span class="p">,</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">  </span><span class="nt">"data_sender_SIEM_version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Version 0.1"</span><span class="p">,</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">  </span><span class="nt">"IDMEFv2_attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">    </span><span class="nt">"attributes_to_transmit"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">    </span><span class="nt">"attributes_to_neglect"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="w">    </span><span class="nt">"attributes_to_anonymize"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="w">    </span><span class="nt">"attributes_to_pseudonemize"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="w">  </span><span class="p">},</span>
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="w">  </span><span class="nt">"sending_mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span>
+<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="w">  </span><span class="nt">"encryption_requirements"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a><span class="w">  </span><span class="nt">"authentication_requirements"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="w">  </span><span class="nt">"connection_requirements"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a><span class="w">  </span><span class="nt">"filterConfig"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a><span class="w">  </span><span class="nt">"dropConfig"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a><span class="w">  </span><span class="nt">"enrichmentConfig"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a><span class="w">  </span><span class="nt">"requiredConfig"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a><span class="p">}</span>
+</code></pre></div>
+The basic attributes above were derived from the requirements specified during the Safe4Soc project.</p>
+<h3 id="filter-configuration">Filter Configuration<a class="headerlink" href="#filter-configuration" title="Permanent link">&para;</a></h3>
+<p>The Filtering configuration uses a nested list in JSON format.
+Scalar filter rules use the configured replacement value. For an empty string (""), the gateway checks a candidate alert against the configured schema. It omits the field if the empty string introduces a validation error.
+An empty object clears the contents of the corresponding object or array for supported nested filters.
+For <code>Analyzer</code>, <code>Sensor</code>, <code>Source</code>, and <code>Target</code>, a blank rule applies to the named field and preserves the rest of the entry.
+A nonempty string rule for <code>Sensor</code>, <code>Source</code>, or <code>Target</code> replaces the existing IP addresses in the array.
+The gateway validates the alert against the configured IDMEFv2 schema before ISA processing and again after filtering and enrichment.
+If either validation fails, the gateway returns HTTP 422 and stops forwarding.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>  "filterConfig": {
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    "CreateTime": "",
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    "StartTime": ""
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>  },
+</code></pre></div>
+<details>
+<summary>Click to see a list filtering all entries:</summary>
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>  "filterConfig": {
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    "Version": "",
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    "ID": "",
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    "Status": "",
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    "OrganisationName": "",
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    "CreateTime": "",
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    "StartTime": "",
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>    "Cause": "",
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>    "Category": "",
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>    "Priority": "",
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>    "Confidence": "",
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>    "Description": "",
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>    "Analyzer": {
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>      "IP": "",
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>      "Name": "",
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>      "Hostname": "",
+<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>      "Type": "",
+<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>      "Model": "",
+<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>      "Category": "",
+<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a>      "Data": "",
+<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a>      "Method": "",
+<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a>      "GeoLocation": "",
+<a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a>      "UnLocation": "",
+<a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a>      "Location": ""
+<a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a>    },
+<a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a>    "Sensor": "",
+<a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a>    "Source": {
+<a id="__codelineno-11-28" name="__codelineno-11-28" href="#__codelineno-11-28"></a>      "IP": "",
+<a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a>      "Protocol": ""
+<a id="__codelineno-11-30" name="__codelineno-11-30" href="#__codelineno-11-30"></a>    },
+<a id="__codelineno-11-31" name="__codelineno-11-31" href="#__codelineno-11-31"></a>    "Target": ""
+<a id="__codelineno-11-32" name="__codelineno-11-32" href="#__codelineno-11-32"></a>  },
+</code></pre></div>
+</details>
+
+<p>If a value is stored inside the corresponding entry, it will be replaced. </p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>    "OrganisationName": "Anonym",
+</code></pre></div>
+<h3 id="enrichment">Enrichment<a class="headerlink" href="#enrichment" title="Permanent link">&para;</a></h3>
+<p>The enrichment configuration uses a nested list in JSON format, also.
+However, each enrichment functionality must be implemented specifically.
+The class Utils contains a prepared nested case structure for all elements to individually implement
+an enrichment where necessary.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>  "enrichmentConfig": {\
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    "CreateTime": "",\
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    "StartTime": ""\
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>  }\
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>}
+</code></pre></div>
+<p>Currently, the feature is available to enrich alerts with missing timestamps. 
+If it is missing the timestamp within the running gateway will be used as value in the same format for the CreateTime or StartTime field.</p>
+<h3 id="drop-configuration">Drop Configuration<a class="headerlink" href="#drop-configuration" title="Permanent link">&para;</a></h3>
+<p>This JSON element inside the ISA lists elements that cause the forwarding of alerts to be completely dropped and aborted. 
+If values that are configured here are found in an IDMEFv2 alert, the dropping is triggered.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>  "dropConfig": {
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    "Version": "",
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    "ID": "",
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    "Status": "",
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>    "OrganisationName": "",
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>    "CreateTime": "",
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>    "StartTime": "",
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>    "Cause": "",
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>    "Category": "",
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>    "Priority": "High",
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>    "Confidence": "",
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>    "Description": ""
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>  },
+</code></pre></div>
+<p>As can be seen above, these fields can be used for drop configuration. 
+If an alert is processed with a priority value "High" it will NOT be forwarded, but dropped.</p>
+<h3 id="required-configuration">Required Configuration<a class="headerlink" href="#required-configuration" title="Permanent link">&para;</a></h3>
+<p>This JSON element inside the ISA lists elements that that must be non-empty values, otherwise the forwarding will be aborted.
+Please note this is distìnguished from filtering configuration.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>  "requiredConfig": {
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>    "Version": "",
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>    "ID": "",
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>    "StartTime": "",
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    "Status": "",
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>    "Source": "",
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>    "Target": ""
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>  }
+</code></pre></div>
+<h3 id="updating-the-isa-via-rest-endpoint">Updating the ISA via REST Endpoint<a class="headerlink" href="#updating-the-isa-via-rest-endpoint" title="Permanent link">&para;</a></h3>
+<p>Two ways exist to update the gateway configuration ONLY IN DEBUG MODE for security reasons: 
+1. via Rest API call to /setisa
+2. via change of application.properties file and a Rest API call to /reloadconfig</p>
+<p>The following example sets an ISA which filters the source IP addresses:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>curl<span class="w"> </span>--location<span class="w"> </span><span class="s1">'localhost:10080/setisa'</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>--header<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>--data<span class="w"> </span><span class="s1">'{</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="s1">    "provider_reason": "compliance",</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="s1">    "intended_use": "alert_gathering",</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="s1">    "data_usage_policies": {</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="s1">        "use_until": "2024-12-12",</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="s1">        "use_after": "2024-09-12",</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="s1">        "share_further": "false"</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="s1">    },</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="s1">    "data_sender_SIEM_brand": "Example Company A",</span>
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="s1">    "data_sender_SIEM_version": "Version 0.1",</span>
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="s1">    "IDMEFv2_attributes": {</span>
+<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="s1">        "attributes_to_transmit": [],</span>
+<a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="s1">        "attributes_to_neglect": [],</span>
+<a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="s1">        "attributes_to_anonymize": [],</span>
+<a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a><span class="s1">        "attributes_to_pseudonemize": []</span>
+<a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a><span class="s1">    },</span>
+<a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a><span class="s1">    "sending_mode": "",</span>
+<a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a><span class="s1">    "encryption_requirements": [],</span>
+<a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a><span class="s1">    "authentication_requirements": [],</span>
+<a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a><span class="s1">    "connection_requirements": [],</span>
+<a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a><span class="s1">    "filterConfig": {</span>
+<a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a><span class="s1">            "Source": {</span>
+<a id="__codelineno-16-25" name="__codelineno-16-25" href="#__codelineno-16-25"></a><span class="s1">              "IP": ""</span>
+<a id="__codelineno-16-26" name="__codelineno-16-26" href="#__codelineno-16-26"></a><span class="s1">            }</span>
+<a id="__codelineno-16-27" name="__codelineno-16-27" href="#__codelineno-16-27"></a><span class="s1">    },</span>
+<a id="__codelineno-16-28" name="__codelineno-16-28" href="#__codelineno-16-28"></a><span class="s1">    "enrichmentConfig": {</span>
+<a id="__codelineno-16-29" name="__codelineno-16-29" href="#__codelineno-16-29"></a><span class="s1">    }</span>
+<a id="__codelineno-16-30" name="__codelineno-16-30" href="#__codelineno-16-30"></a><span class="s1">}'</span>
+</code></pre></div></p>
+<details>
+<summary>Click to see expected output:</summary>
+
+Http response text:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>Processed ISA update.
+</code></pre></div>
+Gateway console:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>gateway-sender-1  | 2025-07-08T07:48:47.924Z DEBUG 1 --- [s4s-gateway] [io-10080-exec-2] d.f.aisec.s4sgateway.Controller          : SetISA API function was called
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>gateway-sender-1  | 2025-07-08T07:48:47.924Z  INFO 1 --- [s4s-gateway] [io-10080-exec-2] d.f.aisec.s4sgateway.Controller          : Loading Information Sharing Agreement and Filter settings ...
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>gateway-sender-1  | 2025-07-08T07:48:47.925Z  INFO 1 --- [s4s-gateway] [io-10080-exec-2] d.f.aisec.s4sgateway.Controller          : Loaded this ISA:{"data_usage_policies":{"use_until":"2024-12-12","use_after":"2024-09-12","share_further":"false"},"data_sender_SIEM_version":"Version 0.1","intended_use":"alert_gathering","IDMEFv2_attributes":{"attributes_to_anonymize":[],"attributes_to_neglect":[],"attributes_to_pseudonemize":[],"attributes_to_transmit":[]},"sending_mode":"","encryption_requirements":[],"authentication_requirements":[],"enrichmentConfig":{},"data_sender_SIEM_brand":"Example Company A","connection_requirements":[],"filterConfig":{"Source":{"IP":""}},"provider_reason":"compliance"}
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>gateway-sender-1  | 2025-07-08T07:48:47.925Z  INFO 1 --- [s4s-gateway] [io-10080-exec-2] d.f.aisec.s4sgateway.Controller          : Checking given configuration for role=SENDER ...
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>gateway-sender-1  | 2025-07-08T07:48:47.925Z  INFO 1 --- [s4s-gateway] [io-10080-exec-2] d.f.aisec.s4sgateway.Controller          : Config gatewaySD=gateway-sender:10080
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>gateway-sender-1  | 2025-07-08T07:48:47.925Z  INFO 1 --- [s4s-gateway] [io-10080-exec-2] d.f.aisec.s4sgateway.Controller          : Config gatewayRC=gateway-receiver:10081
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>gateway-sender-1  | 2025-07-08T07:48:47.925Z  INFO 1 --- [s4s-gateway] [io-10080-exec-2] d.f.aisec.s4sgateway.Controller          : Config relevantHeaders=[content-type, accept, user-Agent, accept-Encoding, safe4soc-receiver-hostname, safe4soc-receiver-port]
+</code></pre></div>
+</details>
+
+<p>or the reload endpoint which reads the current stored file within the docker container:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>curl --location 'localhost:10080/reloadconfig' \
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>--data ''
+</code></pre></div></p>
+<details>
+<summary>Click to see expected output:</summary>
+
+Http request response text:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>Configuration reload attempt was processed, please see internal logs for results.
+</code></pre></div>
+
+Gateway console:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>gateway-sender-1  | 2025-07-08T07:55:21.230Z DEBUG 1 --- [s4s-gateway] [io-10080-exec-5] d.f.aisec.s4sgateway.Controller          : Reload Configuration function was called
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>gateway-sender-1  | 2025-07-08T07:55:21.230Z  INFO 1 --- [s4s-gateway] [io-10080-exec-5] d.f.aisec.s4sgateway.Controller          : Loading Information Sharing Agreement and Filter settings ...
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>gateway-sender-1  | 2025-07-08T07:55:21.230Z  INFO 1 --- [s4s-gateway] [io-10080-exec-5] d.f.aisec.s4sgateway.Controller          : Loaded this ISA:{"data_usage_policies":{"use_until":"2024-12-12","use_after":"2024-09-12","share_further":"false"},"data_sender_SIEM_version":"Version 0.1","intended_use":"alert_gathering","IDMEFv2_attributes":{"attributes_to_anonymize":[],"attributes_to_neglect":[],"attributes_to_pseudonemize":[],"attributes_to_transmit":[]},"sending_mode":"","encryption_requirements":[],"authentication_requirements":[],"enrichmentConfig":{"CreateTime":"","StartTime":""},"data_sender_SIEM_brand":"Example Company A","connection_requirements":[],"filterConfig":{},"provider_reason":"compliance"}
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>gateway-sender-1  | 2025-07-08T07:55:21.230Z  INFO 1 --- [s4s-gateway] [io-10080-exec-5] d.f.aisec.s4sgateway.Controller          : Checking given configuration for role=SENDER ...
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>gateway-sender-1  | 2025-07-08T07:55:21.230Z  INFO 1 --- [s4s-gateway] [io-10080-exec-5] d.f.aisec.s4sgateway.Controller          : Config gatewaySD=gateway-sender:10080
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>gateway-sender-1  | 2025-07-08T07:55:21.230Z  INFO 1 --- [s4s-gateway] [io-10080-exec-5] d.f.aisec.s4sgateway.Controller          : Config gatewayRC=gateway-receiver:10081
+<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>gateway-sender-1  | 2025-07-08T07:55:21.230Z  INFO 1 --- [s4s-gateway] [io-10080-exec-5] d.f.aisec.s4sgateway.Controller          : Config relevantHeaders=[content-type, accept, user-Agent, accept-Encoding, safe4soc-receiver-hostname, safe4soc-receiver-port]
+</code></pre></div>
+</details>
+
+<h2 id="idmefv2-schema-configuration">IDMEFv2 Schema Configuration<a class="headerlink" href="#idmefv2-schema-configuration" title="Permanent link">&para;</a></h2>
+<p>The IDMEFv2 Schema is very important, as it contains the acceptance rules for the incoming JSON structure of alerts.
+If no external IDMEFv2.json file is found under the specified "IDMEFv2SchemaPath" by default a standard schema embedded into the GraalVM compiled binary will be used.</p>
+<p>What was used can be seen in the startup logs:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>gateway-receiver-1  | 2026-11-23T11:47:30.772Z  INFO 1 --- [s4s-gateway] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 95 ms
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>gateway-receiver-1  | 2026-11-23T11:47:30.780Z DEBUG 1 --- [s4s-gateway] [           main] d.f.a.s.JsonSchemaValidationService      : JSON Schema path is: /idmefv2-schema.json
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>gateway-receiver-1  | 2026-11-23T11:47:30.780Z  INFO 1 --- [s4s-gateway] [           main] d.f.a.s.JsonSchemaValidationService      : Loading external JSON schema: /idmefv2-schema.json
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>gateway-receiver-1  | 2026-11-23T11:47:30.815Z  INFO 1 --- [s4s-gateway] [           main] d.f.a.s.JsonSchemaValidationService      : IDMEFv2 schema found in version: 2.D.V08
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>gateway-receiver-1  | 2026-11-23T11:47:30.817Z  INFO 1 --- [s4s-gateway] [           main] d.f.a.s.JsonSchemaValidationService      : IDMEFv2 schema successfully loaded
+</code></pre></div></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../compilation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Compilation">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Compilation
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../testing/" class="md-footer__link md-footer__link--next" aria-label="Next: Testing">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Testing
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.footer", "navigation.sections", "navigation.expand", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+    
+  </body>
+</html>
