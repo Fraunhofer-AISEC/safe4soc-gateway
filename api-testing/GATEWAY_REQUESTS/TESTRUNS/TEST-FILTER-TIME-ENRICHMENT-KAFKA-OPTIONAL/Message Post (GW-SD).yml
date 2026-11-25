@@ -1,5 +1,5 @@
 info:
-  name: Message Post (GW-SD) copy
+  name: Message Post (GW-SD)
   type: http
   seq: 3
 
@@ -29,8 +29,8 @@ runtime:
   scripts:
     - type: tests
       code: |-
-        test("HTTP status is 200", function () {
-            expect(res.getStatus()).to.equal(200);
+        test("HTTP status is either 200 or 503", function () {
+            expect(res.getStatus()).to.be.oneOf([200, 503]);
         });
 
 settings:

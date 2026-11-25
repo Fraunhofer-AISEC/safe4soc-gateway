@@ -1,11 +1,11 @@
 info:
-  name: Status (GW-SD)
+  name: Status (GW-RC)
   type: http
   seq: 2
 
 http:
   method: GET
-  url: "{{PROTOCOL}}://{{HOSTNAME}}:{{SENDER_PORT}}/status"
+  url: "{{PROTOCOL}}://{{HOSTNAME}}:{{RECEIVER_PORT}}/status"
   auth: inherit
 
 settings:

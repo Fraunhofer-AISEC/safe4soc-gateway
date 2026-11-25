@@ -293,7 +293,7 @@ public class Controller {
 		}
 
 		// 4. Validate JSON Schema
-		errors=	validator.validate(body);
+		errors=	validator.validate(data.toString());
 		if (!errors.isEmpty()) {
 			logger.error("Outgoing alert is not valid against configured JSON schema.");
 			logger.error(errors.toString());

@@ -1,0 +1,14 @@
+services:
+  bruno:
+    image: usebruno/cli:latest
+    working_dir: /bruno
+    network_mode: host
+    volumes:
+      - ./api-testing:/bruno
+      - ./test-results:/reports
+    command:
+      - run
+      - GATEWAY_REQUESTS/TESTRUNS
+      - -r
+      - --reporter-html
+      - /reports/results.html

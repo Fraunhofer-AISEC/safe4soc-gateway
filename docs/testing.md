@@ -11,6 +11,91 @@ can be imported via File(top left) -> Open Collection.
 
 ![Bruno sample image](./documentation-figures/bruno.png)
 
+The predefined test cases can be launched via GUI or via CLI:
+```bash
+docker compose -f docker-compose-testing.yml run --rm bruno
+```
+
+<details>
+<summary>Expected Output:</summary>
+
+```bash
+docker compose -f docker-compose-testing.yml run --rm bruno                                                                     ─╯
+[+] run 1/1
+ ✔ Container safe4soc-gateway-bruno-run-4b2da9b00672 Created                                                                      0.1s
+Using default environment: local http (insecure)
+GATEWAY_REQUESTS/TESTRUNS/BASIC-FUNCTIONALITY-WITH-KAFKA-BACKEND/Set ISA (GW-SD) (200 ) - 3169 ms
+Tests
+   ✓ HTTP status is 200
+GATEWAY_REQUESTS/TESTRUNS/BASIC-FUNCTIONALITY-WITH-KAFKA-BACKEND/Set ISA (GW-RC) (200 ) - 9 ms
+Tests
+   ✓ HTTP status is 200
+GATEWAY_REQUESTS/TESTRUNS/BASIC-FUNCTIONALITY-WITH-KAFKA-BACKEND/Message Post (GW-SD) (200 ) - 99 ms
+Tests
+   ✓ HTTP status is 200
+GATEWAY_REQUESTS/TESTRUNS/TEST-FILTER-TIME-ENRICHMENT-KAFKA-OPTIONAL/Set ISA (GW-SD) (200 ) - 7 ms
+Tests
+   ✓ HTTP status is 200
+GATEWAY_REQUESTS/TESTRUNS/TEST-FILTER-TIME-ENRICHMENT-KAFKA-OPTIONAL/Set ISA (GW-RC) (200 ) - 8 ms
+Tests
+   ✓ HTTP status is 200
+GATEWAY_REQUESTS/TESTRUNS/TEST-FILTER-TIME-ENRICHMENT-KAFKA-OPTIONAL/Message Post (GW-SD) (200 ) - 33 ms
+Tests
+   ✓ HTTP status is either 200 or 503
+GATEWAY_REQUESTS/TESTRUNS/TEST-FILTER-IP/Set ISA (GW-SD) (200 ) - 7 ms
+Tests
+   ✓ HTTP status is 200
+GATEWAY_REQUESTS/TESTRUNS/TEST-FILTER-IP/Set ISA (GW-RC) (200 ) - 7 ms
+Tests
+   ✓ HTTP status is 200
+GATEWAY_REQUESTS/TESTRUNS/TEST-FILTER-IP/Message Post (GW-SD) (200 ) - 31 ms
+Tests
+   ✓ HTTP status is either 200 or 503
+GATEWAY_REQUESTS/TESTRUNS/TEST-JSON-AFTER-MALFORMELD-FILTER-IP/Set ISA (GW-SD) (200 ) - 7 ms
+Tests
+   ✓ HTTP status is 200
+GATEWAY_REQUESTS/TESTRUNS/TEST-JSON-AFTER-MALFORMELD-FILTER-IP/Set ISA (GW-RC) (200 ) - 7 ms
+Tests
+   ✓ HTTP status is 200
+GATEWAY_REQUESTS/TESTRUNS/TEST-JSON-AFTER-MALFORMELD-FILTER-IP/Message Post (GW-SD) (422 ) - 21 ms
+Tests
+   ✓ HTTP status is 422
+GATEWAY_REQUESTS/TESTRUNS/TEST-JSON-AFTER-MALFORMELD-FILTER-VERSION/Set ISA (GW-SD) (200 ) - 6 ms
+Tests
+   ✓ HTTP status is 200
+GATEWAY_REQUESTS/TESTRUNS/TEST-JSON-AFTER-MALFORMELD-FILTER-VERSION/Set ISA (GW-RC) (200 ) - 16 ms
+Tests
+   ✓ HTTP status is 200
+GATEWAY_REQUESTS/TESTRUNS/TEST-JSON-AFTER-MALFORMELD-FILTER-VERSION/Message Post (GW-SD) (422 ) - 11 ms
+Tests
+   ✓ HTTP status is 422
+GATEWAY_REQUESTS/TESTRUNS/TEST-JSON-AFTER-MALFORMELD-FILTER-CORRECTLY/Set ISA (GW-SD) (200 ) - 7 ms
+Tests
+   ✓ HTTP status is 200
+GATEWAY_REQUESTS/TESTRUNS/TEST-JSON-AFTER-MALFORMELD-FILTER-CORRECTLY/Set ISA (GW-RC) (200 ) - 6 ms
+Tests
+   ✓ HTTP status is 200
+GATEWAY_REQUESTS/TESTRUNS/TEST-JSON-AFTER-MALFORMELD-FILTER-CORRECTLY/Message Post (GW-SD) (200 ) - 27 ms
+Tests
+   ✓ HTTP status is 200
+
+📊 Execution Summary
+┌───────────────┬────────────────┐
+│ Metric        │     Result     │
+├───────────────┼────────────────┤
+│ Status        │     ✓ PASS     │
+├───────────────┼────────────────┤
+│ Requests      │ 18 (18 Passed) │
+├───────────────┼────────────────┤
+│ Tests         │     18/18      │
+├───────────────┼────────────────┤
+│ Assertions    │      0/0       │
+├───────────────┼────────────────┤
+│ Duration (ms) │      5072      │
+└───────────────┴────────────────┘
+```
+</details>
+
 ## Curl Commands wih Variables
 
 The following sections show sample usages of the API using curl and command-line only.

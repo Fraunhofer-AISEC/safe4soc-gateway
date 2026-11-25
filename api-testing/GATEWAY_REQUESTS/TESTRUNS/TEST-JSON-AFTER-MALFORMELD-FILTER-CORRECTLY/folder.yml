@@ -1,0 +1,7 @@
+info:
+  name: TEST-JSON-AFTER-MALFORMELD-FILTER-CORRECTLY
+  type: folder
+  seq: 6
+
+request:
+  auth: inherit

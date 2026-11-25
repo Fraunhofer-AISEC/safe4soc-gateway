@@ -1,7 +1,7 @@
 info:
-  name: BASIC-FUNCTIONALITY
+  name: KAFKA_DB_TESTING_LOCAL
   type: folder
-  seq: 1
+  seq: 2
 
 request:
   auth: inherit

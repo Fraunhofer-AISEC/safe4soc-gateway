@@ -187,6 +187,10 @@ public class Utils {
                 //1. level key value pairs
                 case "CreateTime":
                 case "StartTime":
+                    if (!data.has(keyLevel1)) {
+                        data.put(keyLevel1, TimestampFormatterIDMEFv2());
+                        break;
+                    }
                     if (data.getString(keyLevel1).isEmpty()) {
                         data.put(keyLevel1, TimestampFormatterIDMEFv2());
                     }

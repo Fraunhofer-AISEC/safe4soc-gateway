@@ -1,7 +1,7 @@
 opencollection: 1.0.0
 
 info:
-  name: Safe4Soc IS-GW API
+  name: SAFE4SOC IS-GW API
   version: 3.0.1
 config:
   proxy:
@@ -14,6 +14,11 @@ config:
         username: ""
         password: ""
       bypassProxy: ""
+  clientCertificates:
+    - domain: "{{HOSTNAME}}"
+      type: pkcs12
+      pkcs12FilePath: ..\pki-test\mtls-certs\gateway-receiver\keystore.p12
+      passphrase: password
 
 docs:
   content: This is the Bruno Client's collection for the GitHub project <https://fraunhofer-aisec.github.io/safe4soc-gateway/>
