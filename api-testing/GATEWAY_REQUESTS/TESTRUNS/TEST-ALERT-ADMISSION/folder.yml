@@ -1,0 +1,10 @@
+info:
+  name: TEST-ALERT-ADMISSION
+  type: folder
+  seq: 7
+
+request:
+  auth: inherit
+
+docs: |-
+  Verify malformed JSON, a missing schema-required field, and successful forwarding of a minimal IDMEFv2 0.9 alert.

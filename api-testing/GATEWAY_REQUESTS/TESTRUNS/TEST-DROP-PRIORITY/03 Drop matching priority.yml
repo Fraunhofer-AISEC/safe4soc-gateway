@@ -1,0 +1,41 @@
+info:
+  name: Drop matching priority
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{PROTOCOL}}://{{HOSTNAME}}:{{SENDER_PORT}}/topics/{{KAFKE_TOPIC}}"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "Version": "2.D.V09",
+        "ID": "550e8400-e29b-41d4-a716-000000000801",
+        "CreateTime": "2026-11-24T10:00:00Z",
+        "Analyzer": {},
+        "Priority": "High"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("The gateway rejects the alert for the expected reason", function () {
+          expect(res.getStatus()).to.equal(422);
+          expect(res.getBody()).to.include("forbidden value found in Priority");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 10000
+  followRedirects: false
+  maxRedirects: 0
+  forwardAuthorizationHeader: false
+
+docs: |-
+  The sender drops the alert because Priority matches the configured value.

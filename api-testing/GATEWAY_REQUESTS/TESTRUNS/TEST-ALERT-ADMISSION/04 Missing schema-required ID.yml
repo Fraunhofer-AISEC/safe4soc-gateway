@@ -1,0 +1,40 @@
+info:
+  name: Missing schema-required ID
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{PROTOCOL}}://{{HOSTNAME}}:{{SENDER_PORT}}/topics/{{KAFKE_TOPIC}}"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "Version": "2.D.V09",
+        "CreateTime": "2026-11-24T10:00:00Z",
+        "Analyzer": {}
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("The gateway rejects the alert for the expected reason", function () {
+          expect(res.getStatus()).to.equal(422);
+          expect(res.getBody()).to.include("Incoming alert is not valid against JSON Schema");
+          expect(res.getBody()).to.include("ID");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 10000
+  followRedirects: false
+  maxRedirects: 0
+  forwardAuthorizationHeader: false
+
+docs: |-
+  A well-formed alert without ID should fail schema validation before any ISA rule runs.

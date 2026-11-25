@@ -66,6 +66,8 @@ The meaning of the most important variables which is not self-explanatory is det
 | Logging Configuration 	| logging.file.max-size 	                                  |  	| 10MB 	|
 | Logging Configuration 	| logging.file.total-size-cap 	                            |  	| 50MB 	|
 
+Set `logging.level.de.fraunhofer.aisec.s4sgateway.processing.AlertProcessingService=DEBUG` to log the parsed incoming alert and the validated outgoing alert as indented JSON. The incoming log contains the full alert before ISA filtering and enrichment.
+
 ### Gateway Role
 
 This switch lets the gateway act as sending gateway. Options are either SENDER or RECEIVER.

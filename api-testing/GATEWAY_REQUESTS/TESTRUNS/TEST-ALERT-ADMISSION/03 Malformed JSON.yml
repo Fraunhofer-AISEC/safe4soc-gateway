@@ -1,0 +1,35 @@
+info:
+  name: Malformed JSON
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{PROTOCOL}}://{{HOSTNAME}}:{{SENDER_PORT}}/topics/{{KAFKE_TOPIC}}"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: text
+    data: |-
+      {"Version":
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("The gateway rejects the alert for the expected reason", function () {
+          expect(res.getStatus()).to.equal(400);
+          expect(res.getBody()).to.include("Invalid JSON");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 10000
+  followRedirects: false
+  maxRedirects: 0
+  forwardAuthorizationHeader: false
+
+docs: |-
+  Send deliberately truncated JSON as a raw body.

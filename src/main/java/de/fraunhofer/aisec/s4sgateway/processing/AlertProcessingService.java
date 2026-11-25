@@ -21,12 +21,16 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.fraunhofer.aisec.s4sgateway.json.JsonObjectReader;
 import de.fraunhofer.aisec.s4sgateway.policy.IsaService;
 import de.fraunhofer.aisec.s4sgateway.validation.IDMEFValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import static de.fraunhofer.aisec.s4sgateway.processing.AlertRejectedException.Reason.*;
 
 @Service
 public class AlertProcessingService {
+    private static final Logger logger = LoggerFactory.getLogger(AlertProcessingService.class);
+
     private final JsonObjectReader reader;
     private final IDMEFValidator validator;
     private final IsaService isa;
@@ -45,11 +49,17 @@ public class AlertProcessingService {
             throw new AlertRejectedException(MALFORMED_JSON, "Invalid JSON: " + e.getMessage());
         }
 
+        if (logger.isDebugEnabled()) {
+            logger.debug("Incoming alert:\n{}", alert.toPrettyString());
+        }
         validate(alert, "Incoming");
         isa.current().apply(alert, validator::validate).ifPresent(rejection -> {
             throw new AlertRejectedException(ISA_DENIED, rejection);
         });
         validate(alert, "Outgoing");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Outgoing alert:\n{}", alert.toPrettyString());
+        }
         return alert;
     }
 

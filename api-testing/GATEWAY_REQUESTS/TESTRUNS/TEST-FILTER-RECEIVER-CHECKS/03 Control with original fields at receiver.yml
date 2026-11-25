@@ -1,0 +1,48 @@
+info:
+  name: Control with original fields at receiver
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{PROTOCOL}}://{{HOSTNAME}}:{{RECEIVER_PORT}}/topics/{{KAFKE_TOPIC}}"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "Version": "2.D.V09",
+        "ID": "550e8400-e29b-41d4-a716-000000001001",
+        "CreateTime": "2026-11-24T10:00:00Z",
+        "Analyzer": {
+          "Name": "Network monitor",
+          "IP": "192.0.2.10"
+        },
+        "Description": "Network alert"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Kafka acknowledged one alert without a produce error", function () {
+          expect(res.getStatus()).to.equal(200);
+          const body = res.getBody();
+          const result = typeof body === "string" ? JSON.parse(body) : body;
+          expect(result.offsets).to.be.an("array").with.lengthOf(1);
+          expect(result.offsets[0].offset).to.be.a("number").and.at.least(0);
+          expect(result.offsets[0].error_code == null || result.offsets[0].error_code === 0).to.equal(true);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 10000
+  followRedirects: false
+  maxRedirects: 0
+  forwardAuthorizationHeader: false
+
+docs: |-
+  Submit directly to the receiver. The original IP and description satisfy its policy.

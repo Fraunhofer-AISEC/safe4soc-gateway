@@ -1,0 +1,10 @@
+info:
+  name: TEST-FILTER-RECEIVER-CHECKS
+  type: folder
+  seq: 10
+
+request:
+  auth: inherit
+
+docs: |-
+  Use receiver ISA rules as assertions on the forwarded alert, with controls that reach Kafka. The final phase checks schema validation of a filtered Target array.

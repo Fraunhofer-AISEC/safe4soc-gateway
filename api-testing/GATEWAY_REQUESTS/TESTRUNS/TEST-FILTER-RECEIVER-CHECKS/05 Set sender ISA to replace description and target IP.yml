@@ -1,0 +1,43 @@
+info:
+  name: Set sender ISA to replace description and target IP
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{PROTOCOL}}://{{HOSTNAME}}:{{SENDER_PORT}}/setisa"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "requiredConfig": {},
+        "enrichmentConfig": {},
+        "dropConfig": {},
+        "filterConfig": {
+          "Description": "REDACTED",
+          "Target": "198.51.100.10"
+        }
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("The gateway accepted the scenario ISA", function () {
+          expect(res.getStatus()).to.equal(200);
+          expect(res.getBody()).to.equal("Processed ISA update.");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 10000
+  followRedirects: false
+  maxRedirects: 0
+  forwardAuthorizationHeader: false
+
+docs: |-
+  Install the policy used by the following requests. Run only against a dedicated test gateway.

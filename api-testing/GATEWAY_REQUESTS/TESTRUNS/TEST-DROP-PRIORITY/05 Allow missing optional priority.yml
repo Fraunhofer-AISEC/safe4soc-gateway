@@ -1,0 +1,44 @@
+info:
+  name: Allow missing optional priority
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{PROTOCOL}}://{{HOSTNAME}}:{{SENDER_PORT}}/topics/{{KAFKE_TOPIC}}"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "Version": "2.D.V09",
+        "ID": "550e8400-e29b-41d4-a716-000000000803",
+        "CreateTime": "2026-11-24T10:00:00Z",
+        "Analyzer": {}
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Kafka acknowledged one alert without a produce error", function () {
+          expect(res.getStatus()).to.equal(200);
+          const body = res.getBody();
+          const result = typeof body === "string" ? JSON.parse(body) : body;
+          expect(result.offsets).to.be.an("array").with.lengthOf(1);
+          expect(result.offsets[0].offset).to.be.a("number").and.at.least(0);
+          expect(result.offsets[0].error_code == null || result.offsets[0].error_code === 0).to.equal(true);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 10000
+  followRedirects: false
+  maxRedirects: 0
+  forwardAuthorizationHeader: false
+
+docs: |-
+  A successful request must return a Kafka produce acknowledgement.

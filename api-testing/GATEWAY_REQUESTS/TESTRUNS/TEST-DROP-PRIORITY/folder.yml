@@ -1,0 +1,10 @@
+info:
+  name: TEST-DROP-PRIORITY
+  type: folder
+  seq: 8
+
+request:
+  auth: inherit
+
+docs: |-
+  Verify an exact-value drop rule with a matching alert, a different valid priority, and an absent optional priority.

@@ -1,0 +1,44 @@
+info:
+  name: Receiver detects filtered analyzer IP
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{PROTOCOL}}://{{HOSTNAME}}:{{SENDER_PORT}}/topics/{{KAFKE_TOPIC}}"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "Version": "2.D.V09",
+        "ID": "550e8400-e29b-41d4-a716-000000001002",
+        "CreateTime": "2026-11-24T10:00:00Z",
+        "Analyzer": {
+          "Name": "Network monitor",
+          "IP": "192.0.2.10"
+        },
+        "Description": "Network alert"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("The gateway rejects the alert for the expected reason", function () {
+          expect(res.getStatus()).to.equal(422);
+          expect(res.getBody()).to.include("missing mandatory field Analyzer");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 10000
+  followRedirects: false
+  maxRedirects: 0
+  forwardAuthorizationHeader: false
+
+docs: |-
+  The sender ISA only removes the IP. The receiver rejects the alert because it requires Analyzer.IP.

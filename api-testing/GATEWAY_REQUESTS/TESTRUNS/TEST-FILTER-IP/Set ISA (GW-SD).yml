@@ -12,13 +12,13 @@ http:
       {
         "filterConfig": {
           "Analyzer": {
-            "IP": "192.129.213.213"
+            "IP": ""
           },
           "Source": {
             "IP": ""
           },
           "Sensor": {
-            "IP": "192.129.213.213"
+            "IP": ""
           },
           "Target": ""
         },
